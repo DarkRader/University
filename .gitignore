@@ -1,6 +1,10 @@
 # Mac OS helping files 
 *.DS_Store
 
+# Xcode files
+*.xcodeproj/
+DerivedData/
+
 # Prerequisites
 *.d
 
