@@ -29,16 +29,16 @@ static void testCItem() {
     testOpOut(ci1, "Golden globe");
 }
 
-/*static void testCDangerousExplosive() {
+static void testCDangerousExplosive() {
     CDangerousExplosive i4("Chicony keyboard");
     assert(i4.canExplode({25, true}));
     assert(i4.canExplode({250, true}));
     assert(i4.canExplode({2500, true}));
     assert(!i4.canExplode({2500, false}));
     testOpOut(i4, "Chicony keyboard [!]");
-}//*/
+}
 
-/*static void testCDangerousExplosivePolymorphism() {
+static void testCDangerousExplosivePolymorphism() {
     CDangerousExplosive i5("Chicony keyboard");
     CItem & i6 = i5;
     assert(i6.canExplode({25, true}));
@@ -46,7 +46,7 @@ static void testCItem() {
     assert(i6.canExplode({2500, true}));
     assert(!i6.canExplode({2500, false}));
     testOpOut(i6, "Chicony keyboard [!]");
-}//*/
+}
 
 /*static void testCCommonExplosive() {
     CCommonExplosive i2("C4", 730);
