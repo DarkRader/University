@@ -5,54 +5,38 @@
 
 class CFraction
 {
-	public:
-		// ==============================================
-		// ====Constructors, destructors=================
-		// vychozi konstruktor,
-        // konstruktor s citatelem,
-        // konstruktor s citatelem i jmenovatelem
-		// destruktor
+    public:
+        CFraction ( long long int = 0, long long int = 1 );
 
-		// ==============================================
-		// ==============Operatory+-*/===================
-		// op +
-		// op -
-		// op *
-		// op /
+        friend CFraction operator + ( const CFraction &, const CFraction & );
+        friend CFraction operator - ( const CFraction &, const CFraction & );
+        friend CFraction operator * ( const CFraction &, const CFraction & );
+        friend CFraction operator / ( const CFraction &, const CFraction & );
+        
+        CFraction & operator += ( const CFraction & );
+        CFraction & operator -= ( const CFraction & );
+        CFraction & operator *= ( const CFraction & );
+        CFraction & operator /= ( const CFraction & );
+        
+        CFraction operator ++ ( int n );
+        CFraction operator -- ( int n );
+        
+        CFraction & operator ++ ( void );
+        CFraction & operator -- ( void );
 
-		// ==============================================
-		// ============== Operatory@= ===================
-		// op +=
-		// op -=
-		// op *=
-		// op /=
+        CFraction operator - ( void ) const;
 
-		// ==============================================
-		// ============= Operatory++-- ==================
-		// op postfix ++
-		// op postfix --
-		// op prefix ++
-		// op prefix --
+        friend bool operator <  ( const CFraction &, const CFraction & );
+        friend bool operator <= ( const CFraction &, const CFraction & );
+        friend bool operator == ( const CFraction &, const CFraction & );
+        friend bool operator != ( const CFraction &, const CFraction & );
+        friend bool operator >= ( const CFraction &, const CFraction & );
+        friend bool operator >  ( const CFraction &, const CFraction & );
 
-		// ==============================================
-		// ================ Unarni - ====================
-		// op unarni -
-
-		// ==============================================
-		// ============== Compare =======================
-		// op < 
-		// op <= 
-		// op == 
-		// op != 
-		// op >= 
-		// op >  
-
-		// ==============================================
-		// ============= IO operators ===================
-		// op << na vypis do nejakeho streamu
-		// op >> na cteni z nejakeho streamu
-	private:
-		// ==============================================
-		// ===============private vars===================
-		
+        friend std::ostream & operator << ( std::ostream &, const CFraction & );
+        friend std::istream & operator >> ( std::istream &, CFraction & );
+    private:
+        void shrink ( void );
+        long long int m_numerator;
+        long long int m_denominator;
 };
