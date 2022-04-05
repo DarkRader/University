@@ -11,19 +11,91 @@ using namespace std;
 class CFile
 {
   public:
-                             CFile                         ( void );
+                             CFile                         ( void )
                              // copy cons, dtor, op=
-    bool                     seek                          ( uint32_t          offset );
+    {}
+//-------------------------------------------------------------------------------------------------------------
+    bool                     seek                          ( uint32_t          offset )
+    {
+        if(offset > m_lenght - 1)
+            return false;
+        
+        m_position = offset;
+        
+        return true;
+    }
+//-------------------------------------------------------------------------------------------------------------
     uint32_t                 read                          ( uint8_t         * dst,
-                                                             uint32_t          bytes );
+                                                             uint32_t          bytes )
+    {
+        int returnPos = m_lenght - m_position;
+//        int len = 0;
+//
+//        int b1;
+//
+//        b1 = *dst;
+        
+//        while(*dst == 0) {
+//            dst++;
+//            len++;
+//        }
+        
+        
+        
+        return returnPos;
+    }
+//-------------------------------------------------------------------------------------------------------------
     uint32_t                 write                         ( const uint8_t   * src,
-                                                             uint32_t          bytes );
-    void                     truncate                      ( void );
-    uint32_t                 fileSize                      ( void ) const;
-    void                     addVersion                    ( void );
-    bool                     undoVersion                   ( void );
+                                                             uint32_t          bytes )
+    {
+        int lenghtBytes = m_lenght + bytes;
+        int len = 0;
+
+        for(int i = m_lenght; i < lenghtBytes; i++)
+        {
+            int b;
+            m_file[i] = *src;
+            src++;
+            b = *src;
+            len++;
+        }
+        
+        m_lenght += len;
+        
+        
+        return len;
+    }
+//-------------------------------------------------------------------------------------------------------------
+    void                     truncate                      ( void )
+    {
+        
+    }
+//-------------------------------------------------------------------------------------------------------------
+    uint32_t                 fileSize                      ( void ) const
+    {
+        
+        
+        return m_lenght - m_position;
+    }
+//-------------------------------------------------------------------------------------------------------------
+    void                     addVersion                    ( void )
+    {
+        
+    }
+//-------------------------------------------------------------------------------------------------------------
+    bool                     undoVersion                   ( void )
+    {
+        
+        
+        
+        return true;
+    }
+//-------------------------------------------------------------------------------------------------------------
   private:
-    // todo
+    //int *m_file = new int[100];
+    int m_file[100];
+    int m_lenght = 0;
+    int m_position = 0;
 };
 
 #ifndef __PROGTEST__
@@ -33,7 +105,7 @@ bool               writeTest                               ( CFile           & x
 {
   return x . write ( data . begin (), data . size () ) == wrLen;
 }
-
+//-------------------------------------------------------------------------------------------------------------
 bool               readTest                                ( CFile           & x,
                                                              const initializer_list<uint8_t> & data,
                                                              uint32_t          rdLen )
@@ -62,7 +134,7 @@ int main ( void )
   assert ( f0 . fileSize () == 6 );
   assert ( f0 . seek ( 1 ));
   assert ( readTest ( f0, { 20, 5, 4, 70, 80 }, 7 ));
-  assert ( f0 . seek ( 3 ));
+  assert ( f0 . seek ( 3 )); 
   f0 . addVersion();
   assert ( f0 . seek ( 6 ));
   assert ( writeTest ( f0, { 100, 101, 102, 103 }, 4 ) );
