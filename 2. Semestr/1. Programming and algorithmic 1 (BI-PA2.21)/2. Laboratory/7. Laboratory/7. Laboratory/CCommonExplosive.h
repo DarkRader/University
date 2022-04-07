@@ -1,14 +1,14 @@
 #pragma once
-#include <string>
-#include <ostream>
-#include "CEnvironment.h"
+
 #include "CItem.h"
 
-class CCommonExplosive
+class CCommonExplosive : public CItem
 {
     public:
-        CCommonExplosive(const std::string &, int);
-        bool canExplode (const CEnvironment &) const;
+        CCommonExplosive(const std::string & name, int criticalTemp);
+        bool canExplode (const CEnvironment & environment) const override;
+    protected:
+        void print (std::ostream & os) const override;
     private:
-        void print (std::ostream &) const override;
+        int m_criticalTemp; ///< Critical temperature in Celsius
 };

@@ -15,7 +15,7 @@ static void testOpOut(const T & item, std::string_view ref) {
 }
 
 static void testCItem() {
-    CItem i1 = "Golden globe";
+    CItem i1 ("Golden globe");
     assert(!i1.canExplode({25, true}));
     assert(!i1.canExplode({250, true}));
     assert(!i1.canExplode({2500, true}));
@@ -48,16 +48,16 @@ static void testCDangerousExplosivePolymorphism() {
     testOpOut(i6, "Chicony keyboard [!]");
 }
 
-/*static void testCCommonExplosive() {
+static void testCCommonExplosive() {
     CCommonExplosive i2("C4", 730);
     assert(!i2.canExplode({25, true}));
     assert(!i2.canExplode({250, true}));
     assert(i2.canExplode({2500, true}));
     assert(i2.canExplode({2500, false}));
     testOpOut(i2, "C4 [critical temp: 730]");
-}//*/
+}
 
-/*static void testCCommonExplosivePolymorphism() {
+static void testCCommonExplosivePolymorphism() {
     CCommonExplosive i2("C4", 730);
     CItem & i3 = i2;
     assert(!i3.canExplode({25, true}));
@@ -65,9 +65,9 @@ static void testCDangerousExplosivePolymorphism() {
     assert(i3.canExplode({2500, true}));
     assert(i3.canExplode({2500, false}));
     testOpOut(i3, "C4 [critical temp: 730]");
-}//*/
+}
 
-/*static void testCWarehouse() {
+static void testCWarehouse() {
     CWarehouse w("Top secret warehouse");
     testOpOut(w, "Top secret warehouse [0]");
     assert(!w.canExplode({25, true}));
@@ -93,9 +93,9 @@ static void testCDangerousExplosivePolymorphism() {
     assert(w.canExplode({2500, true}));
     assert(!w.canExplode({25, false}));
     assert(w.canExplode({2500, false}));
-}//*/
+}
 
-/*static void testCWarehousePolymorphism() {
+static void testCWarehousePolymorphism() {
     CWarehouse w("Top secret warehouse");
     CItem & i = w;
     testOpOut(i, "Top secret warehouse [0]");
@@ -122,26 +122,26 @@ static void testCDangerousExplosivePolymorphism() {
     assert(i.canExplode({2500, true}));
     assert(!i.canExplode({25, false}));
     assert(i.canExplode({2500, false}));
-}//*/
+}
 
-/*static void testCWarehousePolymorphismRecursion() {
+static void testCWarehousePolymorphismRecursion() {
     CWarehouse w("Top secret warehouse");
-    CItem * w2 = new CWarehouse("Bottom secret warehouse");
+    CWarehouse * w2 = new CWarehouse("Bottom secret warehouse");
     w2->addItem(new CDangerousExplosive("Something that should not be leaked"));
     w.addItem(w2);
     testOpOut(w, "Top secret warehouse [1]");
     assert(w.canExplode({25, true}));
     assert(!w.canExplode({25, false}));
-}//*/
+}
 
 int main() {
     testCItem();
-    //testCDangerousExplosive();
-    //testCDangerousExplosivePolymorphism();
-    //testCCommonExplosive();
-    //testCCommonExplosivePolymorphism();
-    //testCWarehouse();
-    //testCWarehousePolymorphism();
-    //testCWarehousePolymorphismRecursion();
+    testCDangerousExplosive();
+    testCDangerousExplosivePolymorphism();
+    testCCommonExplosive();
+    testCCommonExplosivePolymorphism();
+    testCWarehouse();
+    testCWarehousePolymorphism();
+    testCWarehousePolymorphismRecursion();
     return 0;
 }

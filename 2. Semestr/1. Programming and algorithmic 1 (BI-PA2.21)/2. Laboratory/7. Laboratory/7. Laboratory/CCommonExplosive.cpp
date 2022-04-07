@@ -1,17 +1,17 @@
 #include "CCommonExplosive.h"
 
-CCommonExplosive::CCommonExplosive(const std::string & name, int critical_temp)
+CCommonExplosive::CCommonExplosive(const std::string & name, int criticalTemp)
 : CItem(name),
-  m_critical_temp(critical_temp)
+  m_criticalTemp(criticalTemp)
 {}
 
-bool CCommonExplosive::::canExplode (const CEnvironment & env) const
+bool CCommonExplosive::canExplode (const CEnvironment & environment) const
 {
-    return enc.tempCelsuis > m_critical_temp;
+    return environment.tempCelsius > m_criticalTemp;
 }
 
-void CCommonExplosive::::print (std::ostream & os) const
+void CCommonExplosive::print (std::ostream & os) const
 {
     CItem::print(os);
-    os << " [critical_temp: " << m_critical_temp << "]";
+    os << " [critical temp: " << m_criticalTemp << "]";
 }
