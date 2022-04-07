@@ -1,17 +1,15 @@
 #include "CSafeItem.h"
 
-CSafeItem::CSafeItem(const std::string & name) : m_name(name) {}
+CSafeItem::CSafeItem(const std::string & name) : CNamedItem(name) {}
 
 bool CSafeItem::canExplode(const CEnvironment &environment) const {
     return false;
 }
 
-std::ostream &operator<<(std::ostream &os, const CSafeItem &item) {
-    // dispatch item
-    item.print(os);
-    return os;
+void CSafeItem::print(std::ostream &os) const {
+    os << getName();
 }
 
-void CSafeItem::print(std::ostream &os) const {
-    os << m_name;
+CItem * CSafeItem::clone() const {
+    return new CSafeItem(*this);
 }

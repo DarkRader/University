@@ -1,4 +1,5 @@
 #include "CEnvironment.h"
+#include "CItem.h"
 #include "CSafeItem.h"
 #include "CCommonExplosive.h"
 #include "CDangerousExplosive.h"
@@ -40,7 +41,7 @@ static void testCDangerousExplosive() {
 
 static void testCDangerousExplosivePolymorphism() {
     CDangerousExplosive i5("Chicony keyboard");
-    CSafeItem & i6 = i5;
+    CItem & i6 = i5;
     assert(i6.canExplode({25, true}));
     assert(i6.canExplode({250, true}));
     assert(i6.canExplode({2500, true}));
@@ -59,7 +60,7 @@ static void testCCommonExplosive() {
 
 static void testCCommonExplosivePolymorphism() {
     CCommonExplosive i2("C4", 730);
-    CSafeItem & i3 = i2;
+    CItem & i3 = i2;
     assert(!i3.canExplode({25, true}));
     assert(!i3.canExplode({250, true}));
     assert(i3.canExplode({2500, true}));
@@ -97,7 +98,7 @@ static void testCWarehouse() {
 
 static void testCWarehousePolymorphism() {
     CWarehouse w("Top secret warehouse");
-    CSafeItem & i = w;
+    CItem & i = w;
     testOpOut(i, "Top secret warehouse [0]");
     assert(!i.canExplode({25, true}));
     assert(!i.canExplode({250, true}));
@@ -134,15 +135,15 @@ static void testCWarehousePolymorphismRecursion() {
     assert(!w.canExplode({25, false}));
 }
 
-/*static void testAbstractCItem() {
+static void testAbstractCItem() {
     static_assert(!std::is_base_of_v<CSafeItem, CCommonExplosive>, "CCommonExplosive should not descend from CSafeItem");
     static_assert(!std::is_base_of_v<CSafeItem, CDangerousExplosive>, "CDangerousExplosive should not descend from CSafeItem");
     static_assert(!std::is_base_of_v<CSafeItem, CWarehouse>, "CWarehouse should not descend from CSafeItem");
-    //static_assert(std::has_virtual_destructor_v<CItem>, "CItem does not have virtual destructor!");
-    //static_assert(std::is_abstract_v<CItem>, "CItem is not abstract!");
-}*/
+    static_assert(std::has_virtual_destructor_v<CItem>, "CItem does not have virtual destructor!");
+    static_assert(std::is_abstract_v<CItem>, "CItem is not abstract!");
+}
 
-/*static void testCWarehousePolymorphismCopy() {
+static void testCWarehousePolymorphismCopy() {
     CWarehouse w1("Top secret warehouse");
     w1.addItem(new CDangerousExplosive("I can crash your program if not copied properly!"));
     assert(w1.canExplode({25, true}));
@@ -150,7 +151,7 @@ static void testCWarehousePolymorphismRecursion() {
     CWarehouse w2 = w1;
     assert(w2.canExplode({25, true}));
     assert(!w2.canExplode({25, false}));
-}*/
+}
 
 /*static void testEquals() {
     CWarehouse w1("Top secret warehouse");

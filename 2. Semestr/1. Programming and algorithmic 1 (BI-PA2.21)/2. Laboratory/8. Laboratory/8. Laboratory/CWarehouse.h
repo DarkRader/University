@@ -2,18 +2,23 @@
 
 #include <vector>
 #include <memory>
-#include "CSafeItem.h"
+#include "CNamedItem.h"
 
-class CWarehouse : public CSafeItem {
+class CWarehouse : public CNamedItem {
 public:
     CWarehouse(const std::string & name);
+    CWarehouse(const CWarehouse & other);
+    CWarehouse & operator = (const CWarehouse & other);
+    ~CWarehouse();
 
     bool canExplode(const CEnvironment &environment) const override;
-    void addItem(CSafeItem *item);
+    void addItem(CItem *item);
+    
+    CItem * clone() const override;
 
 protected:
     void print(std::ostream &os) const override;
 
 private:
-    std::vector<std::unique_ptr<CSafeItem>> m_items;
+    std::vector<CItem *> m_items;
 };

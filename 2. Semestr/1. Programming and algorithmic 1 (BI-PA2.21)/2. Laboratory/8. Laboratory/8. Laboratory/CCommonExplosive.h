@@ -1,11 +1,12 @@
 #pragma once
 
-#include "CSafeItem.h"
+#include "CNamedItem.h"
 
-class CCommonExplosive : public CSafeItem {
+class CCommonExplosive : public CNamedItem {
 public:
     CCommonExplosive(const std::string & name, int criticalTemp);
     bool canExplode(const CEnvironment &environment) const override;
+    virtual CItem * clone() const override;
 protected:
     void print(std::ostream &os) const override;
 private:

@@ -1,7 +1,28 @@
 #include "CWarehouse.h"
 
 CWarehouse::CWarehouse(const std::string &name)
-: CSafeItem(name) {}
+: CNamedItem(name) {}
+
+CWarehouse::CWarehouse(const CWarehouse & other) : CNamedItem(other) {
+    for(const auto & item : other.m_items) {
+        m_items.emplace_back(item->clone());
+    }
+}
+
+CWarehouse & CWarehouse::operator=(const CWarehouse & other) {
+    if(this == &other) return *this;
+//    CWarehouse otherCopy(other);
+//    swap(otherCopy);
+    this->CWarehouse::~CWarehouse();
+    new (this) CWarehouse (other);
+    return *this;
+}
+
+CWarehouse::~CWarehouse() {
+    for(const auto & item : m_items) {
+        delete item;
+    }
+}
 
 bool CWarehouse::canExplode(const CEnvironment &environment) const {
     for(const auto & item : m_items) {
@@ -11,11 +32,14 @@ bool CWarehouse::canExplode(const CEnvironment &environment) const {
 }
 
 void CWarehouse::print(std::ostream &os) const {
-    CSafeItem::print(os);
-    os << " [" << m_items.size() << "]";
+    os << getName() << " [" << m_items.size() << "]";
 }
 
-void CWarehouse::addItem(CSafeItem *item) {
+void CWarehouse::addItem(CItem *item) {
     if(!item) return;
-    m_items.emplace_back(std::unique_ptr<CSafeItem>(item));
+    m_items.emplace_back(std::shared_ptr<CItem>(item));
+}
+
+CItem * CWarehouse::clone() const {
+    return new CWarehouse(*this);
 }
