@@ -45,18 +45,10 @@ class CProduct
 public:
     CProduct ( string  name, const CDate & date, int cnt)
                 :   m_name( move ( name)),
-                    //m_expDate(date.getYear(), date.getMonth(), date.getDay()),
-                    //m_cnt(cnt),
                     m_amount(cnt)
     {
         addVector(date, cnt);
     }
-    
-//    CProduct(const CDate & date, int cnt)
-//    {
-//        m_amount += cnt;
-//        addVector(date, cnt);
-//    }
     
     void addExistProduct (const CDate & date, int cnt)
     {
@@ -65,11 +57,14 @@ public:
         sort(vecProd.begin(), vecProd.end(), compareDate);
     }
     
-    string getName(void) { return m_name; }
-    //CDate getExpDate(void) { return m_expDate; }
-    //int getCnt(void) { return m_cnt; }
+    void getIter (void)
+    {
+        sort(vecProd.begin(), vecProd.end(), compareDate);
+    }
     
-    
+    string getName(void) const { return m_name; }
+    int getAmount(void) const { return m_amount; }
+    //CDate getData(void) { return ; }
     
     struct TPRODUCT
     {
@@ -87,16 +82,10 @@ public:
     
 private:
     string m_name;
-    //CDate m_expDate;
-    //int m_cnt;
     int m_amount;
     
     void addVector (const CDate & date, const int & cnt )
     {
-        //m_amount += m_cnt;
-        //m_amount += cnt;
-        
-        //vecProd.push_back(TPRODUCT{m_expDate, m_cnt});
         vecProd.push_back(TPRODUCT{date, cnt});
     }
     
@@ -126,16 +115,8 @@ class CSupermarket
         if(iter == products.end()) {
             products.insert( { name, CProduct(name, expiryDate, count)} );
         } else {
-           
-            //iter->second.vecProd.push_back(CProduct(expiryDate, count));
             iter->second.addExistProduct(expiryDate, count);
         }
-
-//        cout << control->first << " "
-//             << control->second.getExpDate().getYear() << " "
-//             << control->second.getExpDate().getMonth() << " "
-//             << control->second.getExpDate().getDay() << " "
-//             << control->second.getCnt() << endl;
     
         return *this;
     }
@@ -146,13 +127,61 @@ class CSupermarket
     {
         list<pair<string,int> > retList;
         
+        auto itr = products.begin();
         
+
+        while(itr != products.end())
+        {
+            if(date.getYear() > itr->second.vecProd[0].m_date.getYear()) {
+                retList.push_back(make_pair(itr->first, itr->second.getAmount()));
+            } else {
+                int amount = 0;
+                //auto it = upper_bound(itr->second.vecProd.begin(), itr->second.vecProd.end(), itr->first);
+                auto it = itr->second.vecProd.begin();
+                while(it != itr->second.vecProd.end())
+                {
+                    int amount = 0;
+                    if(date.getYear() < it->m_date.getYear())
+                        amount += it->m_count;
+                    else if(date.getYear() == it->m_date.getYear() && date.getMonth() > it->m_date.getMonth())
+                        amount += it->m_count;
+                    else if (date.getYear() == it->m_date.getYear() && date.getMonth() == it->m_date.getMonth() &&
+                             date.getDay() > it->m_date.getDay())
+                        amount += it->m_count;
+                    else
+                        break;
+                    
+                    it++;
+                }
+                retList.push_back(make_pair(itr->first, itr->second.getAmount() - amount));
+                
+            }          
+
+            itr++;
+        }
+        
+        retList.sort(compareCnt);
         
         return retList;
     }
 
   private:
     map <string, CProduct> products;
+    
+    static bool compareCnt(const pair<string,int> &a, const pair<string,int> &b)
+    {
+        return (a.second > b.second);
+    }
+    
+    static bool compareDat(const CProduct::TPRODUCT & a, const CProduct::TPRODUCT & b)
+    {
+        if(a.m_date.getYear() == b.m_date.getYear() && a.m_date.getMonth() != b.m_date.getMonth())
+            return a.m_date.getMonth() > b.m_date.getMonth();
+        else if(a.m_date.getYear() == b.m_date.getYear() && a.m_date.getMonth() == b.m_date.getMonth())
+            return a.m_date.getDay() > b.m_date.getDay();
+        
+        return a.m_date.getYear() > b.m_date.getYear();
+    }
 };
 #ifndef __PROGTEST__
 int main ( void )
