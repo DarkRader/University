@@ -69,12 +69,11 @@ public:
             } else {
                 sellCnt -= vecProd[i - 1].m_count;
                 m_amount -= vecProd[i - 1].m_count;
-                vecProd[i].m_count = 0;
+                vecProd[i - 1].m_count = 0;
                 if(sellCnt == 0)
                     break;
             }
         }
-        
         
         return sellCnt;
     }
@@ -115,7 +114,6 @@ private:
         
         return a.m_date.getYear() > b.m_date.getYear();
     }
-    
 };
 //-------------------------------------------------------------------------------------------------------------
 class CSupermarket
@@ -140,27 +138,37 @@ class CSupermarket
     list<pair<string,int>> sell ( list<pair<string,int>> & shoppingList )
     {
         auto itr = shoppingList.begin();
-        
+
         int notSelling = 0;
+        
+        vector<string> sellProd;
         
         while(itr != shoppingList.end())
         {
             auto itProd = products.find(itr->first);
-            
+
             if(itProd != products.end())
             {
                 notSelling = itProd->second.sellingProd(itr->second);
                 
+                if(itProd->second.getAmount() == 0)
+                    sellProd.push_back(itProd->first);
+
                 if(notSelling == 0) {
-                    shoppingList.erase(itr);
+                    auto tmpItr = itr;
+                    itr++;
+                    shoppingList.erase(tmpItr);
+                    continue;
                 } else {
                     itr->second = notSelling;
                 }
                 
-                if(itProd->second.getAmount() == 0)
-                    products.erase(itProd->first);
             } else{
                 auto itProd = products.begin();
+                
+                auto itTwo = itProd;
+                
+                int sameProd = 0;
                 
                 while(itProd != products.end())
                 {
@@ -168,25 +176,39 @@ class CSupermarket
                         itProd++;
                         continue;
                     } else {
-                        notSelling = itProd->second.sellingProd(itr->second);
                         
-                        if(notSelling == 0) {
-                            shoppingList.erase(itr);
-                        } else {
-                            itr->second = notSelling;
-                        }
+                        sameProd++;
                         
-                        if(itProd->second.getAmount() == 0)
-                            products.erase(itProd->first);
+                        itTwo = itProd;
                     }
                     
                     itProd++;
+                }
+                
+                if(sameProd == 1) {
+                    notSelling = itTwo->second.sellingProd(itr->second);
+                    
+                    if(itTwo->second.getAmount() == 0)
+                        sellProd.push_back(itTwo->first);
+                    
+                    if(notSelling == 0) {
+                        auto tmpItr = itr;
+                        itr++;
+                        shoppingList.erase(tmpItr);
+                        continue;
+                    } else {
+                        itr->second = notSelling;
+                    }
                 }
             }
             
             itr++;
         }
         
+        for(size_t i = 0; i < sellProd.size(); i++)
+        {
+            products.erase(sellProd[i]);
+        }
         
         return shoppingList;
     }
@@ -204,12 +226,11 @@ class CSupermarket
                 retList.push_back(make_pair(itr->first, itr->second.getAmount()));
             } else {
                 int amount = 0;
-                //auto it = upper_bound(itr->second.vecProd.begin(), itr->second.vecProd.end(), itr->first);
+
                 auto it = itr->second.vecProd.begin();
                 
                 while(it != itr->second.vecProd.end())
                 {
-                    //int amount = 0;
                     if(date.getYear() > it->m_date.getYear())
                         amount += it->m_count;
                     else if(date.getYear() == it->m_date.getYear() && date.getMonth() > it->m_date.getMonth())
@@ -222,14 +243,11 @@ class CSupermarket
                         continue;
                     }
                     
-                    //retList.push_back(make_pair(itr->first, /*itr->second.getAmount() -*/ amount));
-                    
                     it++;
                 }
                 
                 if(amount != 0)
-                    retList.push_back(make_pair(itr->first, /*itr->second.getAmount() -*/ amount));
-                
+                    retList.push_back(make_pair(itr->first, amount));
             }
 
             itr++;
@@ -253,9 +271,9 @@ class CSupermarket
         if(sellProd.size() != ourProd.size())
             return false;
         
-        int check = 0;
+        size_t check = 0;
         
-        for(int i = 0; sellProd[i] != '\0'; i++)
+        for(size_t i = 0; i < sellProd.size(); i++)
         {
             if(sellProd[i] != ourProd[i])
                 check++;
@@ -263,8 +281,7 @@ class CSupermarket
             if(check > 1)
                 return false;
         }
-        
-        
+                
         return true;
     }
     
