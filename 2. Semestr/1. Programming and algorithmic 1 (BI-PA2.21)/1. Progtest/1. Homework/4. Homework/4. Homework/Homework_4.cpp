@@ -71,6 +71,7 @@ public:
     {
         return m_file[pos];
     }
+    
 
 //    void deepCopy (void)
 //    {
@@ -78,10 +79,10 @@ public:
 //        m_file[4] = 124;
 //    }
 
-    void operator =(const CCurrentVersion &newVersion)
+    CCurrentVersion & operator =(const CCurrentVersion &newVersion)
     {
-        //if(this == &newVersion)
-          //  return *this;
+        if(this == &newVersion)
+            return *this;
         if(m_file != nullptr)
             delete [] m_file;
 
@@ -98,10 +99,16 @@ public:
         else
             m_file = nullptr;
 
-        //return *this;
+        return *this;
     }
 
-    uint32_t getLenght(void) const {return m_lenght;}
+    uint32_t getLenght(void) const
+    {
+//        if(m_lenght == 0)
+//            return 0;
+        
+        return m_lenght;
+    }
     uint32_t getPosition(void) const {return m_position;}
     void changePos(uint32_t pos)
     {
@@ -110,17 +117,17 @@ public:
 
     void changeLenght(uint32_t del)
     {
-        m_lenght -= del;
+        m_lenght = del;
     }
 
-//    void printM_Db (void) const
-//    {
-//
-//        for(size_t i = 0; i < m_lenght; i++)
-//            cout << m_file[i] << endl;
-//
-//        cout << "----------------------------" << endl;
-//    }
+    void printM_Db (void) const
+    {
+
+        for(size_t i = 0; i < m_lenght; i++)
+            cout << m_file[i] +'0'-48<< endl;
+
+        cout << "----------------------------" << endl;
+    }
 
 
 private:
@@ -133,12 +140,17 @@ class CFile
 {
 public:
     CFile                         ( void )
-    // copy cons, dtor, op=
     {
-        currentLen = 1;
+        currentLen = 0;
         curPosMem = 0;
         member = nullptr;
         m_version = nullptr;
+        
+        if(!m_version) {
+            currentLen++;
+            m_version = new CCurrentVersion[currentLen];
+            member = &m_version[curPosMem];
+        }
     }
     ~CFile()
     {
@@ -149,33 +161,39 @@ public:
         curPosMem = 0;
         member = nullptr;
     }
+    
     CFile(const CFile & x)
     {
+        m_version = nullptr;
+        currentLen = 0;
+        curPosMem = 0;
+        member = nullptr;
+        
         curPosMem = x.curPosMem;
         currentLen = x.currentLen;
-
+        
         if(!m_version) {
+            currentLen++;
             m_version = new CCurrentVersion[currentLen];
             member = &m_version[curPosMem];
         }
 
         for(uint32_t i = 0; i < curPosMem + 1; i++)
             m_version[i] = x.m_version[i];
-
-        //member = &m_version[curPosMem];
     }
 
-    void operator =(const CFile &newFile)
+    CFile & operator =(const CFile &newFile)
     {
         if(this == &newFile)
-            return;
+            return *this;
         if(m_version != nullptr)
         {
             delete[] m_version;
         }
+ 
 
         currentLen = newFile.currentLen;
-        currentLen = newFile.currentLen;
+        curPosMem = newFile.curPosMem;
 
         if(newFile.m_version)
         {
@@ -183,17 +201,20 @@ public:
 
             for(uint32_t i = 0; i < currentLen; i++)
                 m_version[i] = newFile.m_version[i];
+            
+            member = &m_version[curPosMem];
         }
         else
             m_version = nullptr;
 
-        //return *this;
+        return *this;
     }
 
 //-------------------------------------------------------------------------------------------------------------
     bool                     seek                          ( uint32_t          offset )
     {
         if(!m_version) {
+            currentLen++;
             m_version = new CCurrentVersion[currentLen];
             member = &m_version[curPosMem];
         }
@@ -210,29 +231,32 @@ public:
                                                              uint32_t          bytes )
     {
         if(!m_version) {
+            currentLen++;
             m_version = new CCurrentVersion[currentLen];
             member = &m_version[curPosMem];
         }
+        
+        
+        uint32_t tmp = member->getPosition();
+    
+        uint32_t returnBytes = 0;
 
-        int returnPos = 0;
-
-        for(uint32_t i = member->getPosition(); i < member->getLenght(); i++)
+        for(uint32_t i = 0; i < bytes && tmp < member->getLenght(); i++)
         {
-            dst[returnPos] = member->returnElement(i);
-            returnPos++;
-            bytes--;
-
-            if(bytes == 0)
-                break;
+            dst[i] = member->returnElement(tmp++);
+            returnBytes++;
         }
-
-        return returnPos;
+        
+        member->changePos(tmp);
+        
+        return returnBytes;
     }
 //-------------------------------------------------------------------------------------------------------------
     uint32_t                 write                         ( const uint8_t   * src,
                                                              uint32_t          bytes )
     {
         if(!m_version) {
+            currentLen++;
             m_version = new CCurrentVersion[currentLen];
             member = &m_version[curPosMem];
         }
@@ -247,6 +271,7 @@ public:
     void                     truncate                      ( void )
     {
         if(!m_version) {
+            currentLen++;
             m_version = new CCurrentVersion[currentLen];
             member = &m_version[curPosMem];
         }
@@ -260,6 +285,7 @@ public:
         if(!m_version) {
             return 0;
         }
+        
 
         return member->getLenght();
     }
@@ -267,6 +293,7 @@ public:
     void                     addVersion                    ( void )
     {
         if(!m_version) {
+            currentLen++;
             m_version = new CCurrentVersion[currentLen];
             member = &m_version[curPosMem];
         }
@@ -315,15 +342,15 @@ public:
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
-//void print (void) const
-//    {
-//        member->printM_Db();
-//    }
+void print (void) const
+    {
+        member->printM_Db();
+    }
 private:
-    uint32_t currentLen = 0;
-    uint32_t curPosMem = 0;
-    CCurrentVersion * member = nullptr;
-    CCurrentVersion *m_version = nullptr;
+    uint32_t currentLen;
+    uint32_t curPosMem;
+    CCurrentVersion * member;
+    CCurrentVersion *m_version;
 };
 
 #ifndef __PROGTEST__
