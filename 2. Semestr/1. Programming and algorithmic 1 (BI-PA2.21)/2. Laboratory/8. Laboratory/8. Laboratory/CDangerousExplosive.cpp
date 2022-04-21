@@ -10,6 +10,6 @@ void CDangerousExplosive::print(std::ostream &os) const {
     os << getName() << " [!]";
 }
 
-CItem * CDangerousExplosive::clone() const {
+CItem *CDangerousExplosive::clone() const {
     return new CDangerousExplosive(*this);
 }

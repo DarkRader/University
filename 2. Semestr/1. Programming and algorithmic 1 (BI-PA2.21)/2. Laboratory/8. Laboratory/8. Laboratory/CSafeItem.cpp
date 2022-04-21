@@ -10,6 +10,6 @@ void CSafeItem::print(std::ostream &os) const {
     os << getName();
 }
 
-CItem * CSafeItem::clone() const {
+CItem *CSafeItem::clone() const {
     return new CSafeItem(*this);
 }

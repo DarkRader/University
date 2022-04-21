@@ -5,8 +5,8 @@
 class CCommonExplosive : public CNamedItem {
 public:
     CCommonExplosive(const std::string & name, int criticalTemp);
+    CItem * clone() const override;
     bool canExplode(const CEnvironment &environment) const override;
-    virtual CItem * clone() const override;
 protected:
     void print(std::ostream &os) const override;
 private:

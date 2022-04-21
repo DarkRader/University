@@ -1,24 +1,21 @@
 #pragma once
 
 #include <vector>
-#include <memory>
 #include "CNamedItem.h"
+#include "CItemPtr.h"
 
 class CWarehouse : public CNamedItem {
 public:
     CWarehouse(const std::string & name);
-    CWarehouse(const CWarehouse & other);
-    CWarehouse & operator = (const CWarehouse & other);
-    ~CWarehouse();
+
+    CItem * clone() const override;
 
     bool canExplode(const CEnvironment &environment) const override;
     void addItem(CItem *item);
-    
-    CItem * clone() const override;
 
 protected:
     void print(std::ostream &os) const override;
 
 private:
-    std::vector<CItem *> m_items;
+    std::vector<CItemPtr> m_items;
 };

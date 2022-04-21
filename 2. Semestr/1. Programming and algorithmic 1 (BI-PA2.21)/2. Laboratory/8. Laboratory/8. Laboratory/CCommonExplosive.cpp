@@ -11,6 +11,6 @@ void CCommonExplosive::print(std::ostream &os) const {
     os << getName() << " [critical temp: " << m_criticalTemp << "]";
 }
 
-CItem * CCommonExplosive::clone() const {
+CItem *CCommonExplosive::clone() const {
     return new CCommonExplosive(*this);
 }

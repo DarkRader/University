@@ -1,12 +1,13 @@
 #include "CEnvironment.h"
-#include "CItem.h"
 #include "CSafeItem.h"
 #include "CCommonExplosive.h"
 #include "CDangerousExplosive.h"
 #include "CWarehouse.h"
 #include <cassert>
 #include <sstream>
+#include <iostream>
 #include <string_view>
+#include <type_traits>
 
 template<typename T>
 static void testOpOut(const T & item, std::string_view ref) {
@@ -208,6 +209,18 @@ static void testCWarehousePolymorphismCopy() {
     assert(!ci1.equals(ci2));
 }*/
 
+/*void testFromInput(std::istream & in) {
+    CWarehouse w("Totally not secret warehouse");
+    while(in) {
+        w.addItem(CItem::create(in)); // maybe different method
+    }
+    assert(w.canExplode({100, true}));
+    assert(!w.canExplode({100, false}));
+    assert(w.canExplode({150, false}));
+    assert(w.canExplode({150, true}));
+    testOpOut(w, "Totally not secret warehouse [4]");
+}*/
+
 int main() {
     testCSafeItem();
     testCDangerousExplosive();
@@ -217,8 +230,9 @@ int main() {
     testCWarehouse();
     testCWarehousePolymorphism();
     testCWarehousePolymorphismRecursion();
-    //testAbstractCItem();
-    //testCWarehousePolymorphismCopy();
+    testAbstractCItem();
+    testCWarehousePolymorphismCopy();
     //testEquals();
+    //testFromInput(std::cin);
     return 0;
 }

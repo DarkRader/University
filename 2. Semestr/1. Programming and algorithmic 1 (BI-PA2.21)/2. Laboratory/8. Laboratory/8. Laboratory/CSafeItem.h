@@ -5,15 +5,12 @@
 
 #pragma once
 
-//#include <string>
-//#include <ostream>
-//#include "CEnvironment.h"
 #include "CNamedItem.h"
 
 /**
  * An item that never explodes
  */
-class CSafeItem : CNamedItem {
+class CSafeItem : public CNamedItem {
 
 public:
 
@@ -23,13 +20,20 @@ public:
      */
     CSafeItem(const std::string & name);
 
+    CItem * clone() const;
+
+    /**
+     * Virtual destructor
+     * @note Needed for proper destruction handling in descendants
+     */
+    virtual ~CSafeItem() = default;
+
     /**
      * Determines whether the item can explode under given conditions
      * @param environment Environment conditions against which the item is tested
      * @return true if the item can explode under given conditions
      */
-    virtual bool canExplode(const CEnvironment & environment) const override;
-    CItem * clone() const override;
+    virtual bool canExplode(const CEnvironment & environment) const;
 
 protected:
 
@@ -38,6 +42,5 @@ protected:
      * @note This function should be overridden by each descendant to provide its own output representation
      * @param os The output stream
      */
-    virtual void print(std::ostream & os) const override;
-
+    virtual void print(std::ostream & os) const;
 };
