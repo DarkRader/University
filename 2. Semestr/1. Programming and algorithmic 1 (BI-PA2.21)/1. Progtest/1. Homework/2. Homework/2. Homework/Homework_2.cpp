@@ -18,17 +18,18 @@ using namespace std;
 class CVATRegister
 {
   public:
-//-------------------------------------------------------------------------------------------------------------
-                   CVATRegister   ( void )
-    {
-                       
-    }
 
-                   ~CVATRegister  ( void )
-    {
-                       
-    }
+    CVATRegister   ( void ) {}
+   ~CVATRegister   ( void ) {}
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The newCompany method adds another company to the existing database
+     *@param name represented the name of company
+     *@param addr represented the address of company
+     *@param taxID represented a unique company ID
+     *@return true if a company was added
+     *or false if a company was not added (because a company with the same name and address or a company with the same id already existed in the database)
+     */
     bool          newCompany     ( const string    & name,
                                    const string    & addr,
                                    const string    & taxID )
@@ -46,19 +47,25 @@ class CVATRegister
        if(index != m_Db.end() && index->lowerName == lowerName && index->lowerAddr == lowerAddr)
             return false;
         
+        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
         
-        vector <TCompId> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompId(taxID), invCmp);
-        
-        if(ind != m_ID.end() && ind->ID == taxID)
+        if(ind != m_ID.end() && ind->m_ID == taxID)
             return false;
         
         m_Db.insert(index, TCompany{name, addr, taxID, lowerName, lowerAddr});
-        m_ID.insert(ind, TCompId{taxID, name, addr});
+        m_ID.insert(ind, TCompany{name, addr, taxID, lowerName, lowerAddr});
 
         return true;
     }
     
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The cancelCompany methods remove a company from the database by name and address
+     *@param name represented the name of company
+     *@param addr represented the address of company
+     *@return true if a company was successfully deleted
+     * or false if a company was not deleted (because there was no company with the same identification by name and address)
+     */
     bool          cancelCompany  ( const string    & name,
                                    const string    & addr )
     {
@@ -77,11 +84,9 @@ class CVATRegister
         if(index->lowerName != lowerName || index->lowerAddr != lowerAddr)
             return false;
         
-        
-        vector <TCompId> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompId(index->m_ID), invCmp);
+        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(index->m_ID), idCmp);
         
         long i = (index - m_Db.begin());
-        
         long j = (ind - m_ID.begin());
  
         m_Db.erase(m_Db.begin() + i);
@@ -90,15 +95,19 @@ class CVATRegister
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The cancelCompany methods remove a company from the database by company ID
+     *@param taxID represented a unique company ID
+     *@return true if a company was successfully deleted
+     * or false if a company was not deleted (because there was no company with the same identification by company ID)
+     */
     bool          cancelCompany  ( const string    & taxID )
     {
-        vector <TCompId> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompId(taxID), invCmp);
-        if(ind == m_ID.end())
-            return false;
-        if(ind->ID != taxID)
+        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
+        if(ind == m_ID.end() || ind->m_ID != taxID)
             return false;
         
-        string lowerName = ind->k_name, lowerAddr = ind->k_addr;
+        string lowerName = ind->m_name, lowerAddr = ind->m_address;
 
         transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
                   [](unsigned char c){return tolower(c);});
@@ -109,7 +118,6 @@ class CVATRegister
         vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
         long i = (index - m_Db.begin());
-        
         long j = (ind - m_ID.begin());
  
             m_Db.erase(m_Db.begin() + i);
@@ -118,20 +126,22 @@ class CVATRegister
             return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The invoice methods adds an invoice to the company by company ID
+     *@param taxID represented a unique company ID
+     *@param amount represented the invoice of the company that is added to it
+     *@return true if an invoice  was successfully added in a company
+     * or false if an invoice was not added (because a company was not exist)
+     */
     bool          invoice        ( const string    & taxID,
                                    unsigned int      amount )
     {
-        vector <TCompId> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompId(taxID), invCmp);
+        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
         
-        if(ind == m_ID.end())
+        if(ind == m_ID.end() || ind->m_ID != taxID)
             return false;
 
-        if(ind->ID != taxID) {
-
-            return false;
-        }
-
-        string lowerName = ind->k_name, lowerAddr = ind->k_addr;
+        string lowerName = ind->m_name, lowerAddr = ind->m_address;
 
         transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
                   [](unsigned char c){return tolower(c);});
@@ -141,13 +151,21 @@ class CVATRegister
         
         vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
-        index->m_inv += amount;
+        index->m_sumInv += amount;
         
-        faktura.push_back(amount);
+        factures.push_back(amount);
 
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The invoice methods adds an invoice to the company by name and address
+     *@param name represented the name of company
+     *@param addr represented the address of company
+     *@param amount represented the invoice of the company that is added to it
+     *@return true if an invoice  was successfully added in a company
+     * or false if an invoice was not added (because a company was not exist)
+     */
     bool          invoice        ( const string    & name,
                                    const string    & addr,
                                    unsigned int      amount )
@@ -162,22 +180,25 @@ class CVATRegister
         
         vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
-        if(index == m_Db.end())
+        if(index == m_Db.end() || index->lowerName != lowerName || index->lowerAddr != lowerAddr)
             return false;
 
-        if(index->lowerName != lowerName || index->lowerAddr != lowerAddr) {
-
-            return false;
-        }
-
-        index->m_inv += amount;
+        index->m_sumInv += amount;
         
-        faktura.push_back(amount);
-            
+        factures.push_back(amount);
      
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The  audit  methods searches for the amount of company invoices by name and address
+     *@param name represented the name of company
+     *@param addr represented the address of company
+     *@param sumIncome represented the amount of the company's invoices
+     *@return true if the amount of the company's invoices is successfully found
+     * or false if the amount is not found (because a company was not exist)
+     * @note if no invoice has been added to the company,  then sumIncome will be equal to 0
+     */
     bool          audit          ( const string    & name,
                                    const string    & addr,
                                   unsigned int    & sumIncome ) const
@@ -192,35 +213,32 @@ class CVATRegister
         
         vector <TCompany> ::const_iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
-        if(index == m_Db.end())
+        if(index == m_Db.end() || index->lowerName != lowerName || index->lowerAddr != lowerAddr)
             return false;
 
-        if(index->lowerName != lowerName || index->lowerAddr != lowerAddr) {
-
-            return false;
-        }
-
-        sumIncome = index->m_inv;
+        sumIncome = index->m_sumInv;
             
-        
         return true;
 
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The  audit  methods searches for the amount of company invoices by company ID
+     *@param taxID represented a unique company ID
+     *@param sumIncome represented the amount of the company's invoices
+     *@return true if the amount of the company's invoices is successfully found
+     * or false if the amount is not found (because a company was not exist)
+     * @note if no invoice has been added to the company,  then sumIncome will be equal to 0
+     */
     bool          audit          ( const string    & taxID,
                                   unsigned int    & sumIncome ) const
     {
-        vector <TCompId> :: const_iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompId(taxID), invCmp);
+        vector <TCompany> :: const_iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
         
-        if(ind == m_ID.end())
+        if(ind == m_ID.end() || ind->m_ID != taxID)
             return false;
-
-        if(ind->ID != taxID) {
-
-            return false;
-        }
         
-        string lowerName = ind->k_name, lowerAddr = ind->k_addr;
+        string lowerName = ind->m_name, lowerAddr = ind->m_address;
 
         transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
                   [](unsigned char c){return tolower(c);});
@@ -230,12 +248,19 @@ class CVATRegister
 
         vector <TCompany> :: const_iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
 
-        sumIncome = index->m_inv;
+        sumIncome = index->m_sumInv;
             
-        
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The firstCompany method finds the first firm in the database
+     *@note companies should already be sorted by name and address, if companies have the same names, then sorting takes place by address
+     *@param name represented the name of company
+     *@param addr represented the address of company
+     *@return true if the method wrote out the first company in the database
+     * or false if the list of companies is empty
+     */
     bool          firstCompany   ( string          & name,
                                   string          & addr ) const
     {
@@ -248,6 +273,14 @@ class CVATRegister
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The nextCompany method works similarly like firstCompany method, it finds the next company that follows the company specified by the parameters in the list
+     *@note companies should already be sorted by name and address, if companies have the same names, then sorting takes place by address
+     *@param name represented the name of company
+     *@param addr represented the address of company
+     *@return true if there is other company listed after name and addr
+     * or false if there is no other company listed after name and addr
+     */
     bool          nextCompany    ( string          & name,
                                   string          & addr ) const
     {
@@ -275,27 +308,26 @@ class CVATRegister
         return true;
     }
 //-------------------------------------------------------------------------------------------------------------
+    /**
+     *The medianInvoice method searches for the median value of an invoice
+     *@note All successfully processed invoices entered by invoice are counted into the calculated median. Thus, invoices that could not be assigned (the invoice call failed) are not counted, but all invoices registered so far are counted, that is, when a company is deleted, its invoices are not removed from the calculation of the median. If an even number of invoices is specified in the system, the higher of the two middle values is taken
+     *@return the found median, if the method has not found a median (for example, invoices have not been added), returns 0
+     */
     unsigned int  medianInvoice  ( void ) const
     {
         int count = 0;
-
-
-        int *tmpDB = new int[faktura.size()];
-
+        int *tmpDB = new int[factures.size()];
         int result;
 
-        for(size_t i = 0; i < faktura.size(); i++) {
-            tmpDB[i] = faktura[i];
+        for(size_t i = 0; i < factures.size(); i++) {
+            tmpDB[i] = factures[i];
             count++;
         }
-
-
             int i, key, j;
             for (i = 1; i < count; i++)
             {
                 key = tmpDB[i];
                 j = i - 1;
-
 
                 while (j >= 0 && tmpDB[j] > key)
                 {
@@ -311,7 +343,6 @@ class CVATRegister
         }
 
         if(count == 1) {
-            //cout << m_Db[0 + step].m_inv << " " << m_Db[0 + step].m_ID << endl;
             result = tmpDB[0];
             delete [] tmpDB;
             return result;
@@ -319,39 +350,34 @@ class CVATRegister
 
         if(count % 2 != 0) {
             count = (count / 2);
-            //cout << m_Db[count + step].m_inv << endl;
             result = tmpDB[count];
             delete[] tmpDB;
             return result;
             } else {
                 if((tmpDB[count / 2]) > tmpDB[count / 2 - 1]) {
-                    //cout << m_Db[count / 2 + step].m_inv << endl;
                     result = tmpDB[count / 2 ];
                     delete[] tmpDB;
                     return result;
                 }
                 else {
-                    //cout << m_Db[count / 2 - 1 + step].m_inv << endl;
                     result = tmpDB[count / 2 - 1];;
                     delete[] tmpDB;
                     return result;
                 }
-
             }
-
         return 0;
     }
-    
-    void printM_Db (void) const
-    {
-        cout << setfill ('-') << setw(50) << "" << endl;
-
-        for(size_t i = 0; i < m_Db.size(); i++)
-            cout << m_Db[i].m_name << " " << m_Db[i].m_address << " " << m_Db[i].m_ID << " " << m_Db[i].m_inv << " " << m_ID[i].ID << endl;
-    }
-
-  private:
 //-------------------------------------------------------------------------------------------------------------
+  private:
+    /**
+     *The TCompany struct is used to keep all the necessary parameters in the company's database
+     *param m_name represented the original name of company
+     *param m_address represented the original adress of company
+     *param m_ID represented a unique company ID
+     *param lowerName represented a company name in lowercase
+     *param lowerAddr represented a company address in lowercase
+     *param m_inv represented the amount of invoices in the company
+     */
     struct TCompany
     {
         string m_name;
@@ -359,63 +385,44 @@ class CVATRegister
         string m_ID;
         string lowerName;
         string lowerAddr;
-        int m_inv;
-        TCompany(void) : m_name(""), m_address(""), m_ID(""), lowerName(""), lowerAddr(""), m_inv(0) {}
-        TCompany(string name, string address) : m_ID(""), lowerName(name), lowerAddr(address)
-        {}
-        TCompany(string name, string address, string ID, string lowerName, string lowerAddr, int inv = 0)
+        int m_sumInv;
+        TCompany(void) : m_name(""), m_address(""), m_ID(""), lowerName(""), lowerAddr(""), m_sumInv(0) {}
+        TCompany(string name, string address) : m_ID(""), lowerName(name), lowerAddr(address) {}
+        TCompany(string id) : m_name(""), m_address(""), m_ID(id) {}
+        TCompany(string name, string address, string ID, string lowerName, string lowerAddr, int invoce = 0)
         {
             m_name = name;
             m_address = address;
             m_ID = ID;
             this->lowerName = lowerName;
             this->lowerAddr = lowerAddr;
-            m_inv = inv;
+            m_sumInv = invoce;
         }
     };
+//-------------------------------------------------------------------------------------------------------------
+    // a vector of the structure data type is used to keep duplicated data of the same database for the case
+    // when need to search for a company in the database by name and address or by id
+    vector <TCompany> m_Db, m_ID;
     
-    
-    struct TCompId
+    // the vector where all the recorded invoices are kept is mainly used for the medianInvoice method
+    vector <int> factures;
+//-------------------------------------------------------------------------------------------------------------
+    //comparator used for comparison by name, if the names are the same, then by address
+    static bool lowerCmp (const TCompany & a, const TCompany & b)
     {
-        string ID;
-        string k_name;
-        string k_addr;
-        TCompId(void) : ID(""), k_name(""), k_addr("") {}
-        TCompId(string id) : ID(id), k_name(""), k_addr("")
-        {}
-        TCompId(string ID, string name, string addr)
-        {
-            this->ID = ID;
-            k_name = name;
-            k_addr = addr;
+        if(a.lowerName == b.lowerName) {
+            return a.lowerAddr < b.lowerAddr;
         }
-
-    };
-//-------------------------------------------------------------------------------------------------------------
-    vector <TCompany> m_Db;
-
-    vector <TCompId> m_ID;
-
-    vector <int> faktura;
-    
-//-------------------------------------------------------------------------------------------------------------
-static bool lowerCmp (const TCompany & a, const TCompany & b)
-{
-    if(a.lowerName == b.lowerName) {
-    //if(isLower(a.m_name, a.m_name) == true) {
-        return a.lowerAddr < b.lowerAddr;
+        return a.lowerName < b.lowerName;
     }
-
-    return a.lowerName < b.lowerName;
-}
 //-------------------------------------------------------------------------------------------------------------
-static bool invCmp (const TCompId & a, const TCompId & b)
-{
-    return a.ID < b.ID;
-}
+    //comparator used for comparison by company id
+    static bool idCmp (const TCompany & a, const TCompany & b)
+    {
+        return a.m_ID < b.m_ID;
+    }
 //-------------------------------------------------------------------------------------------------------------
 };
-
 
 #ifndef __PROGTEST__
 int               main           ( void )
