@@ -34,26 +34,30 @@ class CVATRegister
                                    const string    & addr,
                                    const string    & taxID )
     {
+        //creating new variables to translate to lowercase
         string lowerName = name, lowerAddr = addr;
 
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
-                
-        vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
+         
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> :: iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
-       if(index != m_Db.end() && index->lowerName == lowerName && index->lowerAddr == lowerAddr)
+        //checks for the existence of a company in the database, if a company with such a name and address already exists, return false
+        if(itDB != m_Db.end() && itDB->lowerName == lowerName && itDB->lowerAddr == lowerAddr)
             return false;
         
-        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
+        //search for a company in the database by company id using lower_bound
+        vector <TCompany> :: iterator itID = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
         
-        if(ind != m_ID.end() && ind->m_ID == taxID)
+        //checks for the existence of a company in the database, if a company with such an ID already exists, we return false
+        if(itID != m_ID.end() && itID->m_ID == taxID)
             return false;
         
-        m_Db.insert(index, TCompany{name, addr, taxID, lowerName, lowerAddr});
-        m_ID.insert(ind, TCompany{name, addr, taxID, lowerName, lowerAddr});
+        //inserting a new company when using the iterator into the vector, which will be searched by name and address
+        m_Db.insert(itDB, TCompany{name, addr, taxID, lowerName, lowerAddr});
+        //inserting a new company when using the iterator into the vector, which will be searched by company ID
+        m_ID.insert(itID, TCompany{name, addr, taxID, lowerName, lowerAddr});
 
         return true;
     }
@@ -69,28 +73,31 @@ class CVATRegister
     bool          cancelCompany  ( const string    & name,
                                    const string    & addr )
     {
+        //creating new variables to translate to lowercase
         string lowerName = name, lowerAddr = addr;
         
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
 
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
-        if(index == m_Db.end())
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> :: iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        if(itDB == m_Db.end())
             return false;
 
-        if(index->lowerName != lowerName || index->lowerAddr != lowerAddr)
+        //we make a check, if there is no such company by name and address in the database, then we return false
+        if(itDB->lowerName != lowerName || itDB->lowerAddr != lowerAddr)
             return false;
         
-        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(index->m_ID), idCmp);
+        //search for a company in the database by company id using lower_bound
+        vector <TCompany> :: iterator itID = lower_bound(m_ID.begin(), m_ID.end(), TCompany(itDB->m_ID), idCmp);
         
-        long i = (index - m_Db.begin());
-        long j = (ind - m_ID.begin());
+        //creating variables to find out the positions from which we will delete the company
+        long pozDB = (itDB - m_Db.begin());
+        long pozID = (itID - m_ID.begin());
  
-        m_Db.erase(m_Db.begin() + i);
-        m_ID.erase(m_ID.begin() + j);
+        //delete companies using erase from the found position
+        m_Db.erase(m_Db.begin() + pozDB);
+        m_ID.erase(m_ID.begin() + pozID);
 
         return true;
     }
@@ -103,25 +110,29 @@ class CVATRegister
      */
     bool          cancelCompany  ( const string    & taxID )
     {
-        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
-        if(ind == m_ID.end() || ind->m_ID != taxID)
+        //search for a company in the database by company id using lower_bound
+        vector <TCompany> :: iterator itID = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
+        
+        //we make a check, if there is no such company by company ID in the database, then we return false
+        if(itID == m_ID.end() || itID->m_ID != taxID)
             return false;
         
-        string lowerName = ind->m_name, lowerAddr = ind->m_address;
-
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
+        //creating new variables to translate to lowercase
+        string lowerName = itID->m_name, lowerAddr = itID->m_address;
         
-        vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
         
-        long i = (index - m_Db.begin());
-        long j = (ind - m_ID.begin());
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> :: iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        
+        //creating variables to find out the positions from which we will delete the company
+        long pozDB = (itDB - m_Db.begin());
+        long pozID = (itID - m_ID.begin());
  
-            m_Db.erase(m_Db.begin() + i);
-            m_ID.erase(m_ID.begin() + j);
+        //delete companies using erase from the found position
+        m_Db.erase(m_Db.begin() + pozDB);
+        m_ID.erase(m_ID.begin() + pozID);
 
             return true;
     }
@@ -136,23 +147,26 @@ class CVATRegister
     bool          invoice        ( const string    & taxID,
                                    unsigned int      amount )
     {
-        vector <TCompany> :: iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
+        //search for a company in the database by company id using lower_bound
+        vector <TCompany> :: iterator itID = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
         
-        if(ind == m_ID.end() || ind->m_ID != taxID)
+        //if the company was not found, return false
+        if(itID == m_ID.end() || itID->m_ID != taxID)
             return false;
 
-        string lowerName = ind->m_name, lowerAddr = ind->m_address;
-
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
+        //creating new variables to translate to lowercase
+        string lowerName = itID->m_name, lowerAddr = itID->m_address;
         
-        vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
         
-        index->m_sumInv += amount;
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> :: iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
+        //adding an invoice to the total amount of company invoices
+        itDB->m_sumInv += amount;
+        
+        //adding an invoice to a vector with invoices
         factures.push_back(amount);
 
         return true;
@@ -170,21 +184,23 @@ class CVATRegister
                                    const string    & addr,
                                    unsigned int      amount )
     {
+        //creating new variables to translate to lowercase
         string lowerName = name, lowerAddr = addr;
         
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
         
-        vector <TCompany> :: iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> :: iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
-        if(index == m_Db.end() || index->lowerName != lowerName || index->lowerAddr != lowerAddr)
+        //if the company was not found, return false
+        if(itDB == m_Db.end() || itDB->lowerName != lowerName || itDB->lowerAddr != lowerAddr)
             return false;
 
-        index->m_sumInv += amount;
+        //adding an invoice to the total amount of company invoices
+        itDB->m_sumInv += amount;
         
+        //adding an invoice to a vector with invoices
         factures.push_back(amount);
      
         return true;
@@ -203,20 +219,21 @@ class CVATRegister
                                    const string    & addr,
                                   unsigned int    & sumIncome ) const
     {
+        //creating new variables to translate to lowercase
         string lowerName = name, lowerAddr = addr;
         
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
         
-        vector <TCompany> ::const_iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> ::const_iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
         
-        if(index == m_Db.end() || index->lowerName != lowerName || index->lowerAddr != lowerAddr)
+        //if the company was not found, return false
+        if(itDB == m_Db.end() || itDB->lowerName != lowerName || itDB->lowerAddr != lowerAddr)
             return false;
 
-        sumIncome = index->m_sumInv;
+        //we assign the total amount of the company's invoices to the variable sumIncome
+        sumIncome = itDB->m_sumInv;
             
         return true;
 
@@ -233,22 +250,24 @@ class CVATRegister
     bool          audit          ( const string    & taxID,
                                   unsigned int    & sumIncome ) const
     {
-        vector <TCompany> :: const_iterator ind = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
+        //search for a company in the database by company id using lower_bound
+        vector <TCompany> :: const_iterator itID = lower_bound(m_ID.begin(), m_ID.end(), TCompany(taxID), idCmp);
         
-        if(ind == m_ID.end() || ind->m_ID != taxID)
+        //if the company was not found, return false
+        if(itID == m_ID.end() || itID->m_ID != taxID)
             return false;
         
-        string lowerName = ind->m_name, lowerAddr = ind->m_address;
+        //creating new variables to translate to lowercase
+        string lowerName = itID->m_name, lowerAddr = itID->m_address;
+ 
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
 
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> :: const_iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
 
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        vector <TCompany> :: const_iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
-
-        sumIncome = index->m_sumInv;
+        //we assign the total amount of the company's invoices to the variable sumIncome
+        sumIncome = itDB->m_sumInv;
             
         return true;
     }
@@ -264,9 +283,11 @@ class CVATRegister
     bool          firstCompany   ( string          & name,
                                   string          & addr ) const
     {
+        //checking for the presence of companies in the database
         if(m_Db.size() == 0)
             return false;
 
+        //assign the name and address of the found company to the variables
         name = m_Db[0].m_name;
         addr = m_Db[0].m_address;
 
@@ -284,26 +305,29 @@ class CVATRegister
     bool          nextCompany    ( string          & name,
                                   string          & addr ) const
     {
+        //creating new variables to translate to lowercase
         string lowerName = name, lowerAddr = addr;
-
-        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-                  [](unsigned char c){return tolower(c);});
-
-        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
-                  [](unsigned char c){return tolower(c);});
         
-        vector <TCompany> ::const_iterator index = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
+        //function for converting variables to lowercase
+        lowerCase(lowerName, lowerAddr);
+        
+        //search for a company in the database by name and address using lower_bound
+        vector <TCompany> ::const_iterator itDB = lower_bound(m_Db.begin(), m_Db.end(), TCompany(lowerName, lowerAddr), lowerCmp);
 
-        if(index->lowerName != lowerName || index->lowerAddr != lowerAddr)
+        //if the company was not found, return false
+        if(itDB->lowerName != lowerName || itDB->lowerAddr != lowerAddr)
             return false;
         
-        long unsigned int ind = (index - m_Db.begin());
-        
-        if(ind + 1 == m_Db.size())
+        //creating variable to find out the position of the company the name and address we received
+        long unsigned int pozDB = (itDB - m_Db.begin());
+    
+        //we check if there is the following company in our database whose name and address we want to assign
+        if(pozDB + 1 == m_Db.size())
             return false;
 
-        name = m_Db[ind + 1].m_name;
-        addr = m_Db[ind + 1].m_address;
+        //we assign the name and address of the following company
+        name = m_Db[pozDB + 1].m_name;
+        addr = m_Db[pozDB + 1].m_address;
         
         return true;
     }
@@ -315,44 +339,55 @@ class CVATRegister
      */
     unsigned int  medianInvoice  ( void ) const
     {
+        //a variable that will indicate the number of invoices in vector
         int count = 0;
+        //we will create a new array of invoices, which we will sort
         int *tmpDB = new int[factures.size()];
+        //the result we will return
         int result;
 
+        //copy the values from the invoices vector to a new allocated int array
         for(size_t i = 0; i < factures.size(); i++) {
             tmpDB[i] = factures[i];
             count++;
         }
-            int i, key, j;
-            for (i = 1; i < count; i++)
+        
+        //the cycle in which the invoices are sorted
+        int i, key, j;
+        for (i = 1; i < count; i++)
+        {
+            key = tmpDB[i];
+            j = i - 1;
+
+            while (j >= 0 && tmpDB[j] > key)
             {
-                key = tmpDB[i];
-                j = i - 1;
-
-                while (j >= 0 && tmpDB[j] > key)
-                {
-                    tmpDB[j + 1] = tmpDB[j];
-                    j = j - 1;
-                }
-                tmpDB[j + 1] = key;
+                tmpDB[j + 1] = tmpDB[j];
+                j = j - 1;
             }
+            tmpDB[j + 1] = key;
+        }
 
+        //if there are no invoices in the vector, return 0
         if(count == 0) {
             delete [] tmpDB;
             return 0;
         }
 
+        //if there is only one invoice in the vector, return it
         if(count == 1) {
             result = tmpDB[0];
             delete [] tmpDB;
             return result;
         }
 
+        //if the number of invoices is odd
         if(count % 2 != 0) {
+            //returning the median of the array
             count = (count / 2);
             result = tmpDB[count];
             delete[] tmpDB;
             return result;
+            //if there is an even number of invoices, see which invoice of the two central ones is bigger and return it
             } else {
                 if((tmpDB[count / 2]) > tmpDB[count / 2 - 1]) {
                     result = tmpDB[count / 2 ];
@@ -402,10 +437,23 @@ class CVATRegister
 //-------------------------------------------------------------------------------------------------------------
     // a vector of the structure data type is used to keep duplicated data of the same database for the case
     // when need to search for a company in the database by name and address or by id
+    //m_Db presented a database in which the search takes place by name and address
+    //m_ID presented a database in which the search takes place by company ID
     vector <TCompany> m_Db, m_ID;
     
     // the vector where all the recorded invoices are kept is mainly used for the medianInvoice method
     vector <int> factures;
+//-------------------------------------------------------------------------------------------------------------
+    //function for translating name and address to lowercase
+    static void lowerCase(string & lowerName, string & lowerAddr)
+    {
+        transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+                  [](unsigned char c){return tolower(c);});
+
+        transform(lowerAddr.begin(), lowerAddr.end(), lowerAddr.begin(),
+                  [](unsigned char c){return tolower(c);});
+    }
+    
 //-------------------------------------------------------------------------------------------------------------
     //comparator used for comparison by name, if the names are the same, then by address
     static bool lowerCmp (const TCompany & a, const TCompany & b)
