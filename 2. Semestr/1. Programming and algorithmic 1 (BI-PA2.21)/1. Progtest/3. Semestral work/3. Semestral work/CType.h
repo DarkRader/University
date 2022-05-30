@@ -15,19 +15,23 @@ public:
     
     virtual CType * clone() const = 0;
     
-    virtual CType & operator + (const CType & number) const = 0;
+    long long int getVariable(void) const;
     
-    virtual CType & operator - (const CType & number) const = 0;
+    virtual CType & operator + (const CType & number) = 0; //const = 0;
     
-    virtual CType & operator * (const CType & number) const = 0;
+    virtual CType & operator - (const CType & number) = 0; //const = 0;
     
-    virtual CType & operator / (const CType & number) const = 0;
+    virtual CType & operator * (const CType & number) = 0; //const = 0;
+    
+    virtual CType & operator / (const CType & number) = 0; //const = 0;
     
     friend std::ostream & operator << (std::ostream & os, const CType & item);
     
     
 protected:
     
+    long long int m_variable;
+    std::string m_newVariable;
     virtual void print(std::ostream & os) const = 0;
     
 private:

@@ -9,3 +9,5 @@ std::ostream &operator<<(std::ostream &os, const CType &item) {
     item.print(os);
     return os;
 }
+
+long long int CType::getVariable(void) const { return m_variable; }

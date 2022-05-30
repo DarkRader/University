@@ -11,16 +11,26 @@ public:
     
     CType * clone() const override;
     
-    CType & operator + (const CType & number) const override;
+    CInteger(long long int variable);
     
-    CType & operator - (const CType & number) const override;
+    long long int getVariable(void) const;
     
-    CType & operator * (const CType & number) const override;
+    std::string getNewVariable(void) const;
     
-    CType & operator / (const CType & number) const override;
+    CType & operator + (const CType & number) override;
+    
+    CType & operator - (const CType & number) override;
+    
+    CType & operator * (const CType & number) override;
+    
+    CType & operator / (const CType & number) override;
     
     
 protected:
+    virtual void print(std::ostream & os) const override;
     
+private:
+    //long long int m_variable;
+    //std::string m_newVariable;
     
 };
