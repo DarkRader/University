@@ -23,14 +23,10 @@ public:
     
     CType & operator * (const CType & number) override;
     
-    CType & operator / (const CType & number) override;
+    CType & operator / (const CType & number);
     
     
 protected:
     virtual void print(std::ostream & os) const override;
-    
-private:
-    //long long int m_variable;
-    //std::string m_newVariable;
     
 };
