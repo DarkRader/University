@@ -15,7 +15,9 @@ public:
     
     virtual CType * clone() const = 0;
     
-    long long int getVariable(void) const;
+    long long int getVarInt(void) const;
+    
+    long double getVarFloat(void) const;
     
     virtual CType & operator + (const CType & number) = 0; //const = 0;
     
@@ -23,14 +25,13 @@ public:
     
     virtual CType & operator * (const CType & number) = 0; //const = 0;
     
-    virtual CType & operator / (const CType & number) = 0; //const = 0;
-    
     friend std::ostream & operator << (std::ostream & os, const CType & item);
     
     
 protected:
     
-    long long int m_variable;
+    long long int m_varInt;
+    long double m_varFloat;
     std::string m_newVariable;
     virtual void print(std::ostream & os) const = 0;
     

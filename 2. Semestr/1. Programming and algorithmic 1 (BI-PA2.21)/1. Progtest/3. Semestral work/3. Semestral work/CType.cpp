@@ -10,4 +10,6 @@ std::ostream &operator<<(std::ostream &os, const CType &item) {
     return os;
 }
 
-long long int CType::getVariable(void) const { return m_variable; }
+long long int CType::getVarInt(void) const { return m_varInt; }
+
+long double CType::getVarFloat(void) const { return m_varFloat; }

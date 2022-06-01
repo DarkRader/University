@@ -9,15 +9,15 @@ CType * CInteger::clone() const
     return new CInteger(*this);
 }
 
-CInteger::CInteger(long long int variable) { m_variable = variable; }
+CInteger::CInteger(long long int variable) { m_varInt = variable; }
 
-long long int CInteger::getVariable(void) const { return m_variable; }
+long long int CInteger::getVariable(void) const { return m_varInt; }
 
 std::string CInteger::getNewVariable(void) const { return m_newVariable; }
 
 CType & CInteger::operator + (const CType & number)
 {
-    long long int newVariable = m_variable + number.getVariable();
+    long long int newVariable = m_varInt + number.getVarInt();
     
     m_newVariable = std::to_string(newVariable);
     
@@ -26,7 +26,7 @@ CType & CInteger::operator + (const CType & number)
 
 CType & CInteger::operator - (const CType & number)
 {
-    long long int newVariable = m_variable - number.getVariable();
+    long long int newVariable = m_varInt - number.getVarInt();
     
     m_newVariable = std::to_string(newVariable);
     
@@ -35,7 +35,7 @@ CType & CInteger::operator - (const CType & number)
 
 CType & CInteger::operator / (const CType & number)
 {
-    long long int newVariable = m_variable / number.getVariable();
+    long long int newVariable = m_varInt / number.getVarInt();
     
     m_newVariable = std::to_string(newVariable);
     
@@ -44,7 +44,7 @@ CType & CInteger::operator / (const CType & number)
 
 CType & CInteger::operator * (const CType & number)
 {
-    long long int newVariable = m_variable * number.getVariable();
+    long long int newVariable = m_varInt * number.getVarInt();
     
     m_newVariable = std::to_string(newVariable);
 

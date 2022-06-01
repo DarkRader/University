@@ -13,15 +13,22 @@ public:
     
     CType * clone() const override;
     
-    CType & operator + (const CType & number) const override;
+    CFloat(long double variable);
     
-    CType & operator - (const CType & number) const override;
+    long long int getVariable(void) const;
     
-    CType & operator * (const CType & number) const override;
+    std::string getNewVariable(void) const;
+    
+    CType & operator + (const CType & number) override;
+    
+    CType & operator - (const CType & number) override;
+    
+    CType & operator * (const CType & number) override;
     
     
     
 protected:
+    virtual void print(std::ostream & os) const override;
     
     
 };
