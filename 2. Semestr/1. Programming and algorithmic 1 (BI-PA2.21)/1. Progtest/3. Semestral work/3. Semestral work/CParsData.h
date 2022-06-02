@@ -26,19 +26,24 @@ public:
     
     std::string getRes(void) const;
     
-    bool parsingDate(const std::string & operace);
+    bool parsingDate(const std::string & operation);
     
 private:
     std::string m_res;
     
-    void fillStack(std::vector<std::string> & token, CShuntYardAlg & a);
+    void fillStack(const std::vector<std::string> & token, CShuntYardAlg & a);
     
-    void fillSymbol(const std::string & operace, CShuntYardAlg & a);
+    void fillSymbol(std::string & operation, CShuntYardAlg & a);
     
     bool controlSynErr(const std::vector<std::string> & control);
     
+    void clWhiteSpace(std::string & newOperation);
+    
     bool symbol(const char & symbol);
     
+    void negNum(const std::string & operation);
+    
+    void replaceComma(std::string repNum, CShuntYardAlg & a);
     
 };
 

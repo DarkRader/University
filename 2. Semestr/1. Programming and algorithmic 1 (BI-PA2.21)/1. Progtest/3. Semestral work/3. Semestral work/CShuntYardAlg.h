@@ -29,6 +29,14 @@ public:
     
     void addNum(const std::string & num);
     
+    void changeNum(const std::string & num, size_t i);
+    
+    void changeOp(const std::string & op, size_t i);
+    
+    std::string getNum(size_t i) const;
+    
+    std::string getOp(size_t i) const;
+    
 protected:
     std::vector<std::string> stakNum;
     std::vector<std::string> stakOp;

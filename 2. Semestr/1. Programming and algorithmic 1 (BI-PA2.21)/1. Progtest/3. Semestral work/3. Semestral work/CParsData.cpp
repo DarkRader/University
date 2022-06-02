@@ -6,28 +6,32 @@
 
 std::string CParsData::getRes(void) const { return m_res; }
 
-bool CParsData::parsingDate(const std::string & operace)
+bool CParsData::parsingDate(const std::string & operation)
 {
     const std::regex re_control(R"(((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s)|(,)|([a-zA-Z0-9])))");
     
-    std::sregex_token_iterator it_control{operace.begin(), operace.end(), re_control, -1};
+    std::sregex_token_iterator it_control{operation.begin(), operation.end(), re_control, -1};
 
     std::vector<std::string> control( it_control, {} );
     
     if(controlSynErr(control) == false)
         std::cout << "Syntax error, try again!" << std::endl;
     
-    const std::regex re(R"((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s))");
+    std::string newOper = operation;
+    
+    clWhiteSpace(newOper);
+    
+    const std::regex re(R"((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=))");
 
-    std::sregex_token_iterator it{operace.begin(), operace.end(), re, -1};
+    std::sregex_token_iterator it{newOper.begin(), newOper.end(), re, -1};
 
     std::vector<std::string> seqNum( it, {} );
     
     CShuntYardAlg a;
     
-    fillSymbol(operace, a);
-    
     fillStack(seqNum, a);
+    
+    fillSymbol(newOper, a);
     
     m_res = a.shuntYardAlg();
     
@@ -46,13 +50,36 @@ bool CParsData::controlSynErr(const std::vector<std::string> & control)
     return true;
 }
 
-void CParsData::fillSymbol(const std::string & operace, CShuntYardAlg & a)
+void CParsData::clWhiteSpace(std::string & operation)
 {
-    for(size_t i = 0; i < operace.size(); i++)
+    for(size_t i = 0; i < operation.size(); )
     {
-        if(symbol(operace[i]) == true)
+        if(operation[i] == ' ') {
+            operation.erase(operation.begin() + i);
+        }
+        i++;
+    }
+}
+
+void CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
+{
+    for(size_t i = 0; i < operation.size(); i++)
+    {
+        if(symbol(operation[i]) == true)
         {
-            std::string s(1, operace[i]);
+            std::string s(1, operation[i]);
+            if(i == 0 && operation[i] == '(' && operation[i + 1] == '-')
+            {
+                std::string newNum = '-' + a.getNum(0);
+                a.changeNum(newNum, 0);
+                operation.erase(operation.begin() + i + 1);
+            } else if(operation[i] == '(' && operation[i + 1] == '-')
+            {
+                a.addOp(s);
+                i++;
+                a.addOp("- fl");
+                continue;
+            }
             a.addOp(s);
         }
     }
@@ -60,25 +87,30 @@ void CParsData::fillSymbol(const std::string & operace, CShuntYardAlg & a)
 
 bool CParsData::symbol(const char & symbol)
 {
-    if(symbol == '+')
-        return true;
-    else if(symbol == '-')
-        return true;
-    else if(symbol == '*')
-        return true;
-    else if(symbol == '/')
-        return true;
-    else if(symbol == '=')
-        return true;
-    else if(symbol == '(')
-        return true;
-    else if(symbol == ')')
-        return true;
-    
+    switch (symbol) {
+        case '+':
+            return true;
+        case '-':
+            return true;
+        case '*':
+            return true;
+        case '/':
+            return true;
+        case '=':
+            return true;
+        case '(':
+            return true;
+        case ')':
+            return true;
+            
+        default:
+            return false;
+    }
+
     return false;
 }
 
-void CParsData::fillStack(std::vector<std::string> & seqNum, CShuntYardAlg & a)
+void CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg & a)
 {
     for(size_t i = 0; i < seqNum.size(); i++)
     {
@@ -86,4 +118,18 @@ void CParsData::fillStack(std::vector<std::string> & seqNum, CShuntYardAlg & a)
             a.addNum(seqNum[i]);
         }
     }
+}
+
+void CParsData::replaceComma(std::string repNum, CShuntYardAlg & a)
+{
+    for(size_t i = 0; i < repNum.size(); i++)
+    {
+        if(repNum[i] == ',')
+        {
+            repNum[i] = '.';
+            a.addNum(repNum);
+            return;
+        }
+    }
+    a.addNum(repNum);
 }

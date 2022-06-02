@@ -4,6 +4,10 @@
  */
 #include "CShuntYardAlg.h"
 
+std::string CShuntYardAlg::getNum(size_t i) const { return stakNum[i]; }
+
+std::string CShuntYardAlg::getOp(size_t i) const { return stakOp[i]; }
+
 void CShuntYardAlg::addOp(const std::string & op)
 {
     stakOp.push_back(op);
@@ -14,11 +18,22 @@ void CShuntYardAlg::addNum(const std::string & num)
     stakNum.push_back(num);
 }
 
+void CShuntYardAlg::changeNum(const std::string & num, size_t i)
+{
+    stakNum[i] = num;
+}
+
+void CShuntYardAlg::changeOp(const std::string & op, size_t i)
+{
+    stakOp[i] = op;
+}
+
 std::string CShuntYardAlg::shuntYardAlg()
 {
     size_t i = 0, j = 0;
     
-    if(stakOp[0] == "(") {
+    while(stakOp[j] == "(")
+    {
         j++;
     }
     
@@ -27,28 +42,13 @@ std::string CShuntYardAlg::shuntYardAlg()
         if(stakOp.size() == j + 1)
         {
             typDateAndLenght(i, j);
-//            long long int leftNum = 0;
-//            long long int rightNum = 0;
-//            if(stakOp.size() != 1 && stakOp[j - 1] == "-") {
-//                leftNum = atoi(stakNum[i].c_str());
-//                leftNum = leftNum * (-1);
-//                rightNum = atoi(stakNum[i + 1].c_str());
-//                stakOp[j - 1] = "+";
-//            } else {
-//                leftNum = atoi(stakNum[i].c_str());
-//                rightNum = atoi(stakNum[i + 1].c_str());
-//            }
-//            CInteger leftVariable(leftNum);
-//            CInteger righVariable(rightNum);
-//            op(stakOp[j], leftVariable, righVariable);
-//            stakNum[i] = leftVariable.getNewVariable();
             stakNum.erase(stakNum.begin() + i + 1);
             stakOp.erase(stakOp.begin() + j);
             if(i != 0)
                 i--;
             if(j != 0)
                 j--;
-        } else if(stakOp[j + 1] != ")" && stakOp[j + 1] != "(" && stakOp[j] != "(" &&
+        } else if(stakOp[j + 1] != ")" && stakOp[j + 1] != "(" && stakOp[j] != "(" && stakOp[j] != "- fl" &&
            prior(stakOp[j + 1]) >= prior(stakOp[j]))
         {
             i++;
@@ -57,16 +57,32 @@ std::string CShuntYardAlg::shuntYardAlg()
         {
             i++;
             j = j + 2;
-        } else if(stakOp[j + 1] != ")" && stakOp[j + 1] != "(" && stakOp[j] != "("
+            while(stakOp[j] == "(")
+            {
+                j++;
+            }
+        } else if(stakOp[j] == "- fl")
+        {
+            std::string tmp = '-' + stakNum[i];
+            stakNum[i] = tmp;
+            stakOp.erase(stakOp.begin() + j);
+            if(stakOp[j] == ")" && stakOp[j - 1] == "(")
+            {
+                stakOp.erase(stakOp.begin() + j);
+                stakOp.erase(stakOp.begin() + j - 1);
+                j = j - 2;
+                if(stakNum.size() - 1 != i) {
+                    i++;
+                    j++;
+                }  else {
+                    i--;
+                }
+            }
+            
+        } else if(stakOp[j + 1] != ")" && stakOp[j + 1] != "(" && stakOp[j] != "(" && stakOp[j] != "- fl"
                   && prior(stakOp[j + 1]) < prior(stakOp[j]))
         {
             typDateAndLenght(i, j);
-//            long long int leftNum = atoi(stakNum[i].c_str());
-//            long long int rightNum = atoi(stakNum[i + 1].c_str());
-//            CInteger leftVariable(leftNum);
-//            CInteger righVariable(rightNum);
-//            op(stakOp[j], leftVariable, righVariable);
-//            stakNum[i] = leftVariable.getNewVariable();
             stakNum.erase(stakNum.begin() + i + 1);
             stakOp.erase(stakOp.begin() + j);
             if(stakOp.size() == j + 1) {
@@ -78,21 +94,6 @@ std::string CShuntYardAlg::shuntYardAlg()
             while(stakOp[j] != "(")
             {
                 typDateAndLenght(i, j);
-//                long long int leftNum = 0;
-//                long long int rightNum = 0;
-//                if(stakOp.size() != 1 && stakOp[j - 1] == "-") {
-//                    leftNum = atoi(stakNum[i].c_str());
-//                    leftNum = leftNum * (-1);
-//                    rightNum = atoi(stakNum[i + 1].c_str());
-//                    stakOp[j - 1] = "+";
-//                } else {
-//                    leftNum = atoi(stakNum[i].c_str());
-//                    rightNum = atoi(stakNum[i + 1].c_str());
-//                }
-//                CInteger leftVariable(leftNum);
-//                CInteger righVariable(rightNum);
-//                op(stakOp[j], leftVariable, righVariable);
-//                stakNum[i] = leftVariable.getNewVariable();
                 stakNum.erase(stakNum.begin() + i + 1);
                 stakOp.erase(stakOp.begin() + j);
                 if(i != 0)
@@ -104,6 +105,12 @@ std::string CShuntYardAlg::shuntYardAlg()
             stakOp.erase(stakOp.begin() + j);
             if(j != 0)
                 j--;
+            std::string tmp = stakNum[i + 1];
+            if(tmp[0] == '-' && stakOp[j] == "-") {
+                tmp.erase(0, 1);
+                stakNum[i + 1] = tmp;
+                stakOp[j] = "+";
+            }
         }
         
     }
@@ -116,56 +123,62 @@ void CShuntYardAlg::typDateAndLenght(size_t i, size_t j)
     size_t x = 0, y = 0;
     std::string leftNum = stakNum[i], rightNum = stakNum[i + 1];
     std::string typ = "int";
-    while(x < leftNum.size() && y < rightNum.size())
+    while(x < leftNum.size() || y < rightNum.size())
     {
-        if(leftNum[x] == ',') {
-            typ = "float";
-            break;
-        }
-        if(rightNum[y] == ',') {
-            typ = "float";
-            break;
-        }
-        if(x < leftNum.size())
+        if(x < leftNum.size()) {
             x++;
-        if(y < rightNum.size())
+            if(leftNum[x] == ',' || leftNum[x] == '.') {
+                typ = "float";
+                if(leftNum[x] == ',')
+                    leftNum[x] = '.';
+            }
+        }
+        if(y < rightNum.size()) {
             y++;
+            if(rightNum[y] == ',' || leftNum[x] == '.') {
+                typ = "float";
+                if(rightNum[y] == ',')
+                    rightNum[y] = '.';
+            }
+        }
     }
     
     if(typ == "int")
     {
-        long long int leftNum = 0;
-        long long int rightNum = 0;
+        long long int leftIntNum = 0;
+        long long int rightIntNum = 0;
         if(stakOp.size() != 1 && stakOp[j - 1] == "-") {
-            leftNum = atoi(stakNum[i].c_str());
-            leftNum = leftNum * (-1);
-            rightNum = atoi(stakNum[i + 1].c_str());
+            leftIntNum = atoi(leftNum.c_str());
+            leftIntNum = leftIntNum * (-1);
+            rightIntNum = atoi(rightNum.c_str());
             stakOp[j - 1] = "+";
         } else {
-            leftNum = atoi(stakNum[i].c_str());
-            rightNum = atoi(stakNum[i + 1].c_str());
+            leftIntNum = atoi(leftNum.c_str());
+            rightIntNum = atoi(rightNum.c_str());
         }
-        CInteger leftVarInt(leftNum);
-        CInteger righVarInt(rightNum);
+        CInteger leftVarInt(leftIntNum);
+        CInteger righVarInt(rightIntNum);
         op(stakOp[j], leftVarInt, righVarInt);
         stakNum[i] = leftVarInt.getNewVariable();
-    } else if(typ == "double")
+    } else if(typ == "float")
     {
-        long double leftNum = 0;
-        long double rightNum = 0;
+        long double leftFloatNum = 0;
+        long double rightFloatNum = 0;
         if(stakOp.size() != 1 && stakOp[j - 1] == "-") {
-            leftNum = atoi(stakNum[i].c_str());
-            leftNum = leftNum * (-1);
-            rightNum = atoi(stakNum[i + 1].c_str());
+            leftFloatNum = atoi(leftNum.c_str());
+            leftFloatNum = leftFloatNum * (-1);
+            rightFloatNum = atoi(rightNum.c_str());
             stakOp[j - 1] = "+";
         } else {
-            leftNum = atoi(stakNum[i].c_str());
-            rightNum = atoi(stakNum[i + 1].c_str());
+            leftFloatNum = ::atof(leftNum.c_str());
+            rightFloatNum = ::atof(rightNum.c_str());
         }
-        CFloat leftVarFloat(leftNum);
-        CFloat righVarFloat(rightNum);
+        CFloat leftVarFloat(leftFloatNum);
+        CFloat righVarFloat(rightFloatNum);
         op(stakOp[j], leftVarFloat, righVarFloat);
         stakNum[i] = leftVarFloat.getNewVariable();
+        stakNum[i].erase(stakNum[i].find_last_not_of('0') + 1);
+        stakNum[i].erase(stakNum[i].find_last_not_of('.') + 1);
     }
 }
 
@@ -200,4 +213,3 @@ void CShuntYardAlg::op(std::string & op, CFloat & leftNum, CFloat & rightNum)
     else if(op == "*")
         leftNum * rightNum;
 }
-
