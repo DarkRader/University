@@ -28,9 +28,15 @@ void CShuntYardAlg::changeOp(const std::string & op, size_t i)
     stakOp[i] = op;
 }
 
-std::string CShuntYardAlg::shuntYardAlg()
+std::string CShuntYardAlg::shuntYardAlg(CVariable & var)
 {
     size_t i = 0, j = 0;
+    
+    if(stakOp[j] == "=")
+    {
+        stakNum.erase(stakNum.begin() + i);
+        stakOp.erase(stakOp.begin() + j);
+    }
     
     while(stakOp[j] == "(")
     {
@@ -41,7 +47,9 @@ std::string CShuntYardAlg::shuntYardAlg()
     {
         if(stakOp.size() == j + 1)
         {
-            typDateAndLenght(i, j);
+            typDateAndLenght(i, j, var);
+            if(stakNum[0] == "Zero")
+                return "Zero";
             stakNum.erase(stakNum.begin() + i + 1);
             stakOp.erase(stakOp.begin() + j);
             if(i != 0)
@@ -82,7 +90,9 @@ std::string CShuntYardAlg::shuntYardAlg()
         } else if(stakOp[j + 1] != ")" && stakOp[j + 1] != "(" && stakOp[j] != "(" && stakOp[j] != "- fl"
                   && prior(stakOp[j + 1]) < prior(stakOp[j]))
         {
-            typDateAndLenght(i, j);
+            typDateAndLenght(i, j, var);
+            if(stakNum[0] == "Zero")
+                return "Zero";
             stakNum.erase(stakNum.begin() + i + 1);
             stakOp.erase(stakOp.begin() + j);
             if(stakOp.size() == j + 1) {
@@ -93,7 +103,9 @@ std::string CShuntYardAlg::shuntYardAlg()
         {
             while(stakOp[j] != "(")
             {
-                typDateAndLenght(i, j);
+                typDateAndLenght(i, j, var);
+                if(stakNum[0] == "Zero")
+                    return "Zero";
                 stakNum.erase(stakNum.begin() + i + 1);
                 stakOp.erase(stakOp.begin() + j);
                 if(i != 0)
@@ -118,8 +130,16 @@ std::string CShuntYardAlg::shuntYardAlg()
     return stakNum[0];
 }
 
-void CShuntYardAlg::typDateAndLenght(size_t i, size_t j)
+void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, CVariable & var)
 {
+    if(stakNum[i] == "A" || stakNum[i] == "B")
+    {
+        stakNum[i] = var.findVariable(stakNum[i]);
+    }
+    if(stakNum[i + 1] == "A" || stakNum[i + 1] == "B")
+    {
+        stakNum[i] = var.findVariable(stakNum[i]);
+    }
     size_t x = 0, y = 0;
     std::string leftNum = stakNum[i], rightNum = stakNum[i + 1];
     std::string typ = "int";
@@ -159,6 +179,8 @@ void CShuntYardAlg::typDateAndLenght(size_t i, size_t j)
         CInteger leftVarInt(leftIntNum);
         CInteger righVarInt(rightIntNum);
         op(stakOp[j], leftVarInt, righVarInt);
+        if(stakNum[0] == "Zero")
+            return;
         stakNum[i] = leftVarInt.getNewVariable();
     } else if(typ == "float")
     {
@@ -200,8 +222,14 @@ void CShuntYardAlg::op(std::string & op, CInteger & leftNum, CInteger & rightNum
         leftNum - rightNum;
     else if(op == "*")
         leftNum * rightNum;
-    else if(op == "/")
+    else if(op == "/") {
+        if(rightNum.getVarInt() == 0)
+        {
+            std::cout << "You can't divide by zero" << std::endl;
+            stakNum[0] = "Zero";
+        }
         leftNum / rightNum;
+    }
 }
 
 void CShuntYardAlg::op(std::string & op, CFloat & leftNum, CFloat & rightNum)

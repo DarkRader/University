@@ -15,7 +15,7 @@ bool CParsData::parsingDate(const std::string & operation)
     std::vector<std::string> control( it_control, {} );
     
     if(controlSynErr(control) == false)
-        std::cout << "Syntax error, try again!" << std::endl;
+        return false;
     
     std::string newOper = operation;
     
@@ -33,7 +33,21 @@ bool CParsData::parsingDate(const std::string & operation)
     
     fillSymbol(newOper, a);
     
-    m_res = a.shuntYardAlg();
+    int flag = 0;
+    std::string variable = "";
+    
+    if(a.getOp(0) == "=")
+    {
+        flag = 1;
+        variable = a.getNum(0);
+    }
+    
+    m_res = a.shuntYardAlg(m_var);
+    if(m_res == "Zero")
+        return false;
+    
+    if(flag == 1)
+        m_var.addVariable(variable, m_res, operation);
     
     return true;
 }
@@ -43,6 +57,7 @@ bool CParsData::controlSynErr(const std::vector<std::string> & control)
     for(size_t i = 0; i < control.size(); i++)
     {
         if(control[i] != "") {
+            std::cout << "Syntax error, try again!" << std::endl;
             return false;
         }
     }

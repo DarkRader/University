@@ -15,6 +15,7 @@
 #include <sstream>
 #include "CInteger.h"
 #include "CFloat.h"
+#include "CVariable.h"
 
 class CShuntYardAlg
 {
@@ -23,7 +24,7 @@ public:
     CShuntYardAlg   ( void ) {}
    ~CShuntYardAlg   ( void ) {}
     
-    std::string shuntYardAlg();
+    std::string shuntYardAlg(CVariable & var);
     
     void addOp(const std::string & op);
     
@@ -47,6 +48,6 @@ protected:
     
     int prior(const std::string & op);
     
-    void typDateAndLenght(size_t i, size_t j);
+    void typDateAndLenght(size_t i, size_t j, CVariable & var);
     
 };

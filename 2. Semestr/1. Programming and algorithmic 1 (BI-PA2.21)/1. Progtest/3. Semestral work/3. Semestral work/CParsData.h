@@ -13,9 +13,8 @@
 #include <iterator>
 #include <iostream>
 #include <sstream>
-#include "CInteger.h"
 #include "CShuntYardAlg.h"
-
+#include "CVariable.h"
 
 class CParsData
 {
@@ -30,6 +29,7 @@ public:
     
 private:
     std::string m_res;
+    CVariable m_var;
     
     void fillStack(const std::vector<std::string> & token, CShuntYardAlg & a);
     
