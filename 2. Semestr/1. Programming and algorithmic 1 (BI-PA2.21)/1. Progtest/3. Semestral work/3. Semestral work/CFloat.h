@@ -4,30 +4,40 @@
  */
 #pragma once
 
-#include "CType.h"
+#include "CDataSize.h"
+#include <iostream>
 
 
-class CFloat : public CType
+class CFloat : public CDataSize
 {
 public:
     
-    CType * clone() const override;
-    
+    CDataSize * clone() const override;
+    CFloat(void) {}
     CFloat(long double variable);
     
+    CFloat(long double variable, const std::string & type, const std::string & size);
+    
+    CFloat(long double varFloat, long long int varInt, const std::string & type, const std::string & size);
+    
     long long int getVariable(void) const;
+
+    void negativeNum(void) override;
     
-    std::string getNewVariable(void) const;
+    char getSign(void) override;
     
-    CType & operator + (const CType & number) override;
+    CDataSize & operator + (const CDataSize & number) override;
     
-    CType & operator - (const CType & number) override;
+    CDataSize & operator - (const CDataSize & number) override;
     
-    CType & operator * (const CType & number) override;
+    CDataSize & operator * (const CDataSize & number) override;
+    
+    CDataSize & operator / (const CDataSize & number) override;
     
     
     
 protected:
+    long double m_Float;
     virtual void print(std::ostream & os) const override;
     
     

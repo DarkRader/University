@@ -3,27 +3,32 @@
  * @date 08.05.2021
  */
 #pragma once
-#include "CType.h"
+#include "CDataSize.h"
+#include <iostream>
 
-class CInteger : public CType
+class CInteger : public CDataSize
 {
 public:
     
-    CType * clone() const override;
+    CDataSize * clone() const override;
     
     CInteger(long long int variable);
     
+    CInteger(long long int variable, const std::string & type, const std::string & size);
+    
     long long int getVariable(void) const;
     
-    std::string getNewVariable(void) const;
+    void negativeNum(void) override;
     
-    CType & operator + (const CType & number) override;
+    char getSign(void) override;
     
-    CType & operator - (const CType & number) override;
+    CDataSize & operator + (const CDataSize & number) override;
     
-    CType & operator * (const CType & number) override;
+    CDataSize & operator - (const CDataSize & number) override;
     
-    CType & operator / (const CType & number);
+    CDataSize & operator * (const CDataSize & number) override;
+    
+    CDataSize & operator / (const CDataSize & number) override;
     
     
 protected:

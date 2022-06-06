@@ -4,50 +4,75 @@
  */
 #include "CInteger.h"
 
-CType * CInteger::clone() const
+CDataSize * CInteger::clone() const
 {
     return new CInteger(*this);
 }
 
-CInteger::CInteger(long long int variable) { m_varInt = variable; }
+CInteger::CInteger(long long int variable) { m_varInt[0] = variable; }
 
-long long int CInteger::getVariable(void) const { return m_varInt; }
-
-std::string CInteger::getNewVariable(void) const { return m_newVariable; }
-
-CType & CInteger::operator + (const CType & number)
+CInteger::CInteger(long long int variable, const std::string & type, const std::string & size)
 {
-    long long int newVariable = m_varInt + number.getVarInt();
-    
-    m_newVariable = std::to_string(newVariable);
-    
+    m_type = type;
+    m_size = size;
+    m_varInt.push_back(variable);
+}
+
+long long int CInteger::getVariable(void) const { return m_varInt[0]; }
+
+void CInteger::negativeNum(void) 
+{
+    m_varInt[0] = m_varInt[0] * (-1);
+}
+
+char CInteger::getSign(void)
+{
+    if(m_varInt[0] >= 0)
+        return '+';
+    else
+        return '-';
+}
+
+CDataSize & CInteger::operator + (const CDataSize & number)
+{
+    if(number.getType() == "float")
+    {
+        m_varFloat = m_varInt[0];
+        m_varFloat = m_varFloat + number.getVarFloat();
+    } else
+        m_varInt[0] = m_varInt[0] + number.getVarInt();
     return *this;
 }
 
-CType & CInteger::operator - (const CType & number)
+CDataSize & CInteger::operator - (const CDataSize & number)
 {
-    long long int newVariable = m_varInt - number.getVarInt();
-    
-    m_newVariable = std::to_string(newVariable);
-    
+    if(number.getType() == "float")
+    {
+        m_varFloat = m_varInt[0];
+        m_varFloat = m_varFloat - number.getVarFloat();
+    } else
+        m_varInt[0] = m_varInt[0] - number.getVarInt();
     return *this;
 }
 
-CType & CInteger::operator / (const CType & number)
+CDataSize & CInteger::operator / (const CDataSize & number)
 {
-    long long int newVariable = m_varInt / number.getVarInt();
-    
-    m_newVariable = std::to_string(newVariable);
-    
+    if(number.getType() == "float")
+    {
+        std::cout << "Logic error" << std::endl;
+    } else
+        m_varInt[0] = m_varInt[0] / number.getVarInt();
     return *this;
 }
 
-CType & CInteger::operator * (const CType & number)
+CDataSize & CInteger::operator * (const CDataSize & number)
 {
-    long long int newVariable = m_varInt * number.getVarInt();
-    
-    m_newVariable = std::to_string(newVariable);
-
+    if(number.getType() == "float")
+    {
+        m_varFloat = m_varInt[0];
+        m_varFloat = m_varFloat * number.getVarFloat();
+    } else
+        m_varInt[0] = m_varInt[0] * number.getVarInt();
     return *this;
 }
 

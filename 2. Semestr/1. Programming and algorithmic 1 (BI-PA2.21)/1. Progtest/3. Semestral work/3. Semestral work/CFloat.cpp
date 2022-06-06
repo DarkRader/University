@@ -4,41 +4,64 @@
  */
 #include "CFloat.h"
 
-CType * CFloat::clone() const
+CDataSize * CFloat::clone() const
 {
     return new CFloat(*this);
 }
 
-CFloat::CFloat(long double variable) { m_varFloat = variable; }
+//CFloat::CFloat(long double variable) : CType(variable){  }
 
-long long int CFloat::getVariable(void) const { return m_varInt; }
+long long int CFloat::getVariable(void) const { return m_varInt[0]; }
 
-std::string CFloat::getNewVariable(void) const { return m_newVariable; }
-
-CType & CFloat::operator + (const CType & number)
+CFloat::CFloat(long double variable, const std::string & type, const std::string & size)
 {
-    long double newVariable = m_varFloat + number.getVarFloat();
-    
-    m_newVariable = std::to_string(newVariable);
-    
+    m_varFloat = variable;
+    m_type = type;
+    m_size = size;
+}
+
+CFloat::CFloat(long double varFloat, long long int varInt, const std::string & type, const std::string & size)
+{
+    m_varFloat = varFloat;
+    m_varInt.push_back(varInt);
+    m_type = type;
+    m_size = size;
+}
+
+void CFloat::negativeNum(void)
+{
+    m_varFloat = m_varFloat * (-1);
+}
+
+char CFloat::getSign(void)
+{
+    if(m_varFloat >= 0)
+        return '+';
+    else
+        return '-';
+}
+
+CDataSize & CFloat::operator + (const CDataSize & number)
+{
+    m_varFloat = m_varFloat + number.getVarFloat();
     return *this;
 }
 
-CType & CFloat::operator - (const CType & number)
+CDataSize & CFloat::operator - (const CDataSize & number)
 {
-    long double newVariable = m_varFloat - number.getVarFloat();
-    
-    m_newVariable = std::to_string(newVariable);
-    
+    m_varFloat = m_varFloat - number.getVarFloat();
     return *this;
 }
 
-CType & CFloat::operator * (const CType & number)
+CDataSize & CFloat::operator * (const CDataSize & number)
 {
-    long double newVariable = m_varFloat * number.getVarFloat();
-    
-    m_newVariable = std::to_string(newVariable);
+    m_varFloat = m_varFloat * number.getVarFloat();
+    return *this;
+}
 
+CDataSize & CFloat::operator / (const CDataSize & number)
+{
+    std::cout << "Logic error" << std::endl;
     return *this;
 }
 

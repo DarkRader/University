@@ -3,24 +3,30 @@
  * @date 08.05.2021
  */
 #pragma once
-#include "CTypeBig.h"
+#include "CDataSize.h"
 
-class CIntegerBig : public CTypeBig
+class CIntegerBig : public CDataSize
 {
 public:
     
-    CTypeBig * clone() const override;
+    CDataSize * clone() const override;
     
-    CTypeBig & operator + (const CTypeBig & number) const override;
+    void negativeNum(void) override;
     
-    CTypeBig & operator - (const CTypeBig & number) const override;
+    char getSign(void) override;
     
-    CTypeBig & operator * (const CTypeBig & number) const override;
+    CIntegerBig(const std::vector<std::string> & variable, const std::string & type, const std::string & size);
     
-    CTypeBig & operator / (const CTypeBig & number) const override;
+    CDataSize & operator + (const CDataSize & number) override;
+    
+    CDataSize & operator - (const CDataSize & number) override;
+    
+    CDataSize & operator * (const CDataSize & number) override;
+    
+    CDataSize & operator / (const CDataSize & number) override;
     
     
 protected:
-    
+    virtual void print(std::ostream & os) const override;
     
 };
