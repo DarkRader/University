@@ -43,11 +43,12 @@ bool CParsData::parsingDate(const std::string & operation)
     }
     
     m_res = a.shuntYardAlg(m_var);
+    
     if(m_res == "Zero")
         return false;
     
-    if(flag == 1)
-        m_var.addVariable(variable, m_res, operation);
+    //if(m_res == "var")
+        //m_var.addVariable(seqNum[0], a.getType(), a.getSize(), a.getInt(), a.getFloat(), newOper);
     
     return true;
 }
@@ -86,7 +87,7 @@ void CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
             if(i == 0 && operation[i] == '(' && operation[i + 1] == '-')
             {
                 std::string newNum = '-' + a.getNum(0);
-                a.changeNum(newNum, 0);
+                a.changeNum(0);
                 operation.erase(operation.begin() + i + 1);
             } else if(operation[i] == '(' && operation[i + 1] == '-')
             {
@@ -130,21 +131,61 @@ void CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg
     for(size_t i = 0; i < seqNum.size(); i++)
     {
         if(seqNum[i] != "") {
-            a.addNum(seqNum[i]);
+            replaceComma(seqNum[i], i, a);
         }
     }
 }
 
-void CParsData::replaceComma(std::string repNum, CShuntYardAlg & a)
+void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
 {
-    for(size_t i = 0; i < repNum.size(); i++)
+    int flag = 0;
+    if(repNum.size() < 18)
     {
-        if(repNum[i] == ',')
+        size_t j;
+        for(j = 0; j < repNum.size(); j++)
         {
-            repNum[i] = '.';
-            a.addNum(repNum);
-            return;
+            if(repNum[j] == ',')
+            {
+                repNum[j] = '.';
+                a.addSmallNum(repNum, "float", "small", j);
+                flag = 1;
+                break;
+            }
         }
+        if(flag == 0) {
+            a.addSmallNum(repNum, "int", "small", j);
+        }
+    } else
+    {
+        std::vector<std::string> splitNum;
+        std::string partOfNum = "";
+        size_t count = 0;
+        for(size_t j = 0; j < repNum.size(); j++, count++)
+        {
+            if(repNum[j] == ',')
+            {
+                splitNum.push_back(partOfNum);
+                splitNum.push_back("");
+                flag = 1;
+                count = 0;
+                partOfNum = "";
+                continue;
+            }
+            
+            partOfNum = partOfNum + repNum[j];
+            
+            if(count == 18)
+            {
+                splitNum.push_back(partOfNum);
+                count = 0;
+                partOfNum = "";
+            }
+        }
+        if(partOfNum != "")
+            splitNum.push_back(partOfNum);
+        if(flag == 0)
+            a.addBigNum(splitNum, "int", "big");
+        else
+            a.addBigNum(splitNum, "float", "big");
     }
-    a.addNum(repNum);
 }

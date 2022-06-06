@@ -3,8 +3,6 @@
  * @date 26.05.2021
  */
 #pragma once
-#include "CType.h"
-#include "CTypeBig.h"
 #include <string>
 #include <map>
 #include <regex>
@@ -43,7 +41,7 @@ private:
     
     void negNum(const std::string & operation);
     
-    void replaceComma(std::string repNum, CShuntYardAlg & a);
+    void replaceComma(std::string repNum, size_t i, CShuntYardAlg & a);
     
 };
 

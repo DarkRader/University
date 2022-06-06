@@ -3,8 +3,6 @@
  * @date 31.05.2021
  */
 #pragma once
-#include "CType.h"
-#include "CTypeBig.h"
 #include <string>
 #include <map>
 #include <regex>
@@ -15,7 +13,10 @@
 #include <sstream>
 #include "CInteger.h"
 #include "CFloat.h"
+#include "CIntegerBig.h"
+#include "CFloatBig.h"
 #include "CVariable.h"
+
 
 class CShuntYardAlg
 {
@@ -28,9 +29,11 @@ public:
     
     void addOp(const std::string & op);
     
-    void addNum(const std::string & num);
+    void addSmallNum(const std::string & num, const std::string & type, const std::string & size, size_t i);
     
-    void changeNum(const std::string & num, size_t i);
+    void addBigNum(const std::vector<std::string> & num, const std::string & type, const std::string & size);
+    
+    void changeNum(size_t i);
     
     void changeOp(const std::string & op, size_t i);
     
@@ -38,11 +41,19 @@ public:
     
     std::string getOp(size_t i) const;
     
-protected:
-    std::vector<std::string> stakNum;
-    std::vector<std::string> stakOp;
+    std::string getType(void) const;
     
-    void op(std::string & op, CInteger & leftNum, CInteger & rightNum);
+    std::string getSize(void) const;
+    
+    std::vector<long long int> getInt(void) const;
+    
+    long double getFloat(void) const;
+    
+protected:
+    std::vector<std::string> stackOp;
+    std::vector<std::shared_ptr<CDataSize>> stackNum;
+    
+    void op(std::string & op, std::shared_ptr<CDataSize> & leftNum, std::shared_ptr<CDataSize> & rightNum);
     
     void op(std::string & op, CFloat & leftNum, CFloat & rightNum);
     
@@ -50,4 +61,5 @@ protected:
     
     void typDateAndLenght(size_t i, size_t j, CVariable & var);
     
+    void print(void);
 };
