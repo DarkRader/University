@@ -14,6 +14,9 @@ public:
     
     CDataSize * clone() const override;
     CFloat(void) {}
+    
+    void print(void) const override;
+    
     CFloat(long double variable);
     
     CFloat(long double variable, const std::string & type, const std::string & size);
@@ -21,6 +24,8 @@ public:
     CFloat(long double varFloat, long long int varInt, const std::string & type, const std::string & size);
     
     long long int getVariable(void) const;
+    
+    void writeVariable(CVariable & var) override;
 
     void negativeNum(void) override;
     
@@ -38,7 +43,6 @@ public:
     
 protected:
     long double m_Float;
-    virtual void print(std::ostream & os) const override;
     
     
 };

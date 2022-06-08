@@ -25,6 +25,11 @@ void CInteger::negativeNum(void)
     m_varInt[0] = m_varInt[0] * (-1);
 }
 
+void CInteger::writeVariable(CVariable & var)
+{
+    
+}
+
 char CInteger::getSign(void)
 {
     if(m_varInt[0] >= 0)
@@ -76,7 +81,7 @@ CDataSize & CInteger::operator * (const CDataSize & number)
     return *this;
 }
 
-void CInteger::print(std::ostream & os) const
+void CInteger::print(void) const
 {
-    
+    std::cout << "Result: " << m_varInt[0] << std::endl;
 }

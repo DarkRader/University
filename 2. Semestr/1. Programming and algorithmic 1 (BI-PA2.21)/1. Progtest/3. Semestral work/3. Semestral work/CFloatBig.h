@@ -11,6 +11,10 @@ public:
     
     CDataSize * clone() const override;
     
+    void print(void) const override;
+    
+    void writeVariable(CVariable & var) override;
+    
     void negativeNum(void) override;
     
     char getSign(void) override;
@@ -28,6 +32,6 @@ public:
     
     
 protected:
-    virtual void print(std::ostream & os) const override;
+
     
 };

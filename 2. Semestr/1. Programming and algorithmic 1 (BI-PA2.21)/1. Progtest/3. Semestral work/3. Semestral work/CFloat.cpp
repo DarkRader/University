@@ -28,6 +28,11 @@ CFloat::CFloat(long double varFloat, long long int varInt, const std::string & t
     m_size = size;
 }
 
+void CFloat::writeVariable(CVariable & var)
+{
+    
+}
+
 void CFloat::negativeNum(void)
 {
     m_varFloat = m_varFloat * (-1);
@@ -65,7 +70,9 @@ CDataSize & CFloat::operator / (const CDataSize & number)
     return *this;
 }
 
-void CFloat::print(std::ostream & os) const
+void CFloat::print(void) const
 {
-    
+    //std::cout << m_varFloat << std::endl;
+    std::cout << "Result: ";
+    std::cout << std::fixed << std::setprecision(5) << m_varFloat << std::endl;
 }

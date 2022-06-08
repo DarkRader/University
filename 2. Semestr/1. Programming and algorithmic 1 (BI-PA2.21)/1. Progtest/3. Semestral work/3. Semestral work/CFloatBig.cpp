@@ -25,6 +25,11 @@ CFloatBig::CFloatBig(const std::vector<std::string> & variable, const std::strin
     }
 }
 
+void CFloatBig::writeVariable(CVariable & var)
+{
+    
+}
+
 void CFloatBig::negativeNum(void)
 {
    
@@ -67,7 +72,7 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     return *this;
 }
 
-void CFloatBig::print(std::ostream & os) const
+void CFloatBig::print(void) const
 {
     
 }
