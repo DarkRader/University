@@ -25,7 +25,7 @@ public:
     CShuntYardAlg   ( void ) {}
    ~CShuntYardAlg   ( void ) {}
     
-    std::string shuntYardAlg(CVariable & var);
+    std::shared_ptr<CDataSize> shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var);
     
     void addOp(const std::string & op);
     
@@ -36,6 +36,8 @@ public:
     void changeNum(size_t i);
     
     void changeOp(const std::string & op, size_t i);
+    
+    void addVariable(std::shared_ptr<CDataSize> & var);
     
     std::string getNum(size_t i) const;
     
@@ -59,7 +61,7 @@ protected:
     
     int prior(const std::string & op);
     
-    void typDateAndLenght(size_t i, size_t j, CVariable & var);
+    void typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var);
     
-    void print(void);
+    std::string whatBigger(const std::vector<long long int> & lhs, const std::vector<long long int> & rhs);
 };

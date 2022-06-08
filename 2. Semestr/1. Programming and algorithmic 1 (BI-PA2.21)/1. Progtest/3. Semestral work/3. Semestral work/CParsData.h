@@ -27,7 +27,7 @@ public:
     
 private:
     std::string m_res;
-    CVariable m_var;
+    std::map <std::string, std::shared_ptr<CDataSize>> m_var;
     
     void fillStack(const std::vector<std::string> & token, CShuntYardAlg & a);
     
@@ -42,6 +42,10 @@ private:
     void negNum(const std::string & operation);
     
     void replaceComma(std::string repNum, size_t i, CShuntYardAlg & a);
+    
+    bool findVariable(const std::string & var);
+    
+    void fillVec(std::vector<std::string> & splitNum, const std::string & oper);
     
 };
 

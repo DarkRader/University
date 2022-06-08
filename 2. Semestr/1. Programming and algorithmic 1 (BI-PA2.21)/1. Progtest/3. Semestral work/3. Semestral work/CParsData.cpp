@@ -21,7 +21,7 @@ bool CParsData::parsingDate(const std::string & operation)
     
     clWhiteSpace(newOper);
     
-    const std::regex re(R"((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=))");
+    const std::regex re(R"((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s))");
 
     std::sregex_token_iterator it{newOper.begin(), newOper.end(), re, -1};
 
@@ -39,16 +39,19 @@ bool CParsData::parsingDate(const std::string & operation)
     if(a.getOp(0) == "=")
     {
         flag = 1;
-        variable = a.getNum(0);
+        variable = seqNum[0];
+        std::shared_ptr<CDataSize> tmp = a.shuntYardAlg(variable, m_var);
+        m_var.insert({seqNum[0], tmp});
     }
     
-    m_res = a.shuntYardAlg(m_var);
+    //m_res = a.shuntYardAlg(variable, m_var);
+    a.shuntYardAlg(variable, m_var);
+    
+    
+    
     
     if(m_res == "Zero")
         return false;
-    
-    //if(m_res == "var")
-        //m_var.addVariable(seqNum[0], a.getType(), a.getSize(), a.getInt(), a.getFloat(), newOper);
     
     return true;
 }
@@ -84,9 +87,16 @@ void CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
         if(symbol(operation[i]) == true)
         {
             std::string s(1, operation[i]);
+            if(i == 0 && operation[i] == '-')
+            {
+                //std::string newNum = '-' + a.getNum(0);
+                a.changeNum(0);
+                operation.erase(operation.begin() + i);
+                continue;
+            }
             if(i == 0 && operation[i] == '(' && operation[i + 1] == '-')
             {
-                std::string newNum = '-' + a.getNum(0);
+                //std::string newNum = '-' + a.getNum(0);
                 a.changeNum(0);
                 operation.erase(operation.begin() + i + 1);
             } else if(operation[i] == '(' && operation[i + 1] == '-')
@@ -131,9 +141,33 @@ void CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg
     for(size_t i = 0; i < seqNum.size(); i++)
     {
         if(seqNum[i] != "") {
-            replaceComma(seqNum[i], i, a);
+           if(findVariable(seqNum[i]) == true)
+           {
+               auto itVar = m_var.find(seqNum[i]);
+               a.addVariable(itVar->second);
+           } else
+               replaceComma(seqNum[i], i, a);
         }
     }
+}
+
+bool CParsData::findVariable(const std::string & var)
+{
+    char variable = var[0];
+    
+    switch (variable) {
+        case 'A' ... 'Z':
+            return true;
+        
+        case 'a' ... 'z':
+            return false;
+            
+        default:
+            return false;
+    }
+    
+    
+    return false;
 }
 
 void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
@@ -172,20 +206,56 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
                 continue;
             }
             
-            partOfNum = partOfNum + repNum[j];
-            
-            if(count == 18)
-            {
-                splitNum.push_back(partOfNum);
-                count = 0;
-                partOfNum = "";
-            }
+//            partOfNum = partOfNum + repNum[j];
+//
+//            if(count == 18)
+//            {
+//                splitNum.push_back(partOfNum);
+//                count = 0;
+//                partOfNum = "";
+//            }
         }
-        if(partOfNum != "")
-            splitNum.push_back(partOfNum);
+//        if(partOfNum != "")
+//            splitNum.push_back(partOfNum);
         if(flag == 0)
+        {
+            fillVec(splitNum, repNum);
             a.addBigNum(splitNum, "int", "big");
+        }
         else
             a.addBigNum(splitNum, "float", "big");
+    }
+}
+
+void CParsData::fillVec(std::vector<std::string> & splitNum, const std::string & oper)
+{
+    size_t size = oper.size();
+    std::string splitStr = "";
+    int lostNull = 0;
+    while(size > 17)
+    {
+        size = size - 18;
+        for(size_t i = size; i < size + 18; i++)
+        {
+            splitStr = splitStr + oper[i];
+        }
+        if(lostNull == 1) {
+            splitStr = splitStr + "0";
+        }
+        splitNum.push_back(splitStr);
+        if(splitStr[0] == '0')
+            lostNull = 1;
+        splitStr = "";
+    }
+    if(size != 0)
+    {
+        for(size_t i = 0; i < size; i++)
+        {
+            splitStr = splitStr + oper[i];
+        }
+        if(lostNull == 1) {
+            splitStr = splitStr + "0";
+        }
+        splitNum.push_back(splitStr);
     }
 }

@@ -25,6 +25,11 @@ void CShuntYardAlg::addOp(const std::string & op)
     stackOp.push_back(op);
 }
 
+void CShuntYardAlg::addVariable(std::shared_ptr<CDataSize> & var)
+{
+    stackNum.push_back(var);
+}
+
 void CShuntYardAlg::changeNum(size_t i)
 {
     stackNum[i]->negativeNum();
@@ -64,29 +69,11 @@ void CShuntYardAlg::addBigNum(const std::vector<std::string> & num, const std::s
     stackNum.push_back(tmp);
 }
 
-void CShuntYardAlg::print(void)
-{
-    std::cout << "Result: ";
-    
-    if(stackNum[0]->getSize() == "small")
-    {
-        if(stackNum[0]->getType() == "float")
-            std::cout << std::fixed << std::setprecision(5) << stackNum[0]->getVarFloat() << std::endl;
-            //std::cout << stackNum[0]->getVarFloat() << std::endl;
-        else
-            std::cout << stackNum[0]->getVarInt() << std::endl;
-    } else {
-        
-    }
-}
-
-std::string CShuntYardAlg::shuntYardAlg(CVariable & var)
+std::shared_ptr<CDataSize> CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var)
 {
     size_t i = 0, j = 0;
-    std::string variable = "";
     if(stackOp[j] == "=")
     {
-        variable = "var";
         stackNum.erase(stackNum.begin() + i);
         stackOp.erase(stackOp.begin() + j);
     }
@@ -103,8 +90,8 @@ std::string CShuntYardAlg::shuntYardAlg(CVariable & var)
             typDateAndLenght(i, j, var);
 //            if(stackNum[0] == "Zero")
 //                return "Zero";
-            stackNum.erase(stackNum.begin() + i + 1);
-            stackOp.erase(stackOp.begin() + j);
+//            stackNum.erase(stackNum.begin() + i + 1);
+//            stackOp.erase(stackOp.begin() + j);
             if(i != 0)
                 i--;
             if(j != 0)
@@ -145,8 +132,8 @@ std::string CShuntYardAlg::shuntYardAlg(CVariable & var)
             typDateAndLenght(i, j, var);
 //            if(stakNum[0] == "Zero")
 //                return "Zero";
-            stackNum.erase(stackNum.begin() + i + 1);
-            stackOp.erase(stackOp.begin() + j);
+//            stackNum.erase(stackNum.begin() + i + 1);
+//            stackOp.erase(stackOp.begin() + j);
             if(stackOp.size() == j + 1) {
                 i--;
                 j--;
@@ -158,8 +145,8 @@ std::string CShuntYardAlg::shuntYardAlg(CVariable & var)
                 typDateAndLenght(i, j, var);
 //                if(stakNum[0] == "Zero")
 //                    return "Zero";
-                stackNum.erase(stackNum.begin() + i + 1);
-                stackOp.erase(stackOp.begin() + j);
+//                stackNum.erase(stackNum.begin() + i + 1);
+//                stackOp.erase(stackOp.begin() + j);
                 if(i != 0)
                     i--;
                 if(j != 0)
@@ -177,23 +164,13 @@ std::string CShuntYardAlg::shuntYardAlg(CVariable & var)
         }
         
     }
+    stackNum[0]->print();
     
-    print();
-    
-    return variable;
+    return stackNum[0];
 }
 
-void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, CVariable & var)
+void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var)
 {
-//    if(stakNum[i] == "A" || stakNum[i] == "B")
-//    {
-//        stakNum[i] = var.findVariable(stakNum[i]);
-//    }
-//    if(stakNum[i + 1] == "A" || stakNum[i + 1] == "B")
-//    {
-//        stakNum[i] = var.findVariable(stakNum[i]);
-//    }
-    
     if(stackOp.size() != 1 && stackOp[j - 1] == "-")
     {
         stackNum[i]->negativeNum();
@@ -208,7 +185,50 @@ void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, CVariable & var)
         stackNum[i] = std :: make_shared<CFloat>(stackNum[i]->getVarInt(), stackNum[i]->getVarInt(), "float", "small");
     }
     
+    if(stackNum[i]->getSize() == "small" && stackNum[i + 1]->getSize() == "big")
+    {
+        stackNum[i] = std::make_shared<CIntegerBig>(stackNum[i]->getVarInt(), "int", "big");
+    } else if(stackNum[i]->getSize() == "big" && stackNum[i + 1]->getSize() == "small") {
+        stackNum[i + 1] = std::make_shared<CIntegerBig>(stackNum[i + 1]->getVarInt(), "int", "big");
+    }
+    
+    if(stackNum[i] ->getSize() == "big" && (stackOp[j] == "-" || stackOp[j] == "+") &&
+                                           ((stackNum[i]->getSign() == '-' && stackNum[i + 1]->getSign() == '+') ||
+                                            (stackNum[i]->getSign() == '+' && stackNum[i + 1]->getSign() == '-')))
+        {
+            if(stackOp[j] == "+")
+                stackOp[j] = "-";
+            
+            if(whatBigger(stackNum[i]->getVecInt(), stackNum[i + 1]->getVecInt()) == "rhs")
+            {
+                op(stackOp[j], stackNum[i + 1], stackNum[i]);
+                stackNum.erase(stackNum.begin() + i);
+                stackOp.erase(stackOp.begin() + j);
+            } else {
+                op(stackOp[j], stackNum[i], stackNum[i + 1]);
+                stackNum.erase(stackNum.begin() + i + 1);
+                stackOp.erase(stackOp.begin() + j);
+            }
+
+            //stackNum[i + 1]->negativeNum();
+            return;
+        }
+    
+
+    if(stackNum[i] ->getSize() == "big" && stackOp[j] == "-" && whatBigger(stackNum[i]->getVecInt(), stackNum[i + 1]->getVecInt()) == "rhs" &&
+       (stackNum[i]->getSign() == '+' && stackNum[i + 1]->getSign() == '+'))
+    {
+
+        op(stackOp[j], stackNum[i + 1], stackNum[i]);
+        stackNum[i + 1]->negativeNum();
+        stackNum.erase(stackNum.begin() + i);
+        stackOp.erase(stackOp.begin() + j);
+        return;
+    }
+    
     op(stackOp[j], stackNum[i], stackNum[i + 1]);
+    stackNum.erase(stackNum.begin() + i + 1);
+    stackOp.erase(stackOp.begin() + j);
 }
 
 int CShuntYardAlg::prior(const std::string & op)
@@ -249,4 +269,27 @@ void CShuntYardAlg::op(std::string & op, CFloat & leftNum, CFloat & rightNum)
         }
         leftNum / rightNum;
     }
+}
+
+std::string CShuntYardAlg::whatBigger(const std::vector<long long int> & lhs, const std::vector<long long int> & rhs)
+{
+//    if(lhs.size() < rhs.size() || (lhs.size() == rhs.size() && rhs[rhs.size() - 1] > lhs[lhs.size() - 1]))
+//        return "rhs";
+    
+    if(lhs.size() < rhs.size()) {
+        return "rhs";
+    } else if(lhs.size() == rhs.size()) {
+        long long int lhsNum = lhs[lhs.size() - 1];
+        if(lhsNum < 0)
+            lhsNum = lhsNum * (-1);
+        long long int rhsNum = rhs[rhs.size() - 1];
+        if(rhsNum < 0)
+            rhsNum = rhsNum * (-1);
+        if(lhsNum < rhsNum)
+            return "rhs";
+        else
+            return "lhs";
+    }
+    
+    return "lhs";
 }
