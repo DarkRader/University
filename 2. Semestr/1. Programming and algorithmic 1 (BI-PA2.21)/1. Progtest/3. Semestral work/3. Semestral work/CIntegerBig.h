@@ -11,11 +11,16 @@ public:
     
     CDataSize * clone() const override;
     
+    void print(void) const override;
+    
+    void writeVariable(CVariable & var) override;
+    
     void negativeNum(void) override;
     
     char getSign(void) override;
     
     CIntegerBig(const std::vector<std::string> & variable, const std::string & type, const std::string & size);
+    CIntegerBig(const long long int variable, const std::string & type, const std::string & size);
     
     CDataSize & operator + (const CDataSize & number) override;
     
@@ -27,6 +32,5 @@ public:
     
     
 protected:
-    virtual void print(std::ostream & os) const override;
     
 };
