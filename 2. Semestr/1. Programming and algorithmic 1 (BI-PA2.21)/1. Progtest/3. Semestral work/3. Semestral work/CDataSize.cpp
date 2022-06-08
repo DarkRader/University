@@ -10,11 +10,6 @@ std::string CDataSize::getType(void) const { return m_type; }
 
 CDataSize::CDataSize(void) {}
 
-void CDataSize::print(void)
-{
-    
-}
-
 void CDataSize::writeSize(const std::string & size)
 {
     m_size = size;
