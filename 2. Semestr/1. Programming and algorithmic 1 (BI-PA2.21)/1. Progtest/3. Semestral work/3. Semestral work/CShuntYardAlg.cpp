@@ -55,13 +55,13 @@ void CShuntYardAlg::addSmallNum(const std::string & num, const std::string & typ
     stackNum.push_back(tmp);
 }
 
-void CShuntYardAlg::addBigNum(const std::vector<std::string> & num, const std::string & type, const std::string & size)
+void CShuntYardAlg::addBigNum(const std::vector<std::string> & num, const std::vector<std::string> & numFloat, const std::string & type, const std::string & size)
 {
     std::shared_ptr<CDataSize> tmp;
     
     if(type == "float")
     {
-        tmp = std :: make_shared<CFloatBig>(num, "float", "big");
+        tmp = std :: make_shared<CFloatBig>(num, numFloat, "float", "big");
     } else
     {
         tmp = std :: make_shared<CIntegerBig>(num, "int", "big");

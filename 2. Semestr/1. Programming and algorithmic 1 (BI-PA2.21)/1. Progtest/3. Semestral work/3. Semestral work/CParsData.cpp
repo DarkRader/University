@@ -44,7 +44,6 @@ bool CParsData::parsingDate(const std::string & operation)
         m_var.insert({seqNum[0], tmp});
     }
     
-    //m_res = a.shuntYardAlg(variable, m_var);
     a.shuntYardAlg(variable, m_var);
     
     
@@ -89,14 +88,12 @@ void CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
             std::string s(1, operation[i]);
             if(i == 0 && operation[i] == '-')
             {
-                //std::string newNum = '-' + a.getNum(0);
                 a.changeNum(0);
                 operation.erase(operation.begin() + i);
                 continue;
             }
             if(i == 0 && operation[i] == '(' && operation[i + 1] == '-')
             {
-                //std::string newNum = '-' + a.getNum(0);
                 a.changeNum(0);
                 operation.erase(operation.begin() + i + 1);
             } else if(operation[i] == '(' && operation[i + 1] == '-')
@@ -192,38 +189,50 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
     } else
     {
         std::vector<std::string> splitNum;
+        std::vector<std::string> splitFloatNum;
         std::string partOfNum = "";
+        std::string partOfFloatNum = "";
+        size_t pos = 0;
         size_t count = 0;
-        for(size_t j = 0; j < repNum.size(); j++, count++)
+        for(size_t j = 0; j < repNum.size(); j++)
         {
             if(repNum[j] == ',')
             {
-                splitNum.push_back(partOfNum);
-                splitNum.push_back("");
                 flag = 1;
-                count = 0;
-                partOfNum = "";
+                pos = j;
                 continue;
             }
             
-//            partOfNum = partOfNum + repNum[j];
-//
-//            if(count == 18)
-//            {
-//                splitNum.push_back(partOfNum);
-//                count = 0;
-//                partOfNum = "";
-//            }
+            if(flag == 1 && repNum[j] != ',')
+            {
+                partOfFloatNum += repNum[j];
+                count++;
+                if(count == 18)
+                {
+                    splitFloatNum.push_back(partOfFloatNum);
+                    partOfFloatNum = "";
+                    count = 0;
+                }
+            } else if(flag == 0) {
+                partOfNum += repNum[j];
+            }
+            
         }
-//        if(partOfNum != "")
-//            splitNum.push_back(partOfNum);
+        
+        if(partOfFloatNum != "")
+        {
+            splitFloatNum.push_back(partOfFloatNum);
+        }
+
+        fillVec(splitNum, partOfNum);
         if(flag == 0)
         {
-            fillVec(splitNum, repNum);
-            a.addBigNum(splitNum, "int", "big");
+            a.addBigNum(splitNum, splitFloatNum, "int", "big");
         }
-        else
-            a.addBigNum(splitNum, "float", "big");
+        else {
+            //fillVec(splitFloatNum, partOfFloatNum);
+            a.addBigNum(splitNum, splitFloatNum, "float", "big");
+        }
     }
 }
 

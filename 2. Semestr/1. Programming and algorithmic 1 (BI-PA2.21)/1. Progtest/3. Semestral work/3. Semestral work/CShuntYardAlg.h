@@ -31,7 +31,7 @@ public:
     
     void addSmallNum(const std::string & num, const std::string & type, const std::string & size, size_t i);
     
-    void addBigNum(const std::vector<std::string> & num, const std::string & type, const std::string & size);
+    void addBigNum(const std::vector<std::string> & num, const std::vector<std::string> & numFloat, const std::string & type, const std::string & size);
     
     void changeNum(size_t i);
     
