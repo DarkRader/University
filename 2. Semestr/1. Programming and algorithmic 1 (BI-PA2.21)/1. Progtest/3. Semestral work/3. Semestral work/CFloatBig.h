@@ -19,7 +19,8 @@ public:
     
     char getSign(void) override;
     
-    CFloatBig(const std::vector<std::string> & variable, const std::string & type, const std::string & size);
+    CFloatBig(const std::vector<std::string> & variable, const std::vector<std::string> & floatPart,
+              const std::string & type, const std::string & size);
     
     CDataSize & operator + (const CDataSize & number) override;
     
@@ -32,6 +33,7 @@ public:
     
     
 protected:
-
+    int sizeNum(long long int num);
+    long long int findDegree(size_t size);
     
 };
