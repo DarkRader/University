@@ -22,6 +22,8 @@ public:
     
     std::vector<long long int> getVecInt(void) const;
     
+    std::vector<long long int> getVecFloat(void) const;
+    
     long double getVarFloat(void) const;
     
     virtual void writeVariable(CVariable & var) = 0;
@@ -53,6 +55,8 @@ protected:
     std::string m_size;
     std::string m_type;
     std::vector<long long int> m_varInt;
+    std::vector<long long int> m_floatPart;
+    std::vector<long long int> m_remains;
 
     long double m_varFloat;
     

@@ -32,3 +32,5 @@ long long int CDataSize::getVarInt(void) const { return m_varInt[0]; }
 long double CDataSize::getVarFloat(void) const { return m_varFloat; }
 
 std::vector<long long int> CDataSize::getVecInt(void) const { return m_varInt; }
+
+std::vector<long long int> CDataSize::getVecFloat(void) const { return m_floatPart; }
