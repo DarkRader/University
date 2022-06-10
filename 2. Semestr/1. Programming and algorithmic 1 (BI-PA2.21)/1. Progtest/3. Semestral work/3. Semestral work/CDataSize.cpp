@@ -20,7 +20,7 @@ void CDataSize::writeType(const std::string & type)
     m_type = type;
 }
 
-void CDataSize::writeFloat(long double num) { m_varFloat = num; };
+void CDataSize::writeFloat(long double num) { m_floatPart[0] = num; };
 
 void CDataSize::pushNum(long long int num)
 {
@@ -29,7 +29,7 @@ void CDataSize::pushNum(long long int num)
 
 long long int CDataSize::getVarInt(void) const { return m_varInt[0]; }
 
-long double CDataSize::getVarFloat(void) const { return m_varFloat; }
+long double CDataSize::getVarFloat(void) const { return m_floatPart[0]; }
 
 std::vector<long long int> CDataSize::getVecInt(void) const { return m_varInt; }
 

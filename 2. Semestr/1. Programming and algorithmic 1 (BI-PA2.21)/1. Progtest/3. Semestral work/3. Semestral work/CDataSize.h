@@ -5,7 +5,6 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "CVariable.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -26,8 +25,6 @@ public:
     
     long double getVarFloat(void) const;
     
-    virtual void writeVariable(CVariable & var) = 0;
-    
     virtual void negativeNum(void) = 0;
     
     virtual char getSign(void) = 0;
@@ -42,7 +39,7 @@ public:
     
     CDataSize(void);
     
-    virtual void print(void) const = 0;
+    virtual void print(std::ostream & history) const = 0;
     
     std::string getSize(void) const;
     std::string getType(void) const;
@@ -57,7 +54,5 @@ protected:
     std::vector<long long int> m_varInt;
     std::vector<long long int> m_floatPart;
     std::vector<long long int> m_remains;
-
-    long double m_varFloat;
     
 };
