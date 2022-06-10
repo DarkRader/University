@@ -6,8 +6,18 @@
 
 std::string CParsData::getRes(void) const { return m_res; }
 
-bool CParsData::parsingDate(const std::string & operation)
+bool CParsData::parsingDate(const std::string & operation, std::ostream & history)
 {
+    if(operation == "konec") {
+        std::cout << "End of work, thanks for using my calculator" << std::endl;
+        return true;
+    }
+    
+    if(operation == "") {
+        std::cout << "Write something!" << std::endl;
+        return false;
+    }
+    
     const std::regex re_control(R"(((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s)|(,)|([a-zA-Z0-9])))");
     
     std::sregex_token_iterator it_control{operation.begin(), operation.end(), re_control, -1};
@@ -29,9 +39,11 @@ bool CParsData::parsingDate(const std::string & operation)
     
     CShuntYardAlg a;
     
-    fillStack(seqNum, a);
+    if(fillStack(seqNum, a) != true)
+        return false;
     
-    fillSymbol(newOper, a);
+    if(fillSymbol(newOper, a) != true)
+        return false;
     
     int flag = 0;
     std::string variable = "";
@@ -40,14 +52,16 @@ bool CParsData::parsingDate(const std::string & operation)
     {
         flag = 1;
         variable = seqNum[0];
-        std::shared_ptr<CDataSize> tmp = a.shuntYardAlg(variable, m_var);
-        m_var.insert({seqNum[0], tmp});
+        auto iter = m_var.find(variable);
+        if(iter == m_var.end()) {
+            std::shared_ptr<CDataSize> tmp = a.shuntYardAlg(variable, m_var, history);
+            m_var.insert({seqNum[0], tmp});
+        } else {
+            iter->second = a.shuntYardAlg(variable, m_var, history);
+        }
+    } else {
+        a.shuntYardAlg(variable, m_var, history);
     }
-    
-    a.shuntYardAlg(variable, m_var);
-    
-    
-    
     
     if(m_res == "Zero")
         return false;
@@ -79,12 +93,29 @@ void CParsData::clWhiteSpace(std::string & operation)
     }
 }
 
-void CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
+bool CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
 {
     for(size_t i = 0; i < operation.size(); i++)
     {
-        if(symbol(operation[i]) == true)
+        if(symbol(operation[i]) == true || operation[i] == '(' || operation[i] == ')')
         {
+            if(i + 1 != operation.size()) {
+                if(operation[i] == '=' && a.sizeStackOp() > 0) {
+                    std::cout << "The equal sign is in the wrong place!" << std::endl;
+                    return false;
+                }
+                
+                if(symbol(operation[i]) == true && symbol(operation[i + 1]) == true && operation[i] != '=') {
+                    std::cout << "Two characters follow each other, check the location of the brackets!" << std::endl;
+                    return false;
+                }
+                
+                if(operation[i] == '(' && operation[i + 1] == ')') {
+                    std::cout << "Empty brackets without an expression inside!" << std::endl;
+                    return false;
+                }
+                }
+            
             std::string s(1, operation[i]);
             if(i == 0 && operation[i] == '-')
             {
@@ -106,6 +137,8 @@ void CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
             a.addOp(s);
         }
     }
+    
+    return true;
 }
 
 bool CParsData::symbol(const char & symbol)
@@ -121,10 +154,6 @@ bool CParsData::symbol(const char & symbol)
             return true;
         case '=':
             return true;
-        case '(':
-            return true;
-        case ')':
-            return true;
             
         default:
             return false;
@@ -133,23 +162,51 @@ bool CParsData::symbol(const char & symbol)
     return false;
 }
 
-void CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg & a)
+bool CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg & a)
 {
     for(size_t i = 0; i < seqNum.size(); i++)
     {
         if(seqNum[i] != "") {
            if(findVariable(seqNum[i]) == true)
            {
+               if(seqNum[i].size() > 1) {
+                   std::cout << "Incorrect variable name!" << std::endl;
+                   return false;
+               }
                auto itVar = m_var.find(seqNum[i]);
-               a.addVariable(itVar->second);
+               if(itVar != m_var.end()) {
+                   if(itVar->second->getSize() == "small") {
+                       if(itVar->second->getType() == "int")
+                           a.addSmallVar(itVar->second->getVarInt(), 0, "int", "small");
+                       else
+                           a.addSmallVar(itVar->second->getVarInt(), itVar->second->getVarFloat(), "float", "small");
+                   } else {
+                       if(itVar->second->getType() == "int") {
+                           std::vector<long long int> tmp;
+                           a.addBigVar(itVar->second->getVecInt(), tmp, "int", "small");
+                       }
+                       else
+                           a.addBigVar(itVar->second->getVecInt(), itVar->second->getVecFloat(), "float", "small");
+                   }
+               } else {
+                   a.addSmallNum("", "", "", "");
+               }
+               //replaceComma(itVar->second, i, a);
+               //a.addVariable(itVar->second);
            } else
                replaceComma(seqNum[i], i, a);
         }
     }
+    
+    return true;
 }
 
 bool CParsData::findVariable(const std::string & var)
 {
+//    auto iter = m_var.find(var);
+//    if(iter != m_var.end())
+//        return false;
+    
     char variable = var[0];
     
     switch (variable) {
@@ -170,6 +227,8 @@ bool CParsData::findVariable(const std::string & var)
 void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
 {
     int flag = 0;
+    std::string num = "";
+    std::string numFloat = "";
     if(repNum.size() < 18)
     {
         size_t j;
@@ -177,14 +236,20 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
         {
             if(repNum[j] == ',')
             {
-                repNum[j] = '.';
-                a.addSmallNum(repNum, "float", "small", j);
                 flag = 1;
-                break;
+                continue;
+            }
+            if(flag == 1 && repNum[j] != ',')
+            {
+                numFloat += repNum[j];
+            } else {
+                num += repNum[j];
             }
         }
         if(flag == 0) {
-            a.addSmallNum(repNum, "int", "small", j);
+            a.addSmallNum(num, "", "int", "small");
+        } else {
+            a.addSmallNum(num, numFloat, "float", "small");
         }
     } else
     {
@@ -192,14 +257,12 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
         std::vector<std::string> splitFloatNum;
         std::string partOfNum = "";
         std::string partOfFloatNum = "";
-        size_t pos = 0;
         size_t count = 0;
         for(size_t j = 0; j < repNum.size(); j++)
         {
             if(repNum[j] == ',')
             {
                 flag = 1;
-                pos = j;
                 continue;
             }
             
@@ -230,7 +293,6 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
             a.addBigNum(splitNum, splitFloatNum, "int", "big");
         }
         else {
-            //fillVec(splitFloatNum, partOfFloatNum);
             a.addBigNum(splitNum, splitFloatNum, "float", "big");
         }
     }
@@ -240,7 +302,6 @@ void CParsData::fillVec(std::vector<std::string> & splitNum, const std::string &
 {
     size_t size = oper.size();
     std::string splitStr = "";
-    int lostNull = 0;
     while(size > 17)
     {
         size = size - 18;
@@ -248,12 +309,7 @@ void CParsData::fillVec(std::vector<std::string> & splitNum, const std::string &
         {
             splitStr = splitStr + oper[i];
         }
-        if(lostNull == 1) {
-            splitStr = splitStr + "0";
-        }
         splitNum.push_back(splitStr);
-        if(splitStr[0] == '0')
-            lostNull = 1;
         splitStr = "";
     }
     if(size != 0)
@@ -261,9 +317,6 @@ void CParsData::fillVec(std::vector<std::string> & splitNum, const std::string &
         for(size_t i = 0; i < size; i++)
         {
             splitStr = splitStr + oper[i];
-        }
-        if(lostNull == 1) {
-            splitStr = splitStr + "0";
         }
         splitNum.push_back(splitStr);
     }

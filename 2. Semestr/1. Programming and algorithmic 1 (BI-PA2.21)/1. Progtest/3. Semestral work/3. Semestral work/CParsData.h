@@ -12,7 +12,6 @@
 #include <iostream>
 #include <sstream>
 #include "CShuntYardAlg.h"
-#include "CVariable.h"
 
 class CParsData
 {
@@ -23,15 +22,15 @@ public:
     
     std::string getRes(void) const;
     
-    bool parsingDate(const std::string & operation);
+    bool parsingDate(const std::string & operation, std::ostream & history);
     
 private:
     std::string m_res;
     std::map <std::string, std::shared_ptr<CDataSize>> m_var;
     
-    void fillStack(const std::vector<std::string> & token, CShuntYardAlg & a);
+    bool fillStack(const std::vector<std::string> & token, CShuntYardAlg & a);
     
-    void fillSymbol(std::string & operation, CShuntYardAlg & a);
+    bool fillSymbol(std::string & operation, CShuntYardAlg & a);
     
     bool controlSynErr(const std::vector<std::string> & control);
     
