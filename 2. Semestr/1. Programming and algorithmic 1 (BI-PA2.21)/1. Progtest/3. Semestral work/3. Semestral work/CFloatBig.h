@@ -33,7 +33,13 @@ public:
     
     
 protected:
-    int sizeNum(long long int num);
+    int sizeNum(long long int num) const;
     long long int findDegree(size_t size);
+    char whatSymbol(std::vector<long long int> & num);
+    std::string transformToString(std::vector<long long int> & vecNum, std::string & num, const std::string & typ);
+    void transFromStr(std::string & str, size_t & sizeflNum);
+    std::string multAlg(std::string num, std::string num2);
+    void delExtraZero(std::string & str, size_t size);
+    size_t addNull(std::string & flNum, std::string & flNum2);
     
 };
