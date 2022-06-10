@@ -25,11 +25,6 @@ void CInteger::negativeNum(void)
     m_varInt[0] = m_varInt[0] * (-1);
 }
 
-void CInteger::writeVariable(CVariable & var)
-{
-    
-}
-
 char CInteger::getSign(void)
 {
     if(m_varInt[0] >= 0)
@@ -40,48 +35,29 @@ char CInteger::getSign(void)
 
 CDataSize & CInteger::operator + (const CDataSize & number)
 {
-    if(number.getType() == "float")
-    {
-        m_varFloat = m_varInt[0];
-        m_varFloat = m_varFloat + number.getVarFloat();
-    } else
         m_varInt[0] = m_varInt[0] + number.getVarInt();
     return *this;
 }
 
 CDataSize & CInteger::operator - (const CDataSize & number)
 {
-    if(number.getType() == "float")
-    {
-        m_varFloat = m_varInt[0];
-        m_varFloat = m_varFloat - number.getVarFloat();
-    } else
         m_varInt[0] = m_varInt[0] - number.getVarInt();
     return *this;
 }
 
 CDataSize & CInteger::operator / (const CDataSize & number)
 {
-    if(number.getType() == "float")
-    {
-        std::cout << "Logic error" << std::endl;
-    } else
         m_varInt[0] = m_varInt[0] / number.getVarInt();
     return *this;
 }
 
 CDataSize & CInteger::operator * (const CDataSize & number)
 {
-    if(number.getType() == "float")
-    {
-        m_varFloat = m_varInt[0];
-        m_varFloat = m_varFloat * number.getVarFloat();
-    } else
         m_varInt[0] = m_varInt[0] * number.getVarInt();
     return *this;
 }
 
-void CInteger::print(void) const
+void CInteger::print(std::ostream & history) const
 {
     std::cout << "Result: " << m_varInt[0] << std::endl;
 }

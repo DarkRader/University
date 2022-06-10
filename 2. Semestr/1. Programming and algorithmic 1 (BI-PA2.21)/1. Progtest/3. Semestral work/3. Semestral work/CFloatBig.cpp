@@ -28,9 +28,19 @@ CFloatBig::CFloatBig(const std::vector<std::string> & variable, const std::vecto
  
 }
 
-void CFloatBig::writeVariable(CVariable & var)
+CFloatBig::CFloatBig(long long int varInt, long long int floatPart, const std::string & type, const std::string & size)
 {
+    m_varInt.push_back(varInt);
+    m_floatPart.push_back(floatPart);
+}
+
+CFloatBig::CFloatBig(std::vector<long long int> num, std::vector<long long int> floatPart,  const std::string & type, const std::string & size)
+{
+    m_type = type;
+    m_size = size;
     
+    m_varInt = num;
+    m_floatPart = floatPart;
 }
 
 void CFloatBig::negativeNum(void)
@@ -242,6 +252,7 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     std::string num2 = transformToString(secondNum, num2, "int");
     std::string numFloat = transformToString(m_floatPart, numFloat, "float");
     std::string numFloat2 = transformToString(secNumFloat, numFloat2, "float");
+    //size_t realSize = numFloat.size() + numFloat2.size();
     size_t sizeFlPart = addNull(numFloat, numFloat2);
     num = num + numFloat;
     num2 = num2 + numFloat2;
@@ -259,6 +270,7 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
 
     std::string res = multAlg(num, num2);
     delExtraZero(res, sizeFlPart);
+    //transFromStr(res, realSize);
     transFromStr(res, sizeFlPart);
 
     if(symbol == '-')
@@ -432,6 +444,15 @@ void CFloatBig::delExtraZero(std::string & str, size_t size)
         str.erase(0, 1);
     }
     
+    while(str.size() > 1 && str[str.size() - 1] + '0' == '0')
+    {
+        if(size > 0) {
+            str.erase(str.begin() + str.size() - 1);
+            size--;
+        } else
+            break;
+    }
+    
     for(size_t i = str.size(); size > 0; size--, i--)
         str.erase(str.begin() + i - 1);
     
@@ -459,7 +480,7 @@ size_t CFloatBig::addNull(std::string & flNum, std::string & flNum2)
     return flNum.size();
 }
 
-void CFloatBig::print(void) const
+void CFloatBig::print(std::ostream & history) const
 {    
     std::cout << "Result: ";
     for(size_t i = m_varInt.size(); i > 0; i--) {

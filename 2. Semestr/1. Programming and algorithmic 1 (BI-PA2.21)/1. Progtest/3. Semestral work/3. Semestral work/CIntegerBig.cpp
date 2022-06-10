@@ -35,9 +35,12 @@ CIntegerBig::CIntegerBig(std::string & variable, const std::string & type, const
     transFromStr(variable, '-');
 }
 
-void CIntegerBig::writeVariable(CVariable & var)
+CIntegerBig::CIntegerBig(std::vector<long long int> num, const std::string & type, const std::string & size)
 {
+    m_type = type;
+    m_size = size;
     
+    m_varInt = num;
 }
 
 void CIntegerBig::negativeNum(void)
@@ -68,7 +71,6 @@ CDataSize & CIntegerBig::operator + (const CDataSize & number)
     }
     
         size_t i = 0, j = 0;
-        int lostNull = 0;
         while(i < m_varInt.size() && j < num.size())
         {
             if(m_varInt[i] + num[j] > 1000000000000000000)
@@ -76,29 +78,13 @@ CDataSize & CIntegerBig::operator + (const CDataSize & number)
                 if(m_varInt.size() != i + 1) {
                     m_varInt[i + 1] = m_varInt[i + 1] + 1;
                     m_varInt[i] = (m_varInt[i] + num[j]) - 1000000000000000000;
-                    if(lostNull == 1) {
-                        m_varInt[i] = m_varInt[i] * 10;
-                        lostNull = 0;
-                    }
-                    if(m_varInt[i] < 100000000000000000)
-                        lostNull = 1;
                 } else {
                     m_varInt[i + 1] = m_varInt[i + 1] + 1;
                     m_varInt[i] = (m_varInt[i] + num[j]) - 1000000000000000000;
-                    if(lostNull == 1) {
-                        m_varInt[i] = m_varInt[i] * 10;
-                        lostNull = 0;
-                    }
-                    if(m_varInt[i] < 100000000000000000)
-                        lostNull = 1;
                     m_varInt.push_back(1);
                 }
             } else {
                 m_varInt[i] = (m_varInt[i] + num[j]);
-                if(lostNull == 1) {
-                    m_varInt[i] = m_varInt[i] * 10;
-                    lostNull = 0;
-                }
             }
             i++;
             j++;
@@ -462,10 +448,28 @@ std::string CIntegerBig::multAlg(std::string num, std::string num2)
     return res;
 }
 
-void CIntegerBig::print(void) const
+int CIntegerBig::sizeNum(long long int num) const
+{
+    int size = 1;
+    for(size_t i = num; i >= 10; size++)
+    {
+        i = i / 10;
+    }
+    
+    return size;
+}
+
+void CIntegerBig::print(std::ostream & history) const
 {
     std::cout << "Result: ";
-    for(size_t i = m_varInt.size(); i > 0; i--)
+    for(size_t i = m_varInt.size(); i > 0; i--) {
+        if(i != m_varInt.size() && sizeNum(m_varInt[i - 1]) < 18)
+        {
+            int lostNull = 18 - sizeNum(m_varInt[i - 1]);
+            for(size_t i = 0; i < lostNull; i++)
+                std::cout << '0';
+        }
         std::cout << m_varInt[i - 1];
+    }
     std::cout << std::endl;
 }

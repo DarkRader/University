@@ -11,9 +11,7 @@ public:
     
     CDataSize * clone() const override;
     
-    void print(void) const override;
-    
-    void writeVariable(CVariable & var) override;
+    void print(std::ostream & history) const override;
     
     void negativeNum(void) override;
     
@@ -22,6 +20,7 @@ public:
     CIntegerBig(const std::vector<std::string> & variable, const std::string & type, const std::string & size);
     CIntegerBig(const long long int variable, const std::string & type, const std::string & size);
     CIntegerBig(std::string & variable, const std::string & type, const std::string & size);
+    CIntegerBig(std::vector<long long int> num, const std::string & type, const std::string & size);
     
     CDataSize & operator + (const CDataSize & number) override;
     
@@ -43,5 +42,6 @@ protected:
     std::string transformToString(std::vector<long long int> & vecNum, std::string & num);
     void controlAnswer(std::string res, std::string num, std::string num2);
     std::string multAlg(std::string num, std::string num2);
+    int sizeNum(long long int num) const;
     
 };

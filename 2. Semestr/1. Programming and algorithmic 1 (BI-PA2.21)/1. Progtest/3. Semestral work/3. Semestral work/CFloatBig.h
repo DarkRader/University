@@ -11,9 +11,7 @@ public:
     
     CDataSize * clone() const override;
     
-    void print(void) const override;
-    
-    void writeVariable(CVariable & var) override;
+    void print(std::ostream & history) const override;
     
     void negativeNum(void) override;
     
@@ -21,6 +19,9 @@ public:
     
     CFloatBig(const std::vector<std::string> & variable, const std::vector<std::string> & floatPart,
               const std::string & type, const std::string & size);
+    
+    CFloatBig(long long int varInt, long long int floatPart, const std::string & type, const std::string & size);
+    CFloatBig(std::vector<long long int> num, std::vector<long long int> floatPart,  const std::string & type, const std::string & size);
     
     CDataSize & operator + (const CDataSize & number) override;
     
