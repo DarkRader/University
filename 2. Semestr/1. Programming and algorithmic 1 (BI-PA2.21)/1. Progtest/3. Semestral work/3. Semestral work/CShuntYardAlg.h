@@ -15,8 +15,6 @@
 #include "CFloat.h"
 #include "CIntegerBig.h"
 #include "CFloatBig.h"
-#include "CVariable.h"
-
 
 class CShuntYardAlg
 {
@@ -25,19 +23,23 @@ public:
     CShuntYardAlg   ( void ) {}
    ~CShuntYardAlg   ( void ) {}
     
-    std::shared_ptr<CDataSize> shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var);
+    std::shared_ptr<CDataSize> shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var, std::ostream & history);
     
     void addOp(const std::string & op);
     
-    void addSmallNum(const std::string & num, const std::string & type, const std::string & size, size_t i);
+    size_t sizeStackOp(void) const;
+    
+    void addSmallNum(const std::string & num, const std::string & floatPart, const std::string & type, const std::string & size);
+    
+    void addSmallVar(const long long int num, const long long floatPart, const std::string & type, const std::string & size);
     
     void addBigNum(const std::vector<std::string> & num, const std::vector<std::string> & numFloat, const std::string & type, const std::string & size);
+    
+    void addBigVar(std::vector<long long int> num, std::vector<long long int> floatPart, const std::string & type, const std::string & size);
     
     void changeNum(size_t i);
     
     void changeOp(const std::string & op, size_t i);
-    
-    void addVariable(std::shared_ptr<CDataSize> & var);
     
     std::string getNum(size_t i) const;
     
@@ -56,8 +58,6 @@ protected:
     std::vector<std::shared_ptr<CDataSize>> stackNum;
     
     void op(std::string & op, std::shared_ptr<CDataSize> & leftNum, std::shared_ptr<CDataSize> & rightNum);
-    
-    void op(std::string & op, CFloat & leftNum, CFloat & rightNum);
     
     int prior(const std::string & op);
     
