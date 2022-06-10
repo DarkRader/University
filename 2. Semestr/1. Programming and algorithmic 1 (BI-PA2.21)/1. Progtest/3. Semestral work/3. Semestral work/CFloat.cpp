@@ -9,38 +9,32 @@ CDataSize * CFloat::clone() const
     return new CFloat(*this);
 }
 
-//CFloat::CFloat(long double variable) : CType(variable){  }
-
 long long int CFloat::getVariable(void) const { return m_varInt[0]; }
 
-CFloat::CFloat(long double variable, const std::string & type, const std::string & size)
+CFloat::CFloat(long double varIntPart, long double varFloatPart, const std::string & type, const std::string & size)
 {
-    m_varFloat = variable;
+    m_varInt.push_back(varIntPart);
+    m_floatPart.push_back(varFloatPart);
     m_type = type;
     m_size = size;
 }
 
-CFloat::CFloat(long double varFloat, long long int varInt, const std::string & type, const std::string & size)
+CFloat::CFloat(long long int varInt, const std::string & type, const std::string & size)
 {
-    m_varFloat = varFloat;
     m_varInt.push_back(varInt);
+    m_floatPart.push_back(0);
     m_type = type;
     m_size = size;
-}
-
-void CFloat::writeVariable(CVariable & var)
-{
-    
 }
 
 void CFloat::negativeNum(void)
 {
-    m_varFloat = m_varFloat * (-1);
+    m_varInt[0] = m_varInt[0] * (-1);
 }
 
 char CFloat::getSign(void)
 {
-    if(m_varFloat >= 0)
+    if(m_varInt[0] >= 0)
         return '+';
     else
         return '-';
@@ -48,19 +42,44 @@ char CFloat::getSign(void)
 
 CDataSize & CFloat::operator + (const CDataSize & number)
 {
-    m_varFloat = m_varFloat + number.getVarFloat();
+    char operation = '+';
+    
+    if((m_varInt[0] > 0 && number.getVarInt() > 0) || (m_varInt[0] < 0 && number.getVarInt() < 0))
+        operation = '+';
+    else
+        operation = '-';
+    
+    m_varInt[0] += number.getVarInt();
+    //long long int lhsFloat;
+    //long long int rhsFloat;
+    
+    if(operation == '+')
+        plusFlPart(number.getVarFloat());
+    else
+        minusFlPart(number.getVarFloat());
+    
     return *this;
 }
 
 CDataSize & CFloat::operator - (const CDataSize & number)
 {
-    m_varFloat = m_varFloat - number.getVarFloat();
+    m_varInt[0] -= number.getVarInt();
+    
+    minusFlPart(number.getVarFloat());
+    
     return *this;
 }
 
 CDataSize & CFloat::operator * (const CDataSize & number)
 {
-    m_varFloat = m_varFloat * number.getVarFloat();
+    CFloatBig lhs(m_varInt[0], m_floatPart[0], "float", "big");
+    CFloatBig rhs(number.getVarInt(), number.getVarFloat(), "float", "big");
+    
+    lhs * rhs;
+    
+    m_varInt[0] = lhs.getVarInt();
+    m_floatPart[0] = lhs.getVarFloat();
+    
     return *this;
 }
 
@@ -70,9 +89,129 @@ CDataSize & CFloat::operator / (const CDataSize & number)
     return *this;
 }
 
-void CFloat::print(void) const
+void CFloat::plusFlPart(long long int number)
+{
+    long long int lhsFloat;
+    long long int rhsFloat;
+    
+    if(m_floatPart[0] > number) {
+        lhsFloat = m_floatPart[0];
+        rhsFloat = number;
+    } else {
+        lhsFloat = number;
+        rhsFloat = m_floatPart[0];
+    }
+    
+    if(lhsFloat == 0) {
+        m_floatPart[0] = rhsFloat;
+        return ;
+    } else if(rhsFloat == 0){
+        m_floatPart[0] = lhsFloat;
+        return ;
+    }
+    
+    long long int control = lhsFloat + rhsFloat;
+    if(sizeNum(lhsFloat) != sizeNum(rhsFloat))
+    {
+        int size = sizeNum(lhsFloat) - sizeNum(rhsFloat);
+        long long int degree = findDegree(size);
+        rhsFloat = rhsFloat * degree;
+        control = lhsFloat + rhsFloat;
+        if(sizeNum(control) > sizeNum(lhsFloat))
+        {
+            if(m_varInt[0] > 0) {
+                m_varInt[0]++;
+            } else {
+                m_varInt[0]--;
+            }
+            int size = sizeNum(lhsFloat);
+            long long degree = findDegree(size);
+            m_floatPart[0] = (lhsFloat + rhsFloat) - degree;
+        } else {
+            m_floatPart[0] = lhsFloat + rhsFloat;
+        }
+    } else if(sizeNum(control) > sizeNum(lhsFloat)) {
+        if(m_varInt[0] > 0) {
+            m_varInt[0]++;
+        }
+        else {
+            m_varInt[0]--;
+        }
+        m_floatPart[0] = (lhsFloat + rhsFloat) - 1000000000000000000;
+    } else {
+        m_floatPart[0] = lhsFloat + rhsFloat;
+    }
+}
+
+void CFloat::minusFlPart(long long int number)
+{
+    long long int lhsFloat = m_floatPart[0];
+    long long int rhsFloat = number;
+    
+    if(lhsFloat == 0) {
+        m_floatPart[0] = rhsFloat;
+        return ;
+    } else if(rhsFloat == 0){
+        m_floatPart[0] = lhsFloat;
+        return ;
+    }
+    
+    if(sizeNum(lhsFloat) != sizeNum(rhsFloat))
+    {
+        long long int degree;
+        if(lhsFloat > rhsFloat)
+        {
+            int size = sizeNum(lhsFloat) - sizeNum(rhsFloat);
+            degree = findDegree(size);
+            rhsFloat = rhsFloat * degree;
+        } else {
+            int size = sizeNum(rhsFloat) - sizeNum(lhsFloat);
+            degree = findDegree(size);
+            lhsFloat = lhsFloat * degree;
+        }
+        if(lhsFloat - rhsFloat < 0)
+        {
+            if(m_varInt[0] > 0)
+                m_varInt[0]--;
+            else
+                m_varInt[0]++;
+            int size = sizeNum(lhsFloat);
+            long long degree = findDegree(size);
+            m_floatPart[0] = degree + (lhsFloat - rhsFloat);
+        }
+    } else if(lhsFloat - rhsFloat < 0) {
+        if(m_varInt[0] > 0)
+            m_varInt[0]--;
+        else
+            m_varInt[0]++;
+        m_floatPart[0] = 1000000000000000000 + (lhsFloat - rhsFloat);
+    } else {
+        m_floatPart[0] = lhsFloat - rhsFloat;
+    }
+}
+
+int CFloat::sizeNum(long long int num) const
+{
+    int size = 1;
+    for(size_t i = num; i >= 10; size++)
+    {
+        i = i / 10;
+    }
+    
+    return size;
+}
+
+long long int CFloat::findDegree(size_t size)
+{
+    long long int degree = 1;
+    for(size_t i = 0; i < size; i++)
+        degree = degree * 10;
+    return degree;
+}
+
+void CFloat::print(std::ostream & history) const
 {
     //std::cout << m_varFloat << std::endl;
     std::cout << "Result: ";
-    std::cout << std::fixed << std::setprecision(5) << m_varFloat << std::endl;
+    std::cout << m_varInt[0] << "," << m_floatPart[0] << std::endl;
 }

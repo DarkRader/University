@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CDataSize.h"
+#include "CFloatBig.h"
 #include <iostream>
 
 
@@ -15,17 +16,15 @@ public:
     CDataSize * clone() const override;
     CFloat(void) {}
     
-    void print(void) const override;
+    void print(std::ostream & history) const override;
     
-    CFloat(long double variable);
+    //CFloat(long double variable);
     
-    CFloat(long double variable, const std::string & type, const std::string & size);
+    CFloat(long double varIntPart, long double varFloatPart, const std::string & type, const std::string & size);
     
-    CFloat(long double varFloat, long long int varInt, const std::string & type, const std::string & size);
+    CFloat(long long int varInt, const std::string & type, const std::string & size);
     
     long long int getVariable(void) const;
-    
-    void writeVariable(CVariable & var) override;
 
     void negativeNum(void) override;
     
@@ -42,7 +41,8 @@ public:
     
     
 protected:
-    long double m_Float;
-    
-    
+    int sizeNum(long long int num) const;
+    long long int findDegree(size_t size);
+    void plusFlPart(long long int number);
+    void minusFlPart(long long int number);
 };
