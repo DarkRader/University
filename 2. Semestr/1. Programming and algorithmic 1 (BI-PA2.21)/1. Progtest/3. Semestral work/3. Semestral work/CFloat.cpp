@@ -9,14 +9,13 @@ CDataSize * CFloat::clone() const
     return new CFloat(*this);
 }
 
-long long int CFloat::getVariable(void) const { return m_varInt[0]; }
-
 CFloat::CFloat(long double varIntPart, long double varFloatPart, const std::string & type, const std::string & size)
 {
     m_varInt.push_back(varIntPart);
     m_floatPart.push_back(varFloatPart);
     m_type = type;
     m_size = size;
+    m_remains.push_back(0);
 }
 
 CFloat::CFloat(long long int varInt, const std::string & type, const std::string & size)
@@ -25,6 +24,7 @@ CFloat::CFloat(long long int varInt, const std::string & type, const std::string
     m_floatPart.push_back(0);
     m_type = type;
     m_size = size;
+    m_remains.push_back(0);
 }
 
 void CFloat::negativeNum(void)
@@ -50,13 +50,13 @@ CDataSize & CFloat::operator + (const CDataSize & number)
         operation = '-';
     
     m_varInt[0] += number.getVarInt();
-    //long long int lhsFloat;
-    //long long int rhsFloat;
     
     if(operation == '+')
         plusFlPart(number.getVarFloat());
     else
         minusFlPart(number.getVarFloat());
+    
+    m_remains[0] += number.getRemains();
     
     return *this;
 }
@@ -66,6 +66,8 @@ CDataSize & CFloat::operator - (const CDataSize & number)
     m_varInt[0] -= number.getVarInt();
     
     minusFlPart(number.getVarFloat());
+    
+    m_remains[0] += number.getRemains();
     
     return *this;
 }
@@ -79,13 +81,14 @@ CDataSize & CFloat::operator * (const CDataSize & number)
     
     m_varInt[0] = lhs.getVarInt();
     m_floatPart[0] = lhs.getVarFloat();
+    m_remains[0] += number.getRemains();
     
     return *this;
 }
 
 CDataSize & CFloat::operator / (const CDataSize & number)
 {
-    std::cout << "Logic error" << std::endl;
+    throw 2;
     return *this;
 }
 
@@ -209,9 +212,14 @@ long long int CFloat::findDegree(size_t size)
     return degree;
 }
 
-void CFloat::print(std::ostream & history) const
+void CFloat::print(void) const
 {
-    //std::cout << m_varFloat << std::endl;
     std::cout << "Result: ";
-    std::cout << m_varInt[0] << "," << m_floatPart[0] << std::endl;
+    std::cout << m_varInt[0] << "," << m_floatPart[0];
+    
+    if(m_remains[0] != 0) {
+        std::cout << " (rem. " << m_remains[0] << ")" << std::endl;
+    } else {
+        std::cout << std::endl;
+    }
 }

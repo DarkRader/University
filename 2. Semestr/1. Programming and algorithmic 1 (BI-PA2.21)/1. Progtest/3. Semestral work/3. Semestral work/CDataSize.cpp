@@ -10,27 +10,24 @@ std::string CDataSize::getType(void) const { return m_type; }
 
 CDataSize::CDataSize(void) {}
 
-void CDataSize::writeSize(const std::string & size)
-{
-    m_size = size;
-}
+void CDataSize::writeSize(const std::string & size) { m_size = size; }
 
-void CDataSize::writeType(const std::string & type)
-{
-    m_type = type;
-}
+void CDataSize::writeType(const std::string & type) { m_type = type; }
 
-void CDataSize::writeFloat(long double num) { m_floatPart[0] = num; };
+void CDataSize::writeFloat(long double num) { m_floatPart[0] = num; }
 
-void CDataSize::pushNum(long long int num)
-{
-    m_varInt.push_back(num);
-}
+void CDataSize::pushNum(long long int num) { m_varInt.push_back(num); }
 
 long long int CDataSize::getVarInt(void) const { return m_varInt[0]; }
 
-long double CDataSize::getVarFloat(void) const { return m_floatPart[0]; }
+long long int CDataSize::getVarFloat(void) const { return m_floatPart[0]; }
 
 std::vector<long long int> CDataSize::getVecInt(void) const { return m_varInt; }
 
 std::vector<long long int> CDataSize::getVecFloat(void) const { return m_floatPart; }
+
+long long int CDataSize::getRemains(void) const { return m_remains[0]; }
+
+std::vector<long long int> CDataSize::getVecRem(void) const { return m_remains; }
+
+void CDataSize::writeRem(std::vector<long long int> rem) { m_remains = rem; }

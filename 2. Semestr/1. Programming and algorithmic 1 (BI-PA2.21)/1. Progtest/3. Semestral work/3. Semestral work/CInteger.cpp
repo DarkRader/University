@@ -16,9 +16,8 @@ CInteger::CInteger(long long int variable, const std::string & type, const std::
     m_type = type;
     m_size = size;
     m_varInt.push_back(variable);
+    m_remains.push_back(0);
 }
-
-long long int CInteger::getVariable(void) const { return m_varInt[0]; }
 
 void CInteger::negativeNum(void) 
 {
@@ -35,29 +34,43 @@ char CInteger::getSign(void)
 
 CDataSize & CInteger::operator + (const CDataSize & number)
 {
-        m_varInt[0] = m_varInt[0] + number.getVarInt();
+    m_varInt[0] = m_varInt[0] + number.getVarInt();
+    m_remains[0] += number.getRemains();
     return *this;
 }
 
 CDataSize & CInteger::operator - (const CDataSize & number)
 {
-        m_varInt[0] = m_varInt[0] - number.getVarInt();
+    m_varInt[0] = m_varInt[0] - number.getVarInt();
+    m_remains[0] += number.getRemains();
     return *this;
 }
 
 CDataSize & CInteger::operator / (const CDataSize & number)
 {
-        m_varInt[0] = m_varInt[0] / number.getVarInt();
+    if(number.getVarInt() == 0)
+        throw 1;
+    m_remains[0] = m_varInt[0] % number.getVarInt();
+    m_varInt[0] = m_varInt[0] / number.getVarInt();
     return *this;
 }
 
 CDataSize & CInteger::operator * (const CDataSize & number)
 {
-        m_varInt[0] = m_varInt[0] * number.getVarInt();
+    m_varInt[0] = m_varInt[0] * number.getVarInt();
+    m_remains[0] += number.getRemains();
+    if(m_remains[0] < 0)
+        m_remains[0] = m_remains[0] * (-1);
     return *this;
 }
 
-void CInteger::print(std::ostream & history) const
+void CInteger::print(void) const
 {
-    std::cout << "Result: " << m_varInt[0] << std::endl;
+    std::cout << "Result: " << m_varInt[0];
+    
+    if(m_remains[0] != 0) {
+        std::cout << " (rem. " << m_remains[0] << ")" << std::endl;
+    } else {
+        std::cout << std::endl;
+    }
 }

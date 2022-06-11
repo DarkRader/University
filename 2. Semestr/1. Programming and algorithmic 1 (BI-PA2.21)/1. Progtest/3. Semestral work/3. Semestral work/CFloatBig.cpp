@@ -26,12 +26,14 @@ CFloatBig::CFloatBig(const std::vector<std::string> & variable, const std::vecto
         m_floatPart.push_back(numFloat);
     }
  
+    m_remains.push_back(0);
 }
 
 CFloatBig::CFloatBig(long long int varInt, long long int floatPart, const std::string & type, const std::string & size)
 {
     m_varInt.push_back(varInt);
     m_floatPart.push_back(floatPart);
+    m_remains.push_back(0);
 }
 
 CFloatBig::CFloatBig(std::vector<long long int> num, std::vector<long long int> floatPart,  const std::string & type, const std::string & size)
@@ -41,7 +43,7 @@ CFloatBig::CFloatBig(std::vector<long long int> num, std::vector<long long int> 
     
     m_varInt = num;
     m_floatPart = floatPart;
-}
+    m_remains.push_back(0);}
 
 void CFloatBig::negativeNum(void)
 {
@@ -142,6 +144,7 @@ CDataSize & CFloatBig::operator + (const CDataSize & number)
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
     
+    addRem(number);
     
     return *this;
 }
@@ -209,8 +212,6 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
                 int size = sizeNum(m_floatPart[i]) - sizeNum(flNum[i]);
                 long long int degree = findDegree(size);
                 flNum[i] = flNum[i] * degree;
-                //long long int control = (m_floatPart[i] - flNum[i]);
-                //if(sizeNum(control) > sizeNum(m_floatPart[i]))
                 if(m_floatPart[i] - flNum[i] < 0)
                     flag = 1;
             }
@@ -238,6 +239,7 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
 
+    addRem(number);
     
     return *this;
 }
@@ -276,13 +278,14 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
     
+    addRem(number);
+    
     return *this;
 }
 
 CDataSize & CFloatBig::operator / (const CDataSize & number)
 {
-
-    
+    throw 2;
     return *this;
 }
 
@@ -480,7 +483,17 @@ size_t CFloatBig::addNull(std::string & flNum, std::string & flNum2)
     return flNum.size();
 }
 
-void CFloatBig::print(std::ostream & history) const
+void CFloatBig::addRem(const CDataSize & number)
+{
+    CIntegerBig lhs(m_remains, "int", "big");
+    CIntegerBig rhs(number.getVecRem(), "int", "big");
+    
+    lhs + rhs;
+    
+    m_remains = lhs.getVecInt();
+}
+
+void CFloatBig::print(void) const
 {    
     std::cout << "Result: ";
     for(size_t i = m_varInt.size(); i > 0; i--) {
@@ -502,5 +515,20 @@ void CFloatBig::print(std::ostream & history) const
         }
         std::cout << m_floatPart[i];
     }
+    
+    if((m_remains.size() > 1 && m_remains[m_remains.size() - 1] != 0) || m_remains[0] != 0) {
+        std::cout << " (rem. ";
+        for(size_t i = m_remains.size(); i > 0; i--) {
+            if(i != m_remains.size() && sizeNum(m_remains[i - 1]) < 18)
+            {
+                int lostNull = 18 - sizeNum(m_remains[i - 1]);
+                for(size_t i = 0; i < lostNull; i++)
+                    std::cout << '0';
+            }
+            std::cout << m_remains[i - 1];
+        }
+        std::cout << ")";
+    }
+    
     std::cout << std::endl;
 }

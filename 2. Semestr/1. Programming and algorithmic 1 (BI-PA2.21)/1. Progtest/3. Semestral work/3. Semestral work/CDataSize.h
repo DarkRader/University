@@ -23,7 +23,11 @@ public:
     
     std::vector<long long int> getVecFloat(void) const;
     
-    long double getVarFloat(void) const;
+    long long int getVarFloat(void) const;
+    
+    long long int getRemains(void) const;
+    
+    std::vector<long long int> getVecRem(void) const;
     
     virtual void negativeNum(void) = 0;
     
@@ -39,13 +43,14 @@ public:
     
     CDataSize(void);
     
-    virtual void print(std::ostream & history) const = 0;
+    virtual void print(void) const = 0;
     
     std::string getSize(void) const;
     std::string getType(void) const;
     void writeSize(const std::string & size);
     void writeType(const std::string & type);
     void writeFloat(long double);
+    void writeRem(std::vector<long long int> rem);
     void pushNum(long long int num);
     
 protected:

@@ -11,7 +11,7 @@ public:
     
     CDataSize * clone() const override;
     
-    void print(std::ostream & history) const override;
+    void print(void) const override;
     
     void negativeNum(void) override;
     
@@ -33,15 +33,15 @@ public:
     
 protected:
     void transFromStr(std::string & str, const char operation);
-    //experemental methods
     void  incDivision(std::string &  x);
     void  reduceDivision(std::string &  minuend, const std::string &  subtrahend);
     bool controlSize(std::string x, std::string y);
-    void  delExtraZero(std::string & str);
+    void  delExtraZero(std::string & str, const char operation);
     char whatSymbol(std::vector<long long int> & num);
     std::string transformToString(std::vector<long long int> & vecNum, std::string & num);
     void controlAnswer(std::string res, std::string num, std::string num2);
     std::string multAlg(std::string num, std::string num2);
     int sizeNum(long long int num) const;
+    void addRem(const CDataSize & number);
     
 };

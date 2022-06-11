@@ -13,13 +13,11 @@ public:
     
     CDataSize * clone() const override;
     
-    void print(std::ostream & history) const override;
+    void print(void) const override;
     
     CInteger(long long int variable);
     
     CInteger(long long int variable, const std::string & type, const std::string & size);
-    
-    long long int getVariable(void) const;
     
     void negativeNum(void) override;
     

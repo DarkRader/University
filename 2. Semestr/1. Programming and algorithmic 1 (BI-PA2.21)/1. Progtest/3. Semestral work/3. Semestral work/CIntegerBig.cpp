@@ -18,6 +18,7 @@ CIntegerBig::CIntegerBig(const std::vector<std::string> & variable, const std::s
         long long int numInt = atoll(variable[i].c_str());
         m_varInt.push_back(numInt);
     }
+    m_remains.push_back(0);
 }
 
 CIntegerBig::CIntegerBig(const long long int variable, const std::string & type, const std::string & size)
@@ -25,12 +26,14 @@ CIntegerBig::CIntegerBig(const long long int variable, const std::string & type,
     m_type = type;
     m_size = size;
     m_varInt.push_back(variable);
+    m_remains.push_back(0);
 }
 
 CIntegerBig::CIntegerBig(std::string & variable, const std::string & type, const std::string & size)
 {
     m_type = type;
     m_size = size;
+    m_remains.push_back(0);
     
     transFromStr(variable, '-');
 }
@@ -41,6 +44,7 @@ CIntegerBig::CIntegerBig(std::vector<long long int> num, const std::string & typ
     m_size = size;
     
     m_varInt = num;
+    m_remains.push_back(0);
 }
 
 void CIntegerBig::negativeNum(void)
@@ -99,6 +103,9 @@ CDataSize & CIntegerBig::operator + (const CDataSize & number)
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
     
+    if(m_remains[0] != 0 || number.getRemains() != 0)
+        addRem(number);
+    
     return *this;
 }
 
@@ -147,6 +154,9 @@ CDataSize & CIntegerBig::operator - (const CDataSize & number)
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
     
+    if(m_remains[0] != 0 || number.getRemains() != 0)
+        addRem(number);
+    
     return *this;
 }
 
@@ -166,22 +176,28 @@ CDataSize & CIntegerBig::operator * (const CDataSize & number)
                 m_varInt.erase(m_varInt.begin() + i - 1);
         }
         m_varInt[0] = 0;
+        addRem(number);
         return *this;
     }
     
     std::string res = multAlg(num, num2);
     
-    delExtraZero(res);
+    delExtraZero(res, '*');
     transFromStr(res, '*');
 
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
+    
+    if(m_remains[0] != 0 || number.getRemains() != 0)
+        addRem(number);
 
     return *this;
 }
 
 CDataSize & CIntegerBig::operator / (const CDataSize & number)
 {
+    if(m_remains[0] != 0 || number.getRemains() != 0)
+        addRem(number);
     std::vector<long long int> secondNum = number.getVecInt();
     char symbol = whatSymbol(secondNum);
     
@@ -199,7 +215,7 @@ CDataSize & CIntegerBig::operator / (const CDataSize & number)
     num = transformToString(m_varInt, num);
     
     std::string num2 = "";
-    num2 = transformToString(secondNum, num2);;
+    num2 = transformToString(secondNum, num2);
     
     if(num == "0")
     {
@@ -212,7 +228,7 @@ CDataSize & CIntegerBig::operator / (const CDataSize & number)
         return *this;
     } else if(num2 == "0")
     {
-        std::cout << "You can't divide number on zero!" << std::endl;
+        throw 1;
         return *this;
     }
     
@@ -239,10 +255,10 @@ CDataSize & CIntegerBig::operator / (const CDataSize & number)
         
         subtrahend.erase(subtrahend.size() - 1);
         res += '0';
-        delExtraZero(res);
+        delExtraZero(res, '/');
     }
     
-    //controlAnswer(res, num, num2);
+    controlAnswer(res, num, num2);
     
     transFromStr(res, '/');
     
@@ -303,15 +319,15 @@ void  CIntegerBig::reduceDivision(std::string & minuend, const std::string & sub
                     }
                 }
             }
-            delExtraZero(minuend);
+            delExtraZero(minuend, '/');
         }
-    delExtraZero(minuend);
+    delExtraZero(minuend, '/');
 }
 
 bool CIntegerBig::controlSize(std::string  x, std::string  y)
 {
-    delExtraZero(x);
-    delExtraZero(y);
+    delExtraZero(x, '/');
+    delExtraZero(y, '/');
 
     if(x.size() == y.size())
         return x < y;
@@ -321,12 +337,19 @@ bool CIntegerBig::controlSize(std::string  x, std::string  y)
     return true;
 }
 
-void  CIntegerBig::delExtraZero(std::string & str)
+void  CIntegerBig::delExtraZero(std::string & str, const char operation)
 {
-    while(str.size() > 1 && str[0] == '0')
+    if(operation == '/') {
+        while(str.size() > 1 && str[0] == '0')
         {
             str.erase(0, 1);
         }
+    } else {
+        while(str.size() > 1 && str[0] + '0' == '0')
+        {
+            str.erase(0, 1);
+        }
+    }
 }
 
 char CIntegerBig::whatSymbol(std::vector<long long int> & num)
@@ -419,18 +442,19 @@ void CIntegerBig::controlAnswer(std::string res, std::string num, std::string nu
     for (int i = 0; i < control.size(); i++) {
         control[i] += '0';
        }
-    delExtraZero(control);
+    delExtraZero(control, '/');
     
     if(num == control)
         return;
     else {
-        CIntegerBig lhs(num, "int", "big");
+        CIntegerBig lhs(num, "rem", "rem");
         CIntegerBig rhs(control, "int", "big");
         
         lhs - rhs;
         
-        for(size_t i = 0; i < lhs.getVecInt().size(); i++)
-            m_remains.push_back(lhs.getVecInt()[i]);
+        lhs.writeRem(lhs.getVecInt());
+        
+        addRem(lhs);
     }
 }
 
@@ -459,7 +483,19 @@ int CIntegerBig::sizeNum(long long int num) const
     return size;
 }
 
-void CIntegerBig::print(std::ostream & history) const
+void CIntegerBig::addRem(const CDataSize & number)
+{
+    CIntegerBig lhs(m_remains, "int", "big");
+    CIntegerBig rhs(number.getVecRem(), number.getType(), number.getSize());
+    
+    lhs + rhs;
+    
+    m_remains = lhs.getVecInt();
+    if(m_remains[m_remains.size() - 1] < 0)
+        m_remains[m_remains.size() - 1] = m_remains[m_remains.size() - 1] * (-1);
+}
+
+void CIntegerBig::print(void) const
 {
     std::cout << "Result: ";
     for(size_t i = m_varInt.size(); i > 0; i--) {
@@ -471,5 +507,21 @@ void CIntegerBig::print(std::ostream & history) const
         }
         std::cout << m_varInt[i - 1];
     }
+    
+    if((m_remains.size() > 1 && m_remains[m_remains.size() - 1] != 0) || m_remains[0] != 0) {
+        std::cout << " (rem. ";
+        for(size_t i = m_remains.size(); i > 0; i--) {
+            if(i != m_remains.size() && sizeNum(m_remains[i - 1]) < 18)
+            {
+                int lostNull = 18 - sizeNum(m_remains[i - 1]);
+                for(size_t i = 0; i < lostNull; i++)
+                    std::cout << '0';
+            }
+            std::cout << m_remains[i - 1];
+        }
+        std::cout << ")";
+    }
+    
     std::cout << std::endl;
+    
 }
