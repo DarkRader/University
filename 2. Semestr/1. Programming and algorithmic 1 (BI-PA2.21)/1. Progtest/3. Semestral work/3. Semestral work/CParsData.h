@@ -22,7 +22,7 @@ public:
     
     std::string getRes(void) const;
     
-    bool parsingDate(const std::string & operation, std::ostream & history);
+    bool parsingDate(const std::string & operation);
     
 private:
     std::string m_res;
@@ -40,11 +40,13 @@ private:
     
     void negNum(const std::string & operation);
     
-    void replaceComma(std::string repNum, size_t i, CShuntYardAlg & a);
+    bool transformNum(std::string repNum, size_t i, CShuntYardAlg & a);
     
     bool findVariable(const std::string & var);
     
     void fillVec(std::vector<std::string> & splitNum, const std::string & oper);
+    
+    bool errorInSymbol(std::string & operation, size_t i, int & bracket, CShuntYardAlg & a);
     
 };
 

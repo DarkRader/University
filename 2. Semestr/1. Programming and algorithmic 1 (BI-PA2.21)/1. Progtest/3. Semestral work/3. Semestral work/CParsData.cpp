@@ -6,7 +6,7 @@
 
 std::string CParsData::getRes(void) const { return m_res; }
 
-bool CParsData::parsingDate(const std::string & operation, std::ostream & history)
+bool CParsData::parsingDate(const std::string & operation)
 {
     if(operation == "konec") {
         std::cout << "End of work, thanks for using my calculator" << std::endl;
@@ -45,26 +45,33 @@ bool CParsData::parsingDate(const std::string & operation, std::ostream & histor
     if(fillSymbol(newOper, a) != true)
         return false;
     
-    int flag = 0;
     std::string variable = "";
     
     if(a.getOp(0) == "=")
     {
-        flag = 1;
         variable = seqNum[0];
         auto iter = m_var.find(variable);
         if(iter == m_var.end()) {
-            std::shared_ptr<CDataSize> tmp = a.shuntYardAlg(variable, m_var, history);
+            if(a.shuntYardAlg(variable, m_var) == true) {
+            std::shared_ptr<CDataSize> tmp = a.getRes();
             m_var.insert({seqNum[0], tmp});
+            } else {
+                return false;
+            }
         } else {
-            iter->second = a.shuntYardAlg(variable, m_var, history);
+            if(a.shuntYardAlg(variable, m_var) == true) {
+            iter->second = a.getRes();
+            } else {
+                return false;
+            }
         }
     } else {
-        a.shuntYardAlg(variable, m_var, history);
+        if(a.shuntYardAlg(variable, m_var) == true) {
+        a.getRes();
+        } else {
+            return false;
+        }
     }
-    
-    if(m_res == "Zero")
-        return false;
     
     return true;
 }
@@ -95,27 +102,24 @@ void CParsData::clWhiteSpace(std::string & operation)
 
 bool CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
 {
+    int count = 0;
+    int bracket = 0;
+    
+    if(operation.size() > 0 && (operation[0] == '*' || operation[0] == '/' || operation[0] == '=' || operation[0] == '+')) {
+        if(symbol(operation[0]) == true && operation[0] != '=') {
+            std::cout << "The operation cannot be at the beginning of the expression!" << std::endl;
+            return false;
+        }
+    }
+    
     for(size_t i = 0; i < operation.size(); i++)
     {
         if(symbol(operation[i]) == true || operation[i] == '(' || operation[i] == ')')
         {
-            if(i + 1 != operation.size()) {
-                if(operation[i] == '=' && a.sizeStackOp() > 0) {
-                    std::cout << "The equal sign is in the wrong place!" << std::endl;
-                    return false;
-                }
-                
-                if(symbol(operation[i]) == true && symbol(operation[i + 1]) == true && operation[i] != '=') {
-                    std::cout << "Two characters follow each other, check the location of the brackets!" << std::endl;
-                    return false;
-                }
-                
-                if(operation[i] == '(' && operation[i + 1] == ')') {
-                    std::cout << "Empty brackets without an expression inside!" << std::endl;
-                    return false;
-                }
-                }
             
+            if(errorInSymbol(operation, i, bracket, a) == false)
+                return false;
+
             std::string s(1, operation[i]);
             if(i == 0 && operation[i] == '-')
             {
@@ -130,13 +134,71 @@ bool CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
             } else if(operation[i] == '(' && operation[i + 1] == '-')
             {
                 a.addOp(s);
+                count++;
                 i++;
                 a.addOp("- fl");
                 continue;
             }
             a.addOp(s);
+            count++;
         }
     }
+    
+    if(bracket > 0) {
+        std::cout << "There is an opening bracket, but no closing one!" << std::endl;
+        return false;
+    }
+    
+    if(count == 0) {
+        std::cout << "There are no operators, enter the correct expression!" << std::endl;
+        return false;
+    }
+    
+    return true;
+}
+
+bool CParsData::errorInSymbol(std::string & operation, size_t i, int & bracket, CShuntYardAlg & a)
+{
+    
+    if(i + 1 != operation.size()) {
+        
+        if(operation[i] == ')' && bracket == 0) {
+            std::cout << "You can't write a closing bracket without an opening one!" << std::endl;
+            return false;
+        }
+        
+        if(operation[i] == '=' && a.sizeStackOp() > 0) {
+            std::cout << "The equal sign is in the wrong place!" << std::endl;
+            return false;
+        }
+        
+        if(symbol(operation[i]) == true && symbol(operation[i + 1]) == true && operation[i] != '=') {
+            std::cout << "Two characters follow each other, check the location of the brackets!" << std::endl;
+            return false;
+        }
+        
+        if(operation[i] == '(' && operation[i + 1] == ')') {
+            std::cout << "Empty brackets without an expression inside!" << std::endl;
+            return false;
+        }
+        
+        if(i > 0 && operation[i] == '(' && operation[i - 1] != '(' && symbol(operation[i - 1]) == false) {
+            std::cout << "You don't have a sign in front of the brackets, check it out!" << std::endl;
+            return false;
+        }
+        
+        if(i != operation.size() - 1 && operation[i] == ')' && operation[i + 1] != ')' && symbol(operation[i + 1]) != true) {
+            std::cout << "You don't have a sign after the brackets, check it out!" << std::endl;
+            return false;
+        }
+            
+    }
+    
+    if(operation[i] == '(')
+        bracket++;
+    
+    if(operation[i] == ')')
+        bracket--;
     
     return true;
 }
@@ -169,10 +231,6 @@ bool CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg
         if(seqNum[i] != "") {
            if(findVariable(seqNum[i]) == true)
            {
-               if(seqNum[i].size() > 1) {
-                   std::cout << "Incorrect variable name!" << std::endl;
-                   return false;
-               }
                auto itVar = m_var.find(seqNum[i]);
                if(itVar != m_var.end()) {
                    if(itVar->second->getSize() == "small") {
@@ -189,12 +247,15 @@ bool CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg
                            a.addBigVar(itVar->second->getVecInt(), itVar->second->getVecFloat(), "float", "small");
                    }
                } else {
-                   a.addSmallNum("", "", "", "");
+                   if(i > 0) {
+                       std::cout << "A nonexistent variable is present in the expression!" << std::endl;
+                       return false;
+                   } else
+                       a.addSmallNum("", "", "", "");
                }
-               //replaceComma(itVar->second, i, a);
-               //a.addVariable(itVar->second);
            } else
-               replaceComma(seqNum[i], i, a);
+               if(transformNum(seqNum[i], i, a) != true)
+                   return false;
         }
     }
     
@@ -203,9 +264,10 @@ bool CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg
 
 bool CParsData::findVariable(const std::string & var)
 {
-//    auto iter = m_var.find(var);
-//    if(iter != m_var.end())
-//        return false;
+    if(var.size() > 1)
+    {
+        return false;
+    }
     
     char variable = var[0];
     
@@ -224,7 +286,7 @@ bool CParsData::findVariable(const std::string & var)
     return false;
 }
 
-void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
+bool CParsData::transformNum(std::string repNum, size_t i, CShuntYardAlg & a)
 {
     int flag = 0;
     std::string num = "";
@@ -234,6 +296,11 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
         size_t j;
         for(j = 0; j < repNum.size(); j++)
         {
+            if(repNum[j] != ',' && (repNum[j] < 48 || repNum[j] > 57)) {
+                std::cout << "Syntax error in numbers or variables!" << std::endl;
+                return false;
+            }
+            
             if(repNum[j] == ',')
             {
                 flag = 1;
@@ -260,6 +327,11 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
         size_t count = 0;
         for(size_t j = 0; j < repNum.size(); j++)
         {
+            if(repNum[j] != ',' && (repNum[j] < 48 || repNum[j] > 57)) {
+                std::cout << "Syntax error in numbers or variables!" << std::endl;
+                return false;
+            }
+            
             if(repNum[j] == ',')
             {
                 flag = 1;
@@ -296,6 +368,8 @@ void CParsData::replaceComma(std::string repNum, size_t i, CShuntYardAlg & a)
             a.addBigNum(splitNum, splitFloatNum, "float", "big");
         }
     }
+    
+    return true;
 }
 
 void CParsData::fillVec(std::vector<std::string> & splitNum, const std::string & oper)
