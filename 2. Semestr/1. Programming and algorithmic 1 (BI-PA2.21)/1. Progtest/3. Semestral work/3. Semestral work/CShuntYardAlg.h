@@ -23,7 +23,7 @@ public:
     CShuntYardAlg   ( void ) {}
    ~CShuntYardAlg   ( void ) {}
     
-    std::shared_ptr<CDataSize> shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var, std::ostream & history);
+    bool shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var);
     
     void addOp(const std::string & op);
     
@@ -53,15 +53,17 @@ public:
     
     long double getFloat(void) const;
     
-protected:
+    std::shared_ptr<CDataSize> getRes(void) const;
+    
+private:
     std::vector<std::string> stackOp;
     std::vector<std::shared_ptr<CDataSize>> stackNum;
     
-    void op(std::string & op, std::shared_ptr<CDataSize> & leftNum, std::shared_ptr<CDataSize> & rightNum);
+    bool op(std::string & op, std::shared_ptr<CDataSize> & leftNum, std::shared_ptr<CDataSize> & rightNum);
     
     int prior(const std::string & op);
     
-    void typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var);
+    bool typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var);
     
     std::string whatBigger(const std::vector<long long int> & lhs, const std::vector<long long int> & rhs);
 };

@@ -89,13 +89,20 @@ void CShuntYardAlg::addBigVar(std::vector<long long int> num, std::vector<long l
     stackNum.push_back(tmp);
 }
 
-std::shared_ptr<CDataSize> CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var, std::ostream & history)
+std::shared_ptr<CDataSize> CShuntYardAlg::getRes(void) const { stackNum[0]->print(); return stackNum[0]; }
+
+bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var)
 {
     size_t i = 0, j = 0;
     if(stackOp[j] == "=")
     {
         stackNum.erase(stackNum.begin() + i);
         stackOp.erase(stackOp.begin() + j);
+    }
+    
+    if(stackOp[j] == "(" && stackOp[j + 1] == ")") {
+        stackOp.erase(stackOp.begin());
+        stackOp.erase(stackOp.begin());
     }
     
     while(stackOp[j] == "(")
@@ -105,17 +112,37 @@ std::shared_ptr<CDataSize> CShuntYardAlg::shuntYardAlg(const std::string & varia
     
     while(stackOp.size() != 0)
     {
+        if(stackOp.size() > 1) {
+            if(stackOp[j] == ")" && stackOp[j - 1] == "(") {
+                stackOp.erase(stackOp.begin() + j);
+                stackOp.erase(stackOp.begin() + j - 1);
+                j--;
+                if(stackOp.size() - 1 < j) {
+                    if(j != 0)
+                        j--;
+                }
+                continue;
+            }
+        }
+        
+        
         if(stackOp.size() == j + 1)
         {
-            typDateAndLenght(i, j, var);
-//            if(stackNum[0] == "Zero")
-//                return "Zero";
-//            stackNum.erase(stackNum.begin() + i + 1);
-//            stackOp.erase(stackOp.begin() + j);
-            if(i != 0)
+            if(stackOp.size() > 1 && ((stackOp[j] == "*" && stackOp[j - 1] == "/") || (stackOp[j] == "/" && stackOp[j - 1] == "*") ||
+                                       (stackOp[j] == "*" && stackOp[j - 1] == "*") || (stackOp[j] == "/" && stackOp[j - 1] == "/")))
+            {
                 i--;
-            if(j != 0)
                 j--;
+            }
+            if(i == stackNum.size() - 1 && stackNum.size() > 1)
+                i--;
+            if(typDateAndLenght(i, j, var) == true) {
+                if(i != 0)
+                    i--;
+                if(j != 0)
+                    j--;
+            } else
+                return false;
         } else if(stackOp[j + 1] != ")" && stackOp[j + 1] != "(" && stackOp[j] != "(" && stackOp[j] != "- fl" &&
            prior(stackOp[j + 1]) >= prior(stackOp[j]))
         {
@@ -144,39 +171,57 @@ std::shared_ptr<CDataSize> CShuntYardAlg::shuntYardAlg(const std::string & varia
                 }  else {
                     i--;
                 }
+                if(stackOp[j] == ")") {
+                    i = i - 2;
+                    j--;
+                }
             }
             
         } else if(stackOp[j + 1] != ")" && stackOp[j + 1] != "(" && stackOp[j] != "(" && stackOp[j] != "- fl"
                   && prior(stackOp[j + 1]) < prior(stackOp[j]))
         {
-            typDateAndLenght(i, j, var);
-//            if(stakNum[0] == "Zero")
-//                return "Zero";
-//            stackNum.erase(stackNum.begin() + i + 1);
-//            stackOp.erase(stackOp.begin() + j);
-            if(stackOp.size() == j + 1) {
+            if(stackOp.size() > 1 && ((stackOp[j] == "*" && stackOp[j - 1] == "/") || (stackOp[j] == "/" && stackOp[j - 1] == "*") ||
+                                      (stackOp[j] == "*" && stackOp[j - 1] == "*") || (stackOp[j] == "/" && stackOp[j - 1] == "/")))
+            {
                 i--;
                 j--;
             }
+            if(i == stackNum.size() - 1 && stackNum.size() > 1)
+                i--;
+            if(typDateAndLenght(i, j, var) == true) {
+                if(stackOp.size() == j + 1) {
+                    i--;
+                    j--;
+                } 
+            } else
+                return false;
         }else if(stackOp[j + 1] == ")")
         {
+            if(stackOp.size() > 1 && ((stackOp[j] == "*" && stackOp[j - 1] == "/") || (stackOp[j] == "/" && stackOp[j - 1] == "*") ||
+                                      (stackOp[j] == "*" && stackOp[j - 1] == "*") || (stackOp[j] == "/" && stackOp[j - 1] == "/")))
+            {
+                i--;
+                j--;
+                if(typDateAndLenght(i, j, var) != true)
+                    return false;
+            }
             while(stackOp[j] != "(")
             {
-                typDateAndLenght(i, j, var);
-//                if(stakNum[0] == "Zero")
-//                    return "Zero";
-//                stackNum.erase(stackNum.begin() + i + 1);
-//                stackOp.erase(stackOp.begin() + j);
-                if(i != 0)
+                if(i == stackNum.size() - 1 && stackNum.size() > 1)
                     i--;
-                if(j != 0)
-                    j--;
+                if(typDateAndLenght(i, j, var) == true) {
+                    if(i != 0)
+                        i--;
+                    if(j != 0)
+                        j--;
+                } else
+                    return false;
             }
             stackOp.erase(stackOp.begin() + j);
             stackOp.erase(stackOp.begin() + j);
             if(j != 0)
                 j--;
-            if(stackNum[i + 1]->getSign() == '-' && stackOp[j] == "-")
+            if(stackNum.size() > 1 && stackNum[i + 1]->getSign() == '-' && stackOp[j] == "-")
             {
                 stackNum[i + 1]->negativeNum();
                 stackOp[j] = "+";
@@ -184,12 +229,12 @@ std::shared_ptr<CDataSize> CShuntYardAlg::shuntYardAlg(const std::string & varia
         }
         
     }
-    stackNum[0]->print(history);
+    //stackNum[0]->print(history);
     
-    return stackNum[0];
+    return true;
 }
 
-void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var)
+bool CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var)
 {
     if(stackOp.size() != 1 && stackOp[j - 1] == "-")
     {
@@ -227,17 +272,20 @@ void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, 
             
             if(whatBigger(stackNum[i]->getVecInt(), stackNum[i + 1]->getVecInt()) == "rhs")
             {
-                op(stackOp[j], stackNum[i + 1], stackNum[i]);
+                if(op(stackOp[j], stackNum[i + 1], stackNum[i]) == true) {
                 stackNum.erase(stackNum.begin() + i);
                 stackOp.erase(stackOp.begin() + j);
+                } else
+                    return false;
             } else {
-                op(stackOp[j], stackNum[i], stackNum[i + 1]);
+                if(op(stackOp[j], stackNum[i], stackNum[i + 1]) == true) {
                 stackNum.erase(stackNum.begin() + i + 1);
                 stackOp.erase(stackOp.begin() + j);
+                } else
+                    return false;
             }
 
-            //stackNum[i + 1]->negativeNum();
-            return;
+            return true;
         }
     
 
@@ -245,40 +293,74 @@ void CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, 
        (stackNum[i]->getSign() == '+' && stackNum[i + 1]->getSign() == '+'))
     {
 
-        op(stackOp[j], stackNum[i + 1], stackNum[i]);
-        stackNum[i + 1]->negativeNum();
-        stackNum.erase(stackNum.begin() + i);
-        stackOp.erase(stackOp.begin() + j);
-        return;
+        if(op(stackOp[j], stackNum[i + 1], stackNum[i]) == true) {
+            stackNum[i + 1]->negativeNum();
+            stackNum.erase(stackNum.begin() + i);
+            stackOp.erase(stackOp.begin() + j);
+            return true;
+        } else
+            return false;
     }
     
-    op(stackOp[j], stackNum[i], stackNum[i + 1]);
-    stackNum.erase(stackNum.begin() + i + 1);
-    stackOp.erase(stackOp.begin() + j);
+    if(op(stackOp[j], stackNum[i], stackNum[i + 1]) == true) {
+        stackNum.erase(stackNum.begin() + i + 1);
+        stackOp.erase(stackOp.begin() + j);
+    } else
+        return false;
+    
+    return true;
 }
 
 int CShuntYardAlg::prior(const std::string & op)
 {
     if(op == "+" || op == "-")
         return 1;
-    else if(op == "/") //|| op == "*")
-        return 2;
-    else if(op == "*")
+    else if(op == "/"|| op == "*")
         return 3;
     
     return -10;
 }
 
-void CShuntYardAlg::op(std::string & op, std::shared_ptr<CDataSize> & leftNum, std::shared_ptr<CDataSize> & rightNum)
+bool CShuntYardAlg::op(std::string & op, std::shared_ptr<CDataSize> & leftNum, std::shared_ptr<CDataSize> & rightNum)
 {
-    if(op == "+")
+    if(op == "+") {
         *leftNum + *rightNum;
-    else if(op == "-")
+         return true;
+    }
+    else if(op == "-") {
         *leftNum - *rightNum;
-    else if(op == "*")
+        return true;
+    }
+    else if(op == "*") {
+        if(leftNum->getSize() == "small" && leftNum->getVarInt() > 100000000 && rightNum->getVarInt() > 100000000) {
+            if(leftNum->getType() == "float" || rightNum->getType() == "float") {
+                leftNum = std::make_shared<CFloatBig>(leftNum->getVarInt(), leftNum->getVarFloat(), "float", "big");
+                rightNum = std::make_shared<CFloatBig>(rightNum->getVarInt(), rightNum->getVarFloat(), "float", "big");
+            } else {
+                leftNum = std::make_shared<CIntegerBig>(leftNum->getVarInt(), "int", "big");
+                rightNum = std::make_shared<CIntegerBig>(rightNum->getVarInt(), "int", "big");
+            }
+        }
         *leftNum * *rightNum;
+        return true;
+    }
     else if(op == "/")
+    {
+        try{
         *leftNum / *rightNum;
+        }
+        catch(int & x)
+        {
+            if(x == 1)
+                std::cout << "You can't divide by zero!" << std::endl;
+            else
+                std::cout << "You can't divide by decimal float!" << std::endl;
+            return false;
+        }
+        return true;
+    }
+    
+    return true;
 }
 
 std::string CShuntYardAlg::whatBigger(const std::vector<long long int> & lhs, const std::vector<long long int> & rhs)
