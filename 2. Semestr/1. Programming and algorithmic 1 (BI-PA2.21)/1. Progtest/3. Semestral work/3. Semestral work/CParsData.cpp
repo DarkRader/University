@@ -4,8 +4,6 @@
  */
 #include "CParsData.h"
 
-std::string CParsData::getRes(void) const { return m_res; }
-
 bool CParsData::parsingDate(const std::string & operation)
 {
     std::string newOper = operation;

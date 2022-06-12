@@ -9,8 +9,6 @@ CDataSize * CInteger::clone() const
     return new CInteger(*this);
 }
 
-CInteger::CInteger(long long int variable) { m_varInt[0] = variable; }
-
 CInteger::CInteger(long long int variable, const std::string & type, const std::string & size)
 {
     m_type = type;

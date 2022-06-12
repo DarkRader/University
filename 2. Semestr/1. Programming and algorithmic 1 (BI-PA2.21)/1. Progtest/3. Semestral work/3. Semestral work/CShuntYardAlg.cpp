@@ -4,23 +4,9 @@
  */
 #include "CShuntYardAlg.h"
 
-std::string CShuntYardAlg::getNum(size_t i) const
-{
-    std::string num = std::to_string(stackNum[i]->getVarInt());
-    return num;
-}
-
 std::string CShuntYardAlg::getOp(size_t i) const { return stackOp[i]; }
 
 size_t CShuntYardAlg::sizeStackOp(void) const { return stackOp.size(); }
-
-std::string CShuntYardAlg::getType(void) const { return stackNum[0]->getType(); }
-
-std::string CShuntYardAlg::getSize(void) const { return stackNum[0]->getSize(); }
-
-std::vector<long long int> CShuntYardAlg::getInt(void) const { return stackNum[0]->getVecInt(); }
-
-long double CShuntYardAlg::getFloat(void) const { return stackNum[0]->getVarFloat(); }
 
 void CShuntYardAlg::addOp(const std::string & op)
 {

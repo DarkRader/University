@@ -9,7 +9,7 @@ CDataSize * CFloat::clone() const
     return new CFloat(*this);
 }
 
-CFloat::CFloat(long double varIntPart, long double varFloatPart, const std::string & type, const std::string & size)
+CFloat::CFloat(long long int varIntPart, long long int varFloatPart, const std::string & type, const std::string & size)
 {
     m_varInt.push_back(varIntPart);
     m_floatPart.push_back(varFloatPart);

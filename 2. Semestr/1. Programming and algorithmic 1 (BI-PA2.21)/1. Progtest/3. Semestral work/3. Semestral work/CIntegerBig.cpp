@@ -165,8 +165,8 @@ CDataSize & CIntegerBig::operator * (const CDataSize & number)
     std::vector<long long int> secondNum = number.getVecInt();
     char symbol = whatSymbol(secondNum);
     
-    std::string num = transformToString(m_varInt, num);
-    std::string num2 = transformToString(secondNum, num2);;
+    std::string num = transformToString(m_varInt);
+    std::string num2 = transformToString(secondNum);;
     
     if(num == "0" || num2 == "0")
     {
@@ -212,10 +212,10 @@ CDataSize & CIntegerBig::operator / (const CDataSize & number)
     }
     
     std::string num = "";
-    num = transformToString(m_varInt, num);
+    num = transformToString(m_varInt);
     
     std::string num2 = "";
-    num2 = transformToString(secondNum, num2);
+    num2 = transformToString(secondNum);
     
     if(num == "0")
     {
@@ -258,7 +258,7 @@ CDataSize & CIntegerBig::operator / (const CDataSize & number)
         delExtraZero(res, '/');
     }
     
-    controlAnswer(res, num, num2);
+    findRemainder(res, num, num2);
     
     transFromStr(res, '/');
     
@@ -370,9 +370,9 @@ char CIntegerBig::whatSymbol(std::vector<long long int> & num)
     return '+';
 }
 
-std::string CIntegerBig::transformToString(std::vector<long long int> & vecNum, std::string & num)
+std::string CIntegerBig::transformToString(std::vector<long long int> & vecNum)
 {
-    num = "";
+    std::string num = "";
     for(size_t i = vecNum.size(); i > 0; i--)
         num = num + std::to_string(vecNum[i - 1]);
     return num;
@@ -435,7 +435,7 @@ void CIntegerBig::transFromStr(std::string & str, const char operation)
         m_varInt.erase(m_varInt.begin() + i - 1);
 }
 
-void CIntegerBig::controlAnswer(std::string res, std::string num, std::string num2)
+void CIntegerBig::findRemainder(std::string res, std::string num, std::string num2)
 {
     std::string control = multAlg(res, num2);
     for (int i = 0; i < control.size(); i++) {

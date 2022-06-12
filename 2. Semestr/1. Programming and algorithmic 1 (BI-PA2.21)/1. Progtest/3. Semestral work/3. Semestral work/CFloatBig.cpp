@@ -253,10 +253,10 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     std::vector<long long int> secNumFloat = number.getVecFloat();
     char symbol = whatSymbol(secondNum);
     
-    std::string num = transformToString(m_varInt, num, "int");
-    std::string num2 = transformToString(secondNum, num2, "int");
-    std::string numFloat = transformToString(m_floatPart, numFloat, "float");
-    std::string numFloat2 = transformToString(secNumFloat, numFloat2, "float");
+    std::string num = transformToString(m_varInt, "int");
+    std::string num2 = transformToString(secondNum, "int");
+    std::string numFloat = transformToString(m_floatPart, "float");
+    std::string numFloat2 = transformToString(secNumFloat, "float");
     size_t sizeFlPart = addNull(numFloat, numFloat2);
     num = num + numFloat;
     num2 = num2 + numFloat2;
@@ -327,9 +327,9 @@ char CFloatBig::whatSymbol(std::vector<long long int> & num)
     return '+';
 }
 
-std::string CFloatBig::transformToString(std::vector<long long int> & vecNum, std::string & num, const std::string & typ)
+std::string CFloatBig::transformToString(std::vector<long long int> & vecNum, const std::string & typ)
 {
-    num = "";
+    std::string num = "";
     if(typ == "int") {
         for(size_t i = vecNum.size(); i > 0; i--)
             num = num + std::to_string(vecNum[i - 1]);
