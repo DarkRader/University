@@ -1,25 +1,3 @@
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <cassert>
-#include <cctype>
-#include <cmath>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <set>
-#include <list>
-#include <map>
-#include <vector>
-#include <queue>
-#include <string>
-#include <algorithm>
-#include <functional>
-#include <memory>
-#include <numeric>
-#include <optional>
-#include <variant>
-#include <any>
 #include <fstream>
 #include "CFloat.h"
 #include "CFloatBig.h"
@@ -27,49 +5,98 @@
 #include "CIntegerBig.h"
 #include "CParsData.h"
 
-static void testOfProgram() {
+static void errEntr() {
     CParsData x;
-    std::ofstream history;
-    history.open("text.txt");
     
+    assert(!x.parsingDate("21512 + 2152m21"));
+    //Syntax error in numbers or variables!
+    assert(!x.parsingDate("2152 {214 + 21}"));
+    //Syntax error, try again!
+    assert(!x.parsingDate("21251.21525 + 2152"));
+    //Syntax error, try again!
+    assert(!x.parsingDate("21521,2512 / 2125 + 21"));
+    //You can't divide by decimal float!
+    assert(!x.parsingDate("212+ -2152 * 21"));
+    //Two characters follow each other, check the location of the brackets!
+    assert(!x.parsingDate("*215 + 21"));
+    //The operation cannot be at the beginning of the expression!
+    assert(!x.parsingDate("2151 + (22125 + 2125"));
+    //There is an opening bracket, but no closing one!
+    assert(!x.parsingDate("21521 + 215251 * 212)"));
+    //You can't write a closing bracket without an opening one!
+    assert(!x.parsingDate(" 219421 + 2151 = 2152"));
+    //The equal sign is in the wrong place!
+    assert(!x.parsingDate("212512 / 2212 / 0"));
+    //You can't divide by zero!
+    assert(x.parsingDate("A = 2125"));
+    //Variable is equal: 2125
+    assert(!x.parsingDate("212 + A + B"));
+    //A nonexistent variable is present in the expression!
+    assert(!x.parsingDate("212(215 + 212)"));
+    //You don't have a sign in front of the brackets, check it out!
+    assert(!x.parsingDate("21212 * (2125 - 212) 212"));
+    //You don't have a sign after the brackets, check it out!
+    assert(!x.parsingDate("wad = 215"));
+    //Syntax error in numbers or variables!
+}
+
+static void exprTest() {
+    CParsData x;
     assert(x.parsingDate("2152151,2512521 + 215212,5125 * 21470 - 21521518"));
     //4601243276.6262521
     assert(x.parsingDate("2125125125 + 2124124,21521 * 1242 - 215251,515 + (64 / 2)"));
     //4763072180.77582
-
     assert(x.parsingDate("2142 / 2 + (- 2124 * 212 / 2 - 2124) -2141 + 214 / 2"));
     //-228231
-
     assert(x.parsingDate("20184 + 21421 - 214 + (-21512 * 1512) + (36 / 6)"));
     //-32484747
-
     assert(x.parsingDate("12412 * (212 + 212 / 2) + (2122 - 212) * 212"));
-    //assert(x.getRes() == "4351936");
+    //"4351936"
     assert(x.parsingDate("12412*(212+212/2)+(2122-212)*212"));
-    //assert(x.getRes() == "4351936");
+    //"4351936"
     assert(x.parsingDate("1 + 2*(3+4 / 2- (1+2)) * 2 + 1"));
-    //assert(x.getRes() == "10");
+    //"10"
     assert(x.parsingDate("(4*(2*(3+5))+7-(8+8)+1)/2"));
-    //assert(x.getRes() == "28");
+    //"28"
     assert(x.parsingDate("(3*0)+5*(6*3/3)"));
-    //assert(x.getRes() == "30");
+    //"30"
     assert(x.parsingDate("215,5212 + 4212,22 * 251,5 - (2125 - 2152,21) + 215,21"));
-    //assert(x.getRes() == "1059831.2712");
+    //"1059831.2712"
     assert(x.parsingDate("(((2+3))) / 1 + 2 -3"));
-    //assert(x.getRes() == "4");
+    //"4"
     assert(x.parsingDate("(1+5*0-3-4+5/5)*0*3/1"));
-    //assert(x.getRes() == "0");
+    //"0"
     assert(x.parsingDate("(1+5*0-3-4+5/5) + 3 - 7 - (-7)"));
-    //assert(x.getRes() == "-2");
+    //"-2"
     assert(x.parsingDate("7 + 8 - 9 * 3 + 4*(-5 + 3 - 12 / 4) * 7 + 8 * 0"));
-    //assert(x.getRes() == "-152");
+    //"-152"
     assert(x.parsingDate("(25-4)/7+5*(12-3)"));
-    //assert(x.getRes() == "48");
+    //"48"
+}
+
+static void testWorkVar() {
+    CParsData x;
     assert(x.parsingDate("A = 215,5212 + 4212,22 * 251,5 - (2125 - 2152,21) + 215,21"));
-    //assert(x.getRes() == "1059831.2712");
+    //"1059831.2712"
     assert(x.parsingDate("A + 214,512"));
     //1060045,7832
-    //assert(x.parsingDate("(1+5)/0*1"));
+    assert(x.parsingDate("A = 2152"));
+    //Variable is equal: 2152
+    assert(x.parsingDate("B = 21212"));
+    //Variable is equal: 21212
+    assert(x.parsingDate("A + B + 212 * 2"));
+    //Result: 23788
+    assert(x.parsingDate("C = A + B + 212 * 2"));
+    //Variable is equal: 23788
+    assert(x.parsingDate("C + 12"));
+    //Result: 23800
+    assert(x.parsingDate("C + A + B * (21 - 21)"));
+    //Result: 25940
+}
+
+static void testBigNum() {
+    CParsData x;
+   
     assert(x.parsingDate("8946389845829385293853859 + 32936533235235235232535232"));
     //41882923081064620526389091
     assert(x.parsingDate("353453475347464586738467387464347563845738 + 28538467475645679845645986948576846584654654654"));
@@ -91,8 +118,7 @@ static void testOfProgram() {
     assert(x.parsingDate("-2714721647261478261762476127461278 + 128751825781275812785718758217851792578190257128258175872598918"));
     //128751825781275812785718758215137070930928778866495699745137640
     assert(x.parsingDate("332895978239572835782758783258923 * 2192051792571751925701975291501925701205215"));
-    //7297252258399825566090 36744947505834699553898053016426767893834986502883445
-    //7297252258399825566090036744947505834699553898053016426767893834986502883445
+    //729725225839982556609036744947505834699553898053016426767893834986502883445
     assert(x.parsingDate("716247617246712647126746127647126471278 * 0"));
     //0
     assert(x.parsingDate("0 * 92195821958291859285918250981958210952152018219421"));
@@ -104,19 +130,15 @@ static void testOfProgram() {
     assert(x.parsingDate("-13296205928105892189258198259128582901 * 10953820958302983592593235235"));
     //-145644259161198695345941949384396270979592415715145496164491716735
     assert(x.parsingDate("81962591562816251962851672582618521925 / 182795817825971258102517025790"));
-    //448383297
-
-    //88195887027607124560264292295
-
-
+    //Result: 448383297 (rem. 88195887027607124560264292295)
     assert(x.parsingDate("-2891685691265291856219421412414214214214 / (-2190727519257017520519275214214214124)"));
-    //1319
+    //Result: 1319 (rem. 2497404865665784658)
     assert(x.parsingDate("2819682462189648291648261468219462198418902740174 / (-492184628196248948217804621421421)"));
-    //-5728912080255694
+    //-5728912080255694 (rem. 425193974422912853325883493919000)
     assert(x.parsingDate("-27815725487154281745271845725184218482 / 21752491745721547215487512842"));
-    //-1278737434
+    //Result: -1278737434 (rem. 9124129980429498494563091054)
     assert(x.parsingDate("98261829691825918259182752752969421846482194214 / 29107492179471024791270497120414421"));
-    //3375826027400
+    //Result: 3375826027400 (rem. 25680804661156260137667560381058814)
     assert(x.parsingDate("3375826027400 * 29107492179471024791270497120414421"));
     //98261829691800237454521596492831754286101135400
     assert(x.parsingDate("98261829691825918259182752752969421846482194214 - 98261829691800237454521596492831754286101135400"));
@@ -124,7 +146,7 @@ static void testOfProgram() {
     assert(x.parsingDate("0 / 8269184618946814482894124"));
     //0
     assert(!x.parsingDate("2901825615268206581252910752971925710 / 0"));
-    //warning!
+    //warning! -- You can't divide by zero!
     assert(x.parsingDate("62198478174987294178472874819724819748918,88214961924164729174267461724671247 + 29812789461264281984269462196428149,219642192486914286184296"));
     //62198507987776755442754859089187016177068.10179181172856157792697061724671247
     assert(x.parsingDate("-819682629164862174647162846128468912468912,940712084710274912749172471824 + (-72147251724587154725847157824,7241672451862546146254174)"));
@@ -143,6 +165,29 @@ static void testOfProgram() {
     //8225774866483275190461451207002995234929535711586097830508468946217950884373400466807501979831602938.471986918391384806250626937919038007
     assert(x.parsingDate("-291074972194729174927419072940,8472194871298748217847218468216498689421 * (-82164879628146826482168461284689216478921,7849219674621846281689426892164)"));
     //23916140053146107148185778532350221343596969367743652861812655675949683.8099358432324390922995902880517975372867
+}
+
+void greeting(void)
+{
+    std::cout << "Welcome to calculation with unlimited accuracy!" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Rules for using the calculator: " << std::endl;
+    std::cout << std::endl;
+    std::cout << "You can use any of the following operators - '+', '-', '*', '/' and expressions inside brackets, that is, using - '(', ')'." << std::endl;
+    std::cout << std::endl;
+    std::cout << "You can also use variables and use the = sign to assign any expressions," << std::endl << "in the future you can use variables in your calculations, but for variables" << std::endl << "you can only use the letters 'A-Z' and 'a-z' the size of the letters plays a role," << std::endl << "you can also change values inside variables " << std::endl;
+    std::cout << std::endl;
+    std::cout << "Also pay attention to the use of a minus sign, you cannot write: '5 - -3'," << std::endl << "but you can write it using brackets: '5 - (-3)'" << std::endl;
+    std::cout << std::endl;
+    std::cout << "In the program, you cannot divide float decimal numbers," <<
+    std::endl << "when using float decimal numbers, use a comma, for example '21525,2112'" << std::endl;
+    std::cout << std::endl;
+    std::cout << "The program has the ability to download and download the history of the calculator to download write 'download history' in small letters," << std::endl << "give a name to the file where you want to save the history." << std::endl;
+    std::cout << std::endl;
+    std::cout << "If you want to upload a story that you downloaded, write 'upload story' in small letters,"  << std::endl << "write the name of the file where you downloaded it, in addition to the history of upload and variables that you assigned" << std::endl;
+    std::cout << std::endl;
+    std::cout << "To completit the program, write 'quit' in small letters" << std::endl;
+    std::cout << std::endl;
 }
 
 void copyAnotherFile(const std::string & fileName)
@@ -187,62 +232,69 @@ void uploadHistory(const std::string & fileName, CParsData & x)
     }
 }
 
+bool commandUser(std::string & commandUser, std::string & renamed, std::ofstream & os, CParsData & x)
+{
+    if(commandUser == "dowload history") {
+        std::cout << "Write down what your file will be called" << std::endl;
+        renamed = "Yes";
+        return true;
+    }
+    
+    if(renamed == "Yes") {
+        os.close();
+        commandUser += ".txt";
+        copyAnotherFile(commandUser);
+        os.open("text.txt");
+        renamed = "No";
+        return true;
+    }
+    
+    if(commandUser == "upload history") {
+        std::cout << "Enter the name of the file whose history you want to upload" << std::endl;
+        renamed = "Ready";
+        return true;
+    }
+    
+    if(renamed == "Ready") {
+        commandUser += ".txt";
+        uploadHistory(commandUser, x);
+        renamed = "No";
+        return true;
+    }
+    
+    return false;
+}
+
 int main() {
     
     //asserts for control program
-    //testOfProgram();
+//    errEntr();
+//    exprTest();
+//    testWorkVar
+//    testBigNum();
+    
+    greeting();
     
     std::string operaceCal;
-    
-    std::cout << "Welcome to calculation with unlimited accuracy!" << std::endl;
-    
     CParsData x;
     std::ofstream os;
     os.open("text.txt");
     std::string renamed = "No";
     
-    while(operaceCal != "konec") {
+    while(operaceCal != "quit") {
         std::getline(std::cin, operaceCal);
         
         if(std::cin.eof()) {
             break;
         }
         
-        if(operaceCal == "dowload history") {
-            std::cout << "Write down what your file will be called" << std::endl;
-            renamed = "Yes";
+        if(commandUser(operaceCal, renamed, os, x) == true)
             continue;
-        }
-        
-        if(renamed == "Yes") {
-            os.close();
-            operaceCal += ".txt";
-            copyAnotherFile(operaceCal);
-            os.open("text.txt");
-            renamed = "No";
-            continue;
-        }
-        
-        if(operaceCal == "upload history") {
-            std::cout << "Enter the name of the file whose history you want to upload" << std::endl;
-            renamed = "Ready";
-            continue;
-        }
-        
-        if(renamed == "Ready") {
-            operaceCal += ".txt";
-            uploadHistory(operaceCal, x);
-            renamed = "No";
-            continue;
-        }
-        
-            
-        //std::cout << operaceCal << std::endl;
         
         if(x.parsingDate(operaceCal) == false)
             continue;
 
-        if(operaceCal != "konec")
+        if(operaceCal != "quit")
             os << operaceCal << std::endl;
 
     }
