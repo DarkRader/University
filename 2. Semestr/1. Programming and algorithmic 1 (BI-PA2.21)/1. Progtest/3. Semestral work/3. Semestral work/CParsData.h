@@ -38,8 +38,6 @@ private:
     
     bool symbol(const char & symbol);
     
-    void negNum(const std::string & operation);
-    
     bool transformNum(std::string repNum, size_t i, CShuntYardAlg & a);
     
     bool findVariable(const std::string & var);
@@ -48,5 +46,8 @@ private:
     
     bool errorInSymbol(std::string & operation, size_t i, int & bracket, CShuntYardAlg & a);
     
+    bool writeRes(std::string & variable, std::vector<std::string> & seqNum, CShuntYardAlg & a);
+    
+    bool writeSymbol(std::string & operation, CShuntYardAlg & a, int & count, int & bracket);
 };
 

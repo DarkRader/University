@@ -23,7 +23,7 @@ public:
     CShuntYardAlg   ( void ) {}
    ~CShuntYardAlg   ( void ) {}
     
-    bool shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var);
+    bool shuntYardAlg(void);
     
     void addOp(const std::string & op);
     
@@ -53,7 +53,7 @@ public:
     
     long double getFloat(void) const;
     
-    std::shared_ptr<CDataSize> getRes(void) const;
+    std::shared_ptr<CDataSize> getRes(int res) const;
     
 private:
     std::vector<std::string> stackOp;
@@ -63,7 +63,9 @@ private:
     
     int prior(const std::string & op);
     
-    bool typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var);
+    bool prepForOperation(size_t i, size_t j);
+    
+    void transformIfNeed(size_t i, size_t j);
     
     std::string whatBigger(const std::vector<long long int> & lhs, const std::vector<long long int> & rhs);
 };

@@ -8,12 +8,13 @@ std::string CParsData::getRes(void) const { return m_res; }
 
 bool CParsData::parsingDate(const std::string & operation)
 {
-    if(operation == "konec") {
+    std::string newOper = operation;
+    clWhiteSpace(newOper);
+    if(newOper == "quit") {
         std::cout << "End of work, thanks for using my calculator" << std::endl;
         return true;
     }
-    
-    if(operation == "") {
+    else if(newOper == "") {
         std::cout << "Write something!" << std::endl;
         return false;
     }
@@ -26,10 +27,6 @@ bool CParsData::parsingDate(const std::string & operation)
     
     if(controlSynErr(control) == false)
         return false;
-    
-    std::string newOper = operation;
-    
-    clWhiteSpace(newOper);
     
     const std::regex re(R"((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s))");
 
@@ -47,27 +44,35 @@ bool CParsData::parsingDate(const std::string & operation)
     
     std::string variable = "";
     
+    if(writeRes(variable, seqNum, a) != true)
+        return false;
+    
+    return true;
+}
+
+bool CParsData::writeRes(std::string & variable, std::vector<std::string> & seqNum, CShuntYardAlg & a)
+{
     if(a.getOp(0) == "=")
     {
         variable = seqNum[0];
         auto iter = m_var.find(variable);
         if(iter == m_var.end()) {
-            if(a.shuntYardAlg(variable, m_var) == true) {
-            std::shared_ptr<CDataSize> tmp = a.getRes();
+            if(a.shuntYardAlg() == true) {
+            std::shared_ptr<CDataSize> tmp = a.getRes(2);
             m_var.insert({seqNum[0], tmp});
             } else {
                 return false;
             }
         } else {
-            if(a.shuntYardAlg(variable, m_var) == true) {
-            iter->second = a.getRes();
+            if(a.shuntYardAlg() == true) {
+            iter->second = a.getRes(2);
             } else {
                 return false;
             }
         }
     } else {
-        if(a.shuntYardAlg(variable, m_var) == true) {
-        a.getRes();
+        if(a.shuntYardAlg() == true) {
+        a.getRes(1);
         } else {
             return false;
         }
@@ -95,8 +100,9 @@ void CParsData::clWhiteSpace(std::string & operation)
     {
         if(operation[i] == ' ') {
             operation.erase(operation.begin() + i);
+        } else {
+            i++;
         }
-        i++;
     }
 }
 
@@ -112,6 +118,24 @@ bool CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
         }
     }
     
+    if(writeSymbol(operation, a, count, bracket) != true)
+        return false;
+    
+    if(bracket > 0) {
+        std::cout << "There is an opening bracket, but no closing one!" << std::endl;
+        return false;
+    }
+    
+    if(count == 0) {
+        std::cout << "There are no operators, enter the correct expression!" << std::endl;
+        return false;
+    }
+    
+    return true;
+}
+
+bool CParsData::writeSymbol(std::string & operation, CShuntYardAlg & a, int & count, int & bracket)
+{
     for(size_t i = 0; i < operation.size(); i++)
     {
         if(symbol(operation[i]) == true || operation[i] == '(' || operation[i] == ')')
@@ -144,33 +168,23 @@ bool CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
         }
     }
     
-    if(bracket > 0) {
-        std::cout << "There is an opening bracket, but no closing one!" << std::endl;
-        return false;
-    }
-    
-    if(count == 0) {
-        std::cout << "There are no operators, enter the correct expression!" << std::endl;
-        return false;
-    }
-    
     return true;
 }
 
 bool CParsData::errorInSymbol(std::string & operation, size_t i, int & bracket, CShuntYardAlg & a)
 {
     
+    if(operation[i] == ')' && bracket == 0) {
+        std::cout << "You can't write a closing bracket without an opening one!" << std::endl;
+        return false;
+    }
+    
+    if(operation[i] == '=' && a.sizeStackOp() > 0) {
+        std::cout << "The equal sign is in the wrong place!" << std::endl;
+        return false;
+    }
+    
     if(i + 1 != operation.size()) {
-        
-        if(operation[i] == ')' && bracket == 0) {
-            std::cout << "You can't write a closing bracket without an opening one!" << std::endl;
-            return false;
-        }
-        
-        if(operation[i] == '=' && a.sizeStackOp() > 0) {
-            std::cout << "The equal sign is in the wrong place!" << std::endl;
-            return false;
-        }
         
         if(symbol(operation[i]) == true && symbol(operation[i + 1]) == true && operation[i] != '=') {
             std::cout << "Two characters follow each other, check the location of the brackets!" << std::endl;
@@ -293,8 +307,7 @@ bool CParsData::transformNum(std::string repNum, size_t i, CShuntYardAlg & a)
     std::string numFloat = "";
     if(repNum.size() < 18)
     {
-        size_t j;
-        for(j = 0; j < repNum.size(); j++)
+        for(size_t j = 0; j < repNum.size(); j++)
         {
             if(repNum[j] != ',' && (repNum[j] < 48 || repNum[j] > 57)) {
                 std::cout << "Syntax error in numbers or variables!" << std::endl;

@@ -89,9 +89,20 @@ void CShuntYardAlg::addBigVar(std::vector<long long int> num, std::vector<long l
     stackNum.push_back(tmp);
 }
 
-std::shared_ptr<CDataSize> CShuntYardAlg::getRes(void) const { stackNum[0]->print(); return stackNum[0]; }
+std::shared_ptr<CDataSize> CShuntYardAlg::getRes(int res) const
+{
+    if(res == 1) {
+        std::cout << "Result: ";
+        stackNum[0]->print();
+    } else{
+        std::cout << "Variable is equal: ";
+        stackNum[0]->print();
+    }
+    
+    return stackNum[0];
+}
 
-bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::string, std::shared_ptr<CDataSize>> & var)
+bool CShuntYardAlg::shuntYardAlg(void)
 {
     size_t i = 0, j = 0;
     if(stackOp[j] == "=")
@@ -125,7 +136,6 @@ bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::st
             }
         }
         
-        
         if(stackOp.size() == j + 1)
         {
             if(stackOp.size() > 1 && ((stackOp[j] == "*" && stackOp[j - 1] == "/") || (stackOp[j] == "/" && stackOp[j - 1] == "*") ||
@@ -136,7 +146,7 @@ bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::st
             }
             if(i == stackNum.size() - 1 && stackNum.size() > 1)
                 i--;
-            if(typDateAndLenght(i, j, var) == true) {
+            if(prepForOperation(i, j) == true) {
                 if(i != 0)
                     i--;
                 if(j != 0)
@@ -188,7 +198,7 @@ bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::st
             }
             if(i == stackNum.size() - 1 && stackNum.size() > 1)
                 i--;
-            if(typDateAndLenght(i, j, var) == true) {
+            if(prepForOperation(i, j) == true) {
                 if(stackOp.size() == j + 1) {
                     i--;
                     j--;
@@ -202,14 +212,14 @@ bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::st
             {
                 i--;
                 j--;
-                if(typDateAndLenght(i, j, var) != true)
+                if(prepForOperation(i, j) != true)
                     return false;
             }
             while(stackOp[j] != "(")
             {
                 if(i == stackNum.size() - 1 && stackNum.size() > 1)
                     i--;
-                if(typDateAndLenght(i, j, var) == true) {
+                if(prepForOperation(i, j) == true) {
                     if(i != 0)
                         i--;
                     if(j != 0)
@@ -229,12 +239,11 @@ bool CShuntYardAlg::shuntYardAlg(const std::string & variable, std::map <std::st
         }
         
     }
-    //stackNum[0]->print(history);
     
     return true;
 }
 
-bool CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, std::shared_ptr<CDataSize>> & var)
+bool CShuntYardAlg::prepForOperation(size_t i, size_t j)
 {
     if(stackOp.size() != 1 && stackOp[j - 1] == "-")
     {
@@ -242,26 +251,7 @@ bool CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, 
         stackOp[j - 1] = "+";
     }
     
-    if(stackNum[i]->getType() == "float" && stackNum[i + 1]->getType() == "int")
-    {
-        stackNum[i + 1] = std :: make_shared<CFloat>(stackNum[i + 1]->getVarInt(), "float", "small");
-    } else if (stackNum[i]->getType() == "int" && stackNum[i + 1]->getType() == "float")
-    {
-        stackNum[i] = std :: make_shared<CFloat>(stackNum[i]->getVarInt(), "float", "small");
-    }
-    
-    if(stackNum[i]->getSize() == "small" && stackNum[i + 1]->getSize() == "big")
-    {
-        if(stackNum[i + 1]->getType() == "int")
-            stackNum[i] = std::make_shared<CIntegerBig>(stackNum[i]->getVarInt(), "int", "big");
-        else
-            stackNum[i] = std::make_shared<CFloatBig>(stackNum[i]->getVarInt(), stackNum[i]->getVarFloat(), "float", "big");
-    } else if(stackNum[i]->getSize() == "big" && stackNum[i + 1]->getSize() == "small") {
-        if(stackNum[i]->getType() == "int")
-            stackNum[i + 1] = std::make_shared<CIntegerBig>(stackNum[i + 1]->getVarInt(), "int", "big");
-        else
-            stackNum[i + 1] = std::make_shared<CFloatBig>(stackNum[i + 1]->getVarInt(), stackNum[i + 1]->getVarFloat(), "float", "big");
-    }
+    transformIfNeed(i, j);
     
     if(stackNum[i] ->getSize() == "big" && (stackOp[j] == "-" || stackOp[j] == "+") &&
                                            ((stackNum[i]->getSign() == '-' && stackNum[i + 1]->getSign() == '+') ||
@@ -288,7 +278,6 @@ bool CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, 
             return true;
         }
     
-
     if(stackNum[i] ->getSize() == "big" && stackOp[j] == "-" && whatBigger(stackNum[i]->getVecInt(), stackNum[i + 1]->getVecInt()) == "rhs" &&
        (stackNum[i]->getSign() == '+' && stackNum[i + 1]->getSign() == '+'))
     {
@@ -309,6 +298,30 @@ bool CShuntYardAlg::typDateAndLenght(size_t i, size_t j, std::map <std::string, 
         return false;
     
     return true;
+}
+
+void CShuntYardAlg::transformIfNeed(size_t i, size_t j)
+{
+    if(stackNum[i]->getType() == "float" && stackNum[i + 1]->getType() == "int")
+    {
+        stackNum[i + 1] = std :: make_shared<CFloat>(stackNum[i + 1]->getVarInt(), "float", "small");
+    } else if (stackNum[i]->getType() == "int" && stackNum[i + 1]->getType() == "float")
+    {
+        stackNum[i] = std :: make_shared<CFloat>(stackNum[i]->getVarInt(), "float", "small");
+    }
+    
+    if(stackNum[i]->getSize() == "small" && stackNum[i + 1]->getSize() == "big")
+    {
+        if(stackNum[i + 1]->getType() == "int")
+            stackNum[i] = std::make_shared<CIntegerBig>(stackNum[i]->getVarInt(), "int", "big");
+        else
+            stackNum[i] = std::make_shared<CFloatBig>(stackNum[i]->getVarInt(), stackNum[i]->getVarFloat(), "float", "big");
+    } else if(stackNum[i]->getSize() == "big" && stackNum[i + 1]->getSize() == "small") {
+        if(stackNum[i]->getType() == "int")
+            stackNum[i + 1] = std::make_shared<CIntegerBig>(stackNum[i + 1]->getVarInt(), "int", "big");
+        else
+            stackNum[i + 1] = std::make_shared<CFloatBig>(stackNum[i + 1]->getVarInt(), stackNum[i + 1]->getVarFloat(), "float", "big");
+    }
 }
 
 int CShuntYardAlg::prior(const std::string & op)
