@@ -66,7 +66,7 @@ CDataSize & CInteger::operator * (const CDataSize & number)
 
 void CInteger::print(void) const
 {
-    std::cout << "Result: " << m_varInt[0];
+    std::cout << m_varInt[0];
     
     if(m_remains[0] != 0) {
         std::cout << " (rem. " << m_remains[0] << ")" << std::endl;

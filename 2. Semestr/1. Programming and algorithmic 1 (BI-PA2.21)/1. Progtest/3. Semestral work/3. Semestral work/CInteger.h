@@ -13,14 +13,11 @@ public:
     
     CDataSize * clone() const override;
     
-    void print(void) const override;
-    
     CInteger(long long int variable);
     
     CInteger(long long int variable, const std::string & type, const std::string & size);
     
     void negativeNum(void) override;
-    
     char getSign(void) override;
     
     CDataSize & operator + (const CDataSize & number) override;
@@ -30,6 +27,8 @@ public:
     CDataSize & operator * (const CDataSize & number) override;
     
     CDataSize & operator / (const CDataSize & number) override;
+    
+    void print(void) const override;
     
     
 protected:

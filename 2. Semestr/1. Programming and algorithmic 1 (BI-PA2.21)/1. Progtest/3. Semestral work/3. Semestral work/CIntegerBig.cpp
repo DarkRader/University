@@ -438,7 +438,6 @@ void CIntegerBig::transFromStr(std::string & str, const char operation)
 void CIntegerBig::controlAnswer(std::string res, std::string num, std::string num2)
 {
     std::string control = multAlg(res, num2);
-    //transFromStr(control, '*');
     for (int i = 0; i < control.size(); i++) {
         control[i] += '0';
        }
@@ -497,7 +496,6 @@ void CIntegerBig::addRem(const CDataSize & number)
 
 void CIntegerBig::print(void) const
 {
-    std::cout << "Result: ";
     for(size_t i = m_varInt.size(); i > 0; i--) {
         if(i != m_varInt.size() && sizeNum(m_varInt[i - 1]) < 18)
         {

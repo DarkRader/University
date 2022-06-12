@@ -214,7 +214,6 @@ long long int CFloat::findDegree(size_t size)
 
 void CFloat::print(void) const
 {
-    std::cout << "Result: ";
     std::cout << m_varInt[0] << "," << m_floatPart[0];
     
     if(m_remains[0] != 0) {

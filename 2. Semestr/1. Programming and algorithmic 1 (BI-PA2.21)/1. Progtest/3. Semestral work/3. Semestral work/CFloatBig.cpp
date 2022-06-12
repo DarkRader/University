@@ -100,46 +100,7 @@ CDataSize & CFloatBig::operator + (const CDataSize & number)
     }
     
     if(m_floatPart.size() > 1 || flNum.size() > 1)
-    {
-        
-        if(m_floatPart.size() < flNum.size() || (m_floatPart.size() == flNum.size() &&
-                                                 m_floatPart[m_floatPart.size() - 1] < flNum[flNum.size() - 1]))
-        {
-            std::vector<long long int> tmp = flNum;
-            flNum = m_floatPart;
-            m_floatPart = tmp;
-        }
-        
-        int flag = 0;
-        for(size_t i = 0; i < m_floatPart.size(); i++)
-        {
-            if(sizeNum(m_floatPart[i]) != sizeNum(flNum[i]))
-            {
-                int size = sizeNum(m_floatPart[i]) - sizeNum(flNum[i]);
-                long long int degree = findDegree(size);
-                flNum[i] = flNum[i] * degree;
-                long long int control = (m_floatPart[i] + flNum[i]);
-                if(sizeNum(control) > sizeNum(m_floatPart[i]))
-                    flag = 1;
-            }
-            if(m_floatPart[i] + flNum[i] > 1000000000000000000 || flag == 1)
-            {
-                    if(i == 0) {
-                        m_varInt[0]++;
-                    } else {
-                        m_floatPart[i - 1]++;
-                    }
-                    if(flag == 1) {
-                        int size = sizeNum(m_floatPart[i]);
-                        long long degree = findDegree(size);
-                        m_floatPart[i] = (m_floatPart[i] + flNum[i]) - degree;
-                    } else
-                        m_floatPart[i] = (m_floatPart[i] + flNum[i]) - 1000000000000000000;
-            } else {
-                m_floatPart[i] = (m_floatPart[i] + flNum[i]);
-            }
-        }
-    }
+        ifExistFlPartPlus(flNum);
     
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
@@ -147,6 +108,47 @@ CDataSize & CFloatBig::operator + (const CDataSize & number)
     addRem(number);
     
     return *this;
+}
+
+void CFloatBig::ifExistFlPartPlus(std::vector<long long int> & flNum)
+{
+    if(m_floatPart.size() < flNum.size() || (m_floatPart.size() == flNum.size() &&
+                                             m_floatPart[m_floatPart.size() - 1] < flNum[flNum.size() - 1]))
+    {
+        std::vector<long long int> tmp = flNum;
+        flNum = m_floatPart;
+        m_floatPart = tmp;
+    }
+    
+    int flag = 0;
+    for(size_t i = 0; i < m_floatPart.size(); i++)
+    {
+        if(sizeNum(m_floatPart[i]) != sizeNum(flNum[i]))
+        {
+            int size = sizeNum(m_floatPart[i]) - sizeNum(flNum[i]);
+            long long int degree = findDegree(size);
+            flNum[i] = flNum[i] * degree;
+            long long int control = (m_floatPart[i] + flNum[i]);
+            if(sizeNum(control) > sizeNum(m_floatPart[i]))
+                flag = 1;
+        }
+        if(m_floatPart[i] + flNum[i] > 1000000000000000000 || flag == 1)
+        {
+                if(i == 0) {
+                    m_varInt[0]++;
+                } else {
+                    m_floatPart[i - 1]++;
+                }
+                if(flag == 1) {
+                    int size = sizeNum(m_floatPart[i]);
+                    long long degree = findDegree(size);
+                    m_floatPart[i] = (m_floatPart[i] + flNum[i]) - degree;
+                } else
+                    m_floatPart[i] = (m_floatPart[i] + flNum[i]) - 1000000000000000000;
+        } else {
+            m_floatPart[i] = (m_floatPart[i] + flNum[i]);
+        }
+    }
 }
 
 CDataSize & CFloatBig::operator - (const CDataSize & number)
@@ -193,48 +195,7 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
         m_varInt.erase(m_varInt.begin() + m_varInt.size() - 1);
     
     if(m_floatPart.size() > 1 || flNum.size() > 1)
-    {
-        
-        if(m_floatPart.size() < flNum.size() || (m_floatPart.size() == flNum.size() &&
-                                                 m_floatPart[m_floatPart.size() - 1] < flNum[flNum.size() - 1]))
-        {
-            std::vector<long long int> tmp = flNum;
-            flNum = m_floatPart;
-            m_floatPart = tmp;
-        }
-        int flag = 0;
-        for(size_t i = 0; i < m_floatPart.size(); i++)
-        {
-            if(i > flNum.size() - 1)
-                break;
-            if(sizeNum(m_floatPart[i]) != sizeNum(flNum[i]))
-            {
-                int size = sizeNum(m_floatPart[i]) - sizeNum(flNum[i]);
-                long long int degree = findDegree(size);
-                flNum[i] = flNum[i] * degree;
-                if(m_floatPart[i] - flNum[i] < 0)
-                    flag = 1;
-            }
-            
-            if(m_floatPart[i] - flNum[i] < 0 || flag == 1)
-            {
-                if(i == 0) {
-                    m_varInt[0]--;
-                } else {
-                    m_floatPart[i - 1]--;
-                }
-                if(flag == 1) {
-                    int size = sizeNum(m_floatPart[i]);
-                    long long degree = findDegree(size);
-                    m_floatPart[i] = degree + (m_floatPart[i] - flNum[i]);
-                } else
-                    m_floatPart[i] = 1000000000000000000 + m_floatPart[i] - flNum[i];
-            } else {
-                m_floatPart[i] = m_floatPart[i] - flNum[i];
-            }
-        }
-        
-    }
+        ifExistFlPartMinus(flNum);
     
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
@@ -242,6 +203,48 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
     addRem(number);
     
     return *this;
+}
+
+void CFloatBig::ifExistFlPartMinus(std::vector<long long int> & flNum)
+{
+    if(m_floatPart.size() < flNum.size() || (m_floatPart.size() == flNum.size() &&
+                                             m_floatPart[m_floatPart.size() - 1] < flNum[flNum.size() - 1]))
+    {
+        std::vector<long long int> tmp = flNum;
+        flNum = m_floatPart;
+        m_floatPart = tmp;
+    }
+    int flag = 0;
+    for(size_t i = 0; i < m_floatPart.size(); i++)
+    {
+        if(i > flNum.size() - 1)
+            break;
+        if(sizeNum(m_floatPart[i]) != sizeNum(flNum[i]))
+        {
+            int size = sizeNum(m_floatPart[i]) - sizeNum(flNum[i]);
+            long long int degree = findDegree(size);
+            flNum[i] = flNum[i] * degree;
+            if(m_floatPart[i] - flNum[i] < 0)
+                flag = 1;
+        }
+        
+        if(m_floatPart[i] - flNum[i] < 0 || flag == 1)
+        {
+            if(i == 0) {
+                m_varInt[0]--;
+            } else {
+                m_floatPart[i - 1]--;
+            }
+            if(flag == 1) {
+                int size = sizeNum(m_floatPart[i]);
+                long long degree = findDegree(size);
+                m_floatPart[i] = degree + (m_floatPart[i] - flNum[i]);
+            } else
+                m_floatPart[i] = 1000000000000000000 + m_floatPart[i] - flNum[i];
+        } else {
+            m_floatPart[i] = m_floatPart[i] - flNum[i];
+        }
+    }
 }
 
 CDataSize & CFloatBig::operator * (const CDataSize & number)
@@ -254,7 +257,6 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     std::string num2 = transformToString(secondNum, num2, "int");
     std::string numFloat = transformToString(m_floatPart, numFloat, "float");
     std::string numFloat2 = transformToString(secNumFloat, numFloat2, "float");
-    //size_t realSize = numFloat.size() + numFloat2.size();
     size_t sizeFlPart = addNull(numFloat, numFloat2);
     num = num + numFloat;
     num2 = num2 + numFloat2;
@@ -272,7 +274,6 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
 
     std::string res = multAlg(num, num2);
     delExtraZero(res, sizeFlPart);
-    //transFromStr(res, realSize);
     transFromStr(res, sizeFlPart);
 
     if(symbol == '-')
@@ -342,48 +343,9 @@ std::string CFloatBig::transformToString(std::vector<long long int> & vecNum, st
 
 void CFloatBig::transFromStr(std::string & str, size_t & sizeflNum)
 {
-    std::string splitFlPart = "";
-    size_t vecFlPart = 0;
     size_t nextMinusSize = sizeflNum;
-    if(sizeflNum > 0)
-    {
-        while(sizeflNum > 17)
-        {
-            size_t tmpSize = str.size() - sizeflNum + 18;
-            for(size_t i = (str.size() - sizeflNum); i < tmpSize; i++) {
-                str[i] += '0';
-                splitFlPart += str[i];
-            }
-            sizeflNum -= 18;
-            long long int newFlPart = atoll(splitFlPart.c_str());
-            if(vecFlPart != m_floatPart.size()) {
-                m_floatPart[vecFlPart] = newFlPart;
-                vecFlPart++;
-            } else {
-                m_floatPart.push_back(newFlPart);
-                vecFlPart++;
-            }
-            splitFlPart = "";
-        }
-        if(sizeflNum != 0)
-        {
-            for(size_t i = (str.size() - sizeflNum); i < str.size(); i++)
-            {
-                str[i] += '0';
-                splitFlPart = splitFlPart + str[i];
-            }
-            long long int newFlPart = atoll(splitFlPart.c_str());
-            if(vecFlPart != m_floatPart.size()) {
-                m_floatPart[vecFlPart] = newFlPart;
-                vecFlPart++;
-            } else {
-                m_floatPart.push_back(newFlPart);
-                vecFlPart++;
-            }
-        }
-        for(size_t i = m_floatPart.size(); i > vecFlPart; i--)
-            m_floatPart.erase(m_floatPart.begin() + i - 1);
-    }
+    
+    transFromStrFlPart(str, sizeflNum);
     
     size_t size = str.size() - nextMinusSize;
     std::string splitStr = "";
@@ -424,6 +386,52 @@ void CFloatBig::transFromStr(std::string & str, size_t & sizeflNum)
     }
     for(size_t i = m_varInt.size(); i > vecSize; i--)
         m_varInt.erase(m_varInt.begin() + i - 1);
+}
+
+void CFloatBig::transFromStrFlPart(std::string & str, size_t & sizeflNum)
+{
+    std::string splitFlPart = "";
+    size_t vecFlPart = 0;
+    
+    if(sizeflNum > 0)
+    {
+        while(sizeflNum > 17)
+        {
+            size_t tmpSize = str.size() - sizeflNum + 18;
+            for(size_t i = (str.size() - sizeflNum); i < tmpSize; i++) {
+                str[i] += '0';
+                splitFlPart += str[i];
+            }
+            sizeflNum -= 18;
+            long long int newFlPart = atoll(splitFlPart.c_str());
+            if(vecFlPart != m_floatPart.size()) {
+                m_floatPart[vecFlPart] = newFlPart;
+                vecFlPart++;
+            } else {
+                m_floatPart.push_back(newFlPart);
+                vecFlPart++;
+            }
+            splitFlPart = "";
+        }
+        if(sizeflNum != 0)
+        {
+            for(size_t i = (str.size() - sizeflNum); i < str.size(); i++)
+            {
+                str[i] += '0';
+                splitFlPart = splitFlPart + str[i];
+            }
+            long long int newFlPart = atoll(splitFlPart.c_str());
+            if(vecFlPart != m_floatPart.size()) {
+                m_floatPart[vecFlPart] = newFlPart;
+                vecFlPart++;
+            } else {
+                m_floatPart.push_back(newFlPart);
+                vecFlPart++;
+            }
+        }
+        for(size_t i = m_floatPart.size(); i > vecFlPart; i--)
+            m_floatPart.erase(m_floatPart.begin() + i - 1);
+    }
 }
 
 std::string CFloatBig::multAlg(std::string num, std::string num2)
@@ -495,7 +503,6 @@ void CFloatBig::addRem(const CDataSize & number)
 
 void CFloatBig::print(void) const
 {    
-    std::cout << "Result: ";
     for(size_t i = m_varInt.size(); i > 0; i--) {
         if(i != m_varInt.size() && sizeNum(m_varInt[i - 1]) < 18)
         {
