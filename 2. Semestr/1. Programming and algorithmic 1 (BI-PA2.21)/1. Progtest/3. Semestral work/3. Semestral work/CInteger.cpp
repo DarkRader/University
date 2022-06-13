@@ -17,7 +17,7 @@ CInteger::CInteger(long long int variable, const std::string & type, const std::
     m_remains.push_back(0);
 }
 
-void CInteger::negativeNum(void) 
+void CInteger::negativeNum(void)
 {
     m_varInt[0] = m_varInt[0] * (-1);
 }

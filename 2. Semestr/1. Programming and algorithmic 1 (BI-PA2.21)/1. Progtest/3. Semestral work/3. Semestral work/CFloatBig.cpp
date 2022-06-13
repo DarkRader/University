@@ -19,13 +19,13 @@ CFloatBig::CFloatBig(const std::vector<std::string> & variable, const std::vecto
         long long int numInt = atoll(variable[i].c_str());
         m_varInt.push_back(numInt);
     }
-    
+
     for(size_t i = 0; i < floatPart.size(); i++)
     {
         long long int numFloat = atoll(floatPart[i].c_str());
         m_floatPart.push_back(numFloat);
     }
- 
+
     m_remains.push_back(0);
 }
 
@@ -40,7 +40,7 @@ CFloatBig::CFloatBig(std::vector<long long int> num, std::vector<long long int> 
 {
     m_type = type;
     m_size = size;
-    
+
     m_varInt = num;
     m_floatPart = floatPart;
     m_remains.push_back(0);}
@@ -62,9 +62,9 @@ CDataSize & CFloatBig::operator + (const CDataSize & number)
 {
     std::vector<long long int> num = number.getVecInt();
     std::vector<long long int> flNum = number.getVecFloat();
-    
+
     char symbol = '+';
-    
+
     if(m_varInt[m_varInt.size() - 1] > 0 && num[num.size() - 1] > 0){
         symbol = '+';
     } else if(m_varInt[m_varInt.size() - 1] < 0 && num[num.size() - 1] < 0) {
@@ -72,7 +72,7 @@ CDataSize & CFloatBig::operator + (const CDataSize & number)
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
         num[num.size() - 1] = num[num.size() - 1] * (-1);
     }
-    
+
         size_t i = 0, j = 0;
         while(i < m_varInt.size() && j < num.size())
         {
@@ -98,15 +98,15 @@ CDataSize & CFloatBig::operator + (const CDataSize & number)
         for(size_t i = t; i < num.size(); i++)
             m_varInt.push_back(num[i]);
     }
-    
+
     if(m_floatPart.size() > 1 || flNum.size() > 1)
         ifExistFlPartPlus(flNum);
-    
+
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
-    
+
     addRem(number);
-    
+
     return *this;
 }
 
@@ -119,7 +119,7 @@ void CFloatBig::ifExistFlPartPlus(std::vector<long long int> & flNum)
         flNum = m_floatPart;
         m_floatPart = tmp;
     }
-    
+
     int flag = 0;
     for(size_t i = 0; i < m_floatPart.size(); i++)
     {
@@ -155,9 +155,9 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
 {
     std::vector<long long int> num = number.getVecInt();
     std::vector<long long int> flNum = number.getVecFloat();
-    
+
     char symbol = '+';
-        
+
         if((m_varInt[m_varInt.size() - 1] <= 0 && num[num.size() - 1] >= 0) ||
            (m_varInt[m_varInt.size() - 1] >= 0 && num[num.size() - 1] <= 0))
         {
@@ -170,7 +170,7 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
                 m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
             }
         }
-        
+
         size_t i = 0, j = 0;
         while(i < m_varInt.size() && j < num.size())
         {
@@ -190,18 +190,18 @@ CDataSize & CFloatBig::operator - (const CDataSize & number)
             i++;
             j++;
         }
-    
+
     if(m_varInt[m_varInt.size() - 1] == 0 && m_varInt.size() != 1)
         m_varInt.erase(m_varInt.begin() + m_varInt.size() - 1);
-    
+
     if(m_floatPart.size() > 1 || flNum.size() > 1)
         ifExistFlPartMinus(flNum);
-    
+
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
 
     addRem(number);
-    
+
     return *this;
 }
 
@@ -227,7 +227,7 @@ void CFloatBig::ifExistFlPartMinus(std::vector<long long int> & flNum)
             if(m_floatPart[i] - flNum[i] < 0)
                 flag = 1;
         }
-        
+
         if(m_floatPart[i] - flNum[i] < 0 || flag == 1)
         {
             if(i == 0) {
@@ -252,7 +252,7 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     std::vector<long long int> secondNum = number.getVecInt();
     std::vector<long long int> secNumFloat = number.getVecFloat();
     char symbol = whatSymbol(secondNum);
-    
+
     std::string num = transformToString(m_varInt, "int");
     std::string num2 = transformToString(secondNum, "int");
     std::string numFloat = transformToString(m_floatPart, "float");
@@ -260,7 +260,7 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
     size_t sizeFlPart = addNull(numFloat, numFloat2);
     num = num + numFloat;
     num2 = num2 + numFloat2;
-    
+
     if(num == "0" || num2 == "0")
     {
         for(size_t i = m_varInt.size(); i > 0; i--)
@@ -278,9 +278,9 @@ CDataSize & CFloatBig::operator * (const CDataSize & number)
 
     if(symbol == '-')
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
-    
+
     addRem(number);
-    
+
     return *this;
 }
 
@@ -290,14 +290,14 @@ CDataSize & CFloatBig::operator / (const CDataSize & number)
     return *this;
 }
 
-int CFloatBig::sizeNum(long long int num) const 
+int CFloatBig::sizeNum(long long int num) const
 {
     int size = 1;
     for(size_t i = num; i >= 10; size++)
     {
         i = i / 10;
     }
-    
+
     return size;
 }
 
@@ -323,7 +323,7 @@ char CFloatBig::whatSymbol(std::vector<long long int> & num)
         m_varInt[m_varInt.size() - 1] = m_varInt[m_varInt.size() - 1] * (-1);
         return '-';
     }
-    
+
     return '+';
 }
 
@@ -337,16 +337,16 @@ std::string CFloatBig::transformToString(std::vector<long long int> & vecNum, co
         for(size_t i = 0; i < vecNum.size(); i++)
             num = num + std::to_string(vecNum[i]);
     }
-    
+
     return num;
 }
 
 void CFloatBig::transFromStr(std::string & str, size_t & sizeflNum)
 {
     size_t nextMinusSize = sizeflNum;
-    
+
     transFromStrFlPart(str, sizeflNum);
-    
+
     size_t size = str.size() - nextMinusSize;
     std::string splitStr = "";
     size_t vecSize = 0;
@@ -392,7 +392,7 @@ void CFloatBig::transFromStrFlPart(std::string & str, size_t & sizeflNum)
 {
     std::string splitFlPart = "";
     size_t vecFlPart = 0;
-    
+
     if(sizeflNum > 0)
     {
         while(sizeflNum > 17)
@@ -444,7 +444,7 @@ std::string CFloatBig::multAlg(std::string num, std::string num2)
             res[i - 1 + j - 1] += (tmpNum / 10);
         }
     }
-    
+
     return res;
 }
 
@@ -454,7 +454,7 @@ void CFloatBig::delExtraZero(std::string & str, size_t size)
     {
         str.erase(0, 1);
     }
-    
+
     while(str.size() > 1 && str[str.size() - 1] + '0' == '0')
     {
         if(size > 0) {
@@ -463,10 +463,10 @@ void CFloatBig::delExtraZero(std::string & str, size_t size)
         } else
             break;
     }
-    
+
     for(size_t i = str.size(); size > 0; size--, i--)
         str.erase(str.begin() + i - 1);
-    
+
 //    for (int i = 0; i < str.size(); i++) {
 //        str[i] += '0';
 //       }
@@ -487,7 +487,7 @@ size_t CFloatBig::addNull(std::string & flNum, std::string & flNum2)
             flNum = flNum + '0';
         return flNum2.size();
     }
-    
+
     return flNum.size();
 }
 
@@ -495,18 +495,18 @@ void CFloatBig::addRem(const CDataSize & number)
 {
     CIntegerBig lhs(m_remains, "int", "big");
     CIntegerBig rhs(number.getVecRem(), "int", "big");
-    
+
     lhs + rhs;
-    
+
     m_remains = lhs.getVecInt();
 }
 
 void CFloatBig::print(void) const
-{    
+{
     for(size_t i = m_varInt.size(); i > 0; i--) {
         if(i != m_varInt.size() && sizeNum(m_varInt[i - 1]) < 18)
         {
-            int lostNull = 18 - sizeNum(m_varInt[i - 1]);
+          size_t lostNull = 18 - sizeNum(m_varInt[i - 1]);
             for(size_t i = 0; i < lostNull; i++)
                 std::cout << '0';
         }
@@ -516,19 +516,19 @@ void CFloatBig::print(void) const
     for(size_t i = 0; i < m_floatPart.size(); i++) {
         if(i != m_floatPart.size() - 1 && sizeNum(m_floatPart[i]) < 18)
         {
-            int lostNull = 18 - sizeNum(m_floatPart[i]);
+            size_t lostNull = 18 - sizeNum(m_floatPart[i]);
             for(size_t i = 0; i < lostNull; i++)
                 std::cout << '0';
         }
         std::cout << m_floatPart[i];
     }
-    
+
     if((m_remains.size() > 1 && m_remains[m_remains.size() - 1] != 0) || m_remains[0] != 0) {
         std::cout << " (rem. ";
         for(size_t i = m_remains.size(); i > 0; i--) {
             if(i != m_remains.size() && sizeNum(m_remains[i - 1]) < 18)
             {
-                int lostNull = 18 - sizeNum(m_remains[i - 1]);
+                size_t lostNull = 18 - sizeNum(m_remains[i - 1]);
                 for(size_t i = 0; i < lostNull; i++)
                     std::cout << '0';
             }
@@ -536,6 +536,6 @@ void CFloatBig::print(void) const
         }
         std::cout << ")";
     }
-    
+
     std::cout << std::endl;
 }

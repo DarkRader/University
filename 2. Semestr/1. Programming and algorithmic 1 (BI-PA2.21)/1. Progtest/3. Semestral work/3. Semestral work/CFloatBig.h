@@ -112,7 +112,7 @@ private:
     /**
      *transFromStr the method, which transforms numbers from string to vector <long long int> in variable m_varInt
      *@param str represented string to be translated
-     *@param sizeflNum represented the size of the number 
+     *@param sizeflNum represented the size of the number
      */
     void transFromStr(std::string & str, size_t & sizeflNum);
     /**

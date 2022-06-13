@@ -16,35 +16,35 @@ bool CParsData::parsingDate(const std::string & operation)
         std::cout << "Write something!" << std::endl;
         return false;
     }
-    
+
     const std::regex re_control(R"(((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s)|(,)|([a-zA-Z0-9])))");
-    
+
     std::sregex_token_iterator it_control{operation.begin(), operation.end(), re_control, -1};
 
     std::vector<std::string> control( it_control, {} );
-    
+
     if(controlSynErr(control) == false)
         return false;
-    
+
     const std::regex re(R"((\+)|(\-)|(\*)|(\/)|(\()|(\))|(\=)|(\s))");
 
     std::sregex_token_iterator it{newOper.begin(), newOper.end(), re, -1};
 
     std::vector<std::string> seqNum( it, {} );
-    
+
     CShuntYardAlg a;
-    
+
     if(fillStack(seqNum, a) != true)
         return false;
-    
+
     if(fillSymbol(newOper, a) != true)
         return false;
-    
+
     std::string variable = "";
-    
+
     if(writeRes(variable, seqNum, a) != true)
         return false;
-    
+
     return true;
 }
 
@@ -75,7 +75,7 @@ bool CParsData::writeRes(std::string & variable, std::vector<std::string> & seqN
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -88,7 +88,7 @@ bool CParsData::controlSynErr(const std::vector<std::string> & control)
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -108,27 +108,27 @@ bool CParsData::fillSymbol(std::string & operation, CShuntYardAlg & a)
 {
     int count = 0;
     int bracket = 0;
-    
+
     if(operation.size() > 0 && (operation[0] == '*' || operation[0] == '/' || operation[0] == '=' || operation[0] == '+')) {
         if(symbol(operation[0]) == true && operation[0] != '=') {
             std::cout << "The operation cannot be at the beginning of the expression!" << std::endl;
             return false;
         }
     }
-    
+
     if(writeSymbol(operation, a, count, bracket) != true)
         return false;
-    
+
     if(bracket > 0) {
         std::cout << "There is an opening bracket, but no closing one!" << std::endl;
         return false;
     }
-    
+
     if(count == 0) {
         std::cout << "There are no operators, enter the correct expression!" << std::endl;
         return false;
     }
-    
+
     return true;
 }
 
@@ -138,7 +138,7 @@ bool CParsData::writeSymbol(std::string & operation, CShuntYardAlg & a, int & co
     {
         if(symbol(operation[i]) == true || operation[i] == '(' || operation[i] == ')')
         {
-            
+
             if(errorInSymbol(operation, i, bracket, a) == false)
                 return false;
 
@@ -165,53 +165,53 @@ bool CParsData::writeSymbol(std::string & operation, CShuntYardAlg & a, int & co
             count++;
         }
     }
-    
+
     return true;
 }
 
 bool CParsData::errorInSymbol(std::string & operation, size_t i, int & bracket, CShuntYardAlg & a)
 {
-    
+
     if(operation[i] == ')' && bracket == 0) {
         std::cout << "You can't write a closing bracket without an opening one!" << std::endl;
         return false;
     }
-    
+
     if(operation[i] == '=' && a.sizeStackOp() > 0) {
         std::cout << "The equal sign is in the wrong place!" << std::endl;
         return false;
     }
-    
+
     if(i + 1 != operation.size()) {
-        
+
         if(symbol(operation[i]) == true && symbol(operation[i + 1]) == true && operation[i] != '=') {
             std::cout << "Two characters follow each other, check the location of the brackets!" << std::endl;
             return false;
         }
-        
+
         if(operation[i] == '(' && operation[i + 1] == ')') {
             std::cout << "Empty brackets without an expression inside!" << std::endl;
             return false;
         }
-        
+
         if(i > 0 && operation[i] == '(' && operation[i - 1] != '(' && symbol(operation[i - 1]) == false) {
             std::cout << "You don't have a sign in front of the brackets, check it out!" << std::endl;
             return false;
         }
-        
+
         if(i != operation.size() - 1 && operation[i] == ')' && operation[i + 1] != ')' && symbol(operation[i + 1]) != true) {
             std::cout << "You don't have a sign after the brackets, check it out!" << std::endl;
             return false;
         }
-            
+
     }
-    
+
     if(operation[i] == '(')
         bracket++;
-    
+
     if(operation[i] == ')')
         bracket--;
-    
+
     return true;
 }
 
@@ -228,7 +228,7 @@ bool CParsData::symbol(const char & symbol)
             return true;
         case '=':
             return true;
-            
+
         default:
             return false;
     }
@@ -270,7 +270,7 @@ bool CParsData::fillStack(const std::vector<std::string> & seqNum, CShuntYardAlg
                    return false;
         }
     }
-    
+
     return true;
 }
 
@@ -280,21 +280,17 @@ bool CParsData::findVariable(const std::string & var)
     {
         return false;
     }
-    
+
     char variable = var[0];
-    
-    switch (variable) {
-        case 'A' ... 'Z':
-            return true;
-        
-        case 'a' ... 'z':
-            return false;
-            
-        default:
-            return false;
+
+    if(variable > 64 && variable < 91) {
+      return true;
     }
-    
-    
+
+    if(variable > 96 && variable < 123) {
+      return true;
+    }
+
     return false;
 }
 
@@ -311,7 +307,7 @@ bool CParsData::transformNum(std::string repNum, size_t i, CShuntYardAlg & a)
                 std::cout << "Syntax error in numbers or variables!" << std::endl;
                 return false;
             }
-            
+
             if(repNum[j] == ',')
             {
                 flag = 1;
@@ -342,13 +338,13 @@ bool CParsData::transformNum(std::string repNum, size_t i, CShuntYardAlg & a)
                 std::cout << "Syntax error in numbers or variables!" << std::endl;
                 return false;
             }
-            
+
             if(repNum[j] == ',')
             {
                 flag = 1;
                 continue;
             }
-            
+
             if(flag == 1 && repNum[j] != ',')
             {
                 partOfFloatNum += repNum[j];
@@ -362,9 +358,9 @@ bool CParsData::transformNum(std::string repNum, size_t i, CShuntYardAlg & a)
             } else if(flag == 0) {
                 partOfNum += repNum[j];
             }
-            
+
         }
-        
+
         if(partOfFloatNum != "")
         {
             splitFloatNum.push_back(partOfFloatNum);
@@ -379,7 +375,7 @@ bool CParsData::transformNum(std::string repNum, size_t i, CShuntYardAlg & a)
             a.addBigNum(splitNum, splitFloatNum, "float", "big");
         }
     }
-    
+
     return true;
 }
 

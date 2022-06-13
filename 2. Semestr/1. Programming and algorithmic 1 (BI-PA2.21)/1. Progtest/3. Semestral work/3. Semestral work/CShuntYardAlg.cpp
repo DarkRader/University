@@ -188,7 +188,7 @@ bool CShuntYardAlg::shuntYardAlg(void)
                 if(stackOp.size() == j + 1) {
                     i--;
                     j--;
-                } 
+                }
             } else
                 return false;
         }else if(stackOp[j + 1] == ")")
