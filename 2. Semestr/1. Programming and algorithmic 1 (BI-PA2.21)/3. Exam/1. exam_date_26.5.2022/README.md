@@ -1,0 +1,3 @@
+##Hash tabulka
+
+Vytvořte hash tabulku (set/množinu) s rozptylováním (velikost zadána v konstruktoru), klíčem je string. konstruktor, destruktor a hash fce implementované od Ládi, kopírující konstruktor ani operátor přiřazení není nutno implementovat tabulka umožňuje prvky vkládat a mazat (vaše implementace) a navíc uchovávat pořadí jejich vložení. K tomu slouží forward iterátor, který musíte také vytvořit. (++, ==, *) vytvořený pomocí begin() a end() (vaše implementace) CItem je prvek ukládaný interně v hash tabulce, CItem(key, nextHash, nextOrder, prevOrder); CHashTable(mFirst, mLast, mTable, mSize)
