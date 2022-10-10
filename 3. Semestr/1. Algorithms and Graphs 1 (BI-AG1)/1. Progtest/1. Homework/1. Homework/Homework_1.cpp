@@ -36,8 +36,160 @@ struct std::hash<std::pair<F, S>> {
 
 #endif
 
+class CGraph
+{
+public:
+    CGraph(Place distance, std::string condition, Place level /*const Map &map, Place types*/)
+    : m_distance(distance), m_condition(condition), m_level(level) {}
+    
+    Place getTypesItems(void) const { return m_contItem.size(); }
+    std::vector<Place> getNeighbours(void) const { return m_neighbours; }
+    Place getDistance(void) const { return m_distance; }
+    Place getLevel(void) const { return m_level; }
+    void changeLevel(Place level) { m_level = level; }
+    void changeCondition(std::string newCondition) { m_condition = newCondition; }
+    
+    void addNeighbours(Place name, const Map &map)
+    {
+        for(Place i = 0; i < map.connections.size(); i++) {
+            if(map.connections[i].first == name)
+                m_neighbours.push_back(map.connections[i].second);
+            else if(map.connections[i].second == name)
+                m_neighbours.push_back(map.connections[i].first);
+        }
+    }
+    
+    void controlExistItems(const Map &map, Place name, Place types)
+    {
+        for(Place i = 0; i < map.items.size(); i++) {
+            for(auto it = map.items.at(i).begin(); it != map.items.at(i).end(); it++) {
+                if(*it == name)
+                    m_contItem.push_back(i);
+            }
+        }
+    }
+    
+    bool visitedOrNot(std::vector<Place> vis, Place name)
+    {
+        for(Place i = 0; i < vis.size(); i++) {
+            if(vis[i] == name)
+                return true;
+        }
+        return false;
+    }
+
+private:
+    Place m_distance;
+    std::vector<Place> m_contItem;
+    std::vector<Place> m_neighbours;
+    std::string m_condition;
+    Place m_level;
+};
+
+//control, that we don't have any empty type of items
+int control_items(const Map &map)
+{
+    int i;
+    for(i = 0; i < map.items.size(); i++)
+        if(map.items[i].size() == 0)
+            return -1;
+    return i;
+}
+
+
+
 std::list<Place> find_path(const Map &map) {
-  //TODO
+    //list for path
+    std::list<Place> m_path;
+    Place typeItems = 0;
+  
+    typeItems = control_items(map);
+    if(typeItems == -1)
+        return m_path;
+      
+    std::unordered_map<Place, CGraph> Vertex_contents;
+    //std::vector<std::pair<Place, std::string>> queue;
+    std::queue<Place> que;
+    //std::queue<CGraph> que;
+    //std::vector<Place> visited;
+    std::vector<std::vector<Place>> visited;
+    Place level = 0;
+    Vertex_contents.insert({map.start, CGraph(0, "open", 0)});
+      
+    auto iter = Vertex_contents.find(map.start);
+    que.push(map.start);
+    iter->second.addNeighbours(iter->first, map);
+    iter->second.controlExistItems(map, iter->first, typeItems);
+    //visited.push_back(map.start);
+    visited.push_back(std :: vector<Place>());
+    visited[level].push_back(map.start);
+    
+//    if(que.front().getName() == map.end && que.front().getTypesItems() == typeItems) {
+//        m_path.push_back(map.start);
+//        return m_path;
+//    }
+    
+    while(!que.empty())
+    {
+        auto node = Vertex_contents.find(que.front());
+        que.pop();
+        for(Place i = 0; i < node->second.getNeighbours().size(); i++) {
+            if(node->second.visitedOrNot(visited[node->second.getLevel()], node->second.getNeighbours()[i]) == false) {
+                Vertex_contents.insert({node->second.getNeighbours()[i], CGraph(node->second.getDistance() + 1, "open", node->second.getLevel())});
+                
+                auto tmpNode = Vertex_contents.find(node->second.getNeighbours()[i]);
+                tmpNode->second.controlExistItems(map, tmpNode->first, typeItems);
+                
+                if(node->second.getTypesItems() < tmpNode->second.getTypesItems()) {
+                    level++;
+                    tmpNode->second.changeLevel(level);
+                    visited.push_back(std :: vector<Place>());
+                    visited[level].push_back(tmpNode->first);
+                } else {
+                    visited[node->second.getLevel()].push_back(tmpNode->first);
+                    tmpNode->second.changeLevel(node->second.getLevel());
+                }
+                que.push(tmpNode->first);
+                //que.push(node->second.getNeighbours()[i]);
+                //visited.push_back(node->second.getNeighbours()[i]);
+            }
+        }
+        auto newNode = Vertex_contents.find(que.front());
+        newNode->second.addNeighbours(newNode->first, map);
+        //newNode->second.controlExistItems(map, newNode->first, typeItems);
+        
+        
+//        if(level > 7)
+//            break;
+        
+        if(newNode->first == map.end && newNode->second.getTypesItems() == typeItems)
+            break;
+            //return m_path;
+        node->second.changeCondition("close");
+    }
+
+    
+    
+    
+    
+    
+  //    m_path.push_back(map.start);
+  //    if(!map.items.empty())
+  //    {
+  //        for(auto it = map.items.at(0).begin(); it != map.items.at(0).end(); ++it)
+  //            std :: cout << (*it) << " ";
+  //        std :: cout << std :: endl;
+  //    }
+      
+  //    auto it = map.items.at(0).begin();
+  //
+  //    if((map.items.size() == 0 || (map.items.size() == 1 && it[0] == map.start))
+  //       && map.start == map.end)
+  //        return m_path;
+      
+      
+      
+       return m_path;
 }
 
 #ifndef __PROGTEST__
@@ -46,6 +198,11 @@ using TestCase = std::pair<size_t, Map>;
 
 // Class template argument deduction exists since C++17 :-)
 const std::array examples = {
+    TestCase{5, Map{11, 0, 10,
+        {{0, 1}, {0, 2}, {0, 5}, {1, 3}, {1, 4}, {1, 8}, {5, 9}, {5, 6}, {5, 10}, {2, 7}, {7, 6}, {8, 10}, {7, 10}},
+        {{2, 6, 3, 9}, {4, 9}}
+    }},
+    
   TestCase{ 1, Map{ 2, 0, 0,
     { { 0, 1 } },
     { { 0 } }
