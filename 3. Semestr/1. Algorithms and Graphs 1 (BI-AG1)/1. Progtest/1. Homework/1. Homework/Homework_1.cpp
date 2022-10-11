@@ -39,19 +39,14 @@ struct std::hash<std::pair<F, S>> {
 class CGraph
 {
 public:
-    CGraph(Place distance, std::string condition, Place level /*const Map &map, Place types*/)
-    : m_distance(distance), m_condition(condition), m_level(level) {}
+    CGraph(std::string condition)
+    : m_condition(condition) {}
     
     Place getTypesItems(void) const { return m_contItem.size(); }
-    Place getTraceItems(void) const { return m_traceItem.size(); }
     std::string getCondition(void) const { return m_condition; }
     std::vector<Place> getContItem(void) const { return m_contItem; }
     std::vector<Place> getNeighbours(void) const { return m_neighbours; }
-    Place getDistance(void) const { return m_distance; }
-    Place getLevel(void) const { return m_level; }
-    void changeLevel(Place level) { m_level = level; }
     void changeCondition(std::string newCondition) { m_condition = newCondition; }
-    void changeDistantion(Place distantion) { m_distance = distantion + 1; }
     
     void addNeighbours(Place name, const Map &map)
     {
@@ -73,9 +68,32 @@ public:
         }
     }
     
-    void addTraceItem(std::vector<Place> contItem)
+    bool visitedOrNot(std::vector<Place> vis, Place name)
     {
-        if(contItem.size() != 0) {
+        for(Place i = 0; i < vis.size(); i++) {
+            if(vis[i] == name)
+                return true;
+        }
+        return false;
+    }
+
+private:
+    std::vector<Place> m_contItem;
+    std::vector<Place> m_neighbours;
+    std::string m_condition;
+};
+
+class CPath
+{
+public:
+    CPath(Place distance, Place level) : m_distance(distance), m_level(level) {}
+    CPath(Place distance, Place level, std::vector<Place> contItem) : m_distance(distance), m_level(level)
+    {
+        if(m_traceItem.size() == 0) {
+            for(Place i = 0; i < contItem.size(); i++) {
+                m_traceItem.push_back(contItem[i]);
+            }
+        } else {
             for(Place i = 0; i < contItem.size(); i++) {
                 for(Place j = 0; j < m_traceItem.size(); j++) {
                     if(contItem[i] == m_traceItem[j])
@@ -87,38 +105,41 @@ public:
         }
     }
     
-    void addNewTraceItem(std::vector<Place> contItem)
+    Place getDistance(void) { return m_distance; }
+    Place getLevel(void) const { return m_level; }
+    void changeLevel(Place level) { m_level = level; }
+    std::vector<Place> getTraceItem(void) { return m_traceItem; }
+    
+    bool newOrNotNewItem(std::vector<Place> father, std::vector<Place> son)
     {
-        if(m_traceItem.size() == 0) {
-            for(Place i = 0; i < contItem.size(); i++) {
-                m_traceItem.push_back(contItem[i]);
+        if(father.size() == 0 && son.size() != 0)
+            return true;
+        
+        Place oldSize = father.size();
+        
+        for(Place i = 0; i < father.size(); i++) {
+            for(Place j = 0; j < son.size(); j++) {
+                if(father[i] == son[j])
+                    break;
+                else if(j == father.size() - 1)
+                    m_traceItem.push_back(son[i]);
             }
-        } else {
-            
         }
+        
+        Place newSize = father.size();
+        
+        if(oldSize == newSize)
+            return false;
+        else
+            return true;
     }
     
-//    bool controlRightItems(std::vector<Place> contItem)
-//    {
-//        if(contItem)
-//    }
-    
-    bool visitedOrNot(std::vector<Place> vis, Place name)
-    {
-        for(Place i = 0; i < vis.size(); i++) {
-            if(vis[i] == name)
-                return true;
-        }
-        return false;
-    }
-
 private:
     Place m_distance;
-    std::vector<Place> m_contItem;
-    std::vector<Place> m_traceItem;
-    std::vector<Place> m_neighbours;
-    std::string m_condition;
     Place m_level;
+    std::vector<Place> m_traceItem;
+    //std::list<Place> m_path;
+    
 };
 
 //control, that we don't have any empty type of items
@@ -131,8 +152,6 @@ int control_items(const Map &map)
     return i;
 }
 
-
-
 std::list<Place> find_path(const Map &map) {
     //list for path
     std::list<Place> m_path;
@@ -143,19 +162,18 @@ std::list<Place> find_path(const Map &map) {
         return m_path;
       
     std::unordered_map<Place, CGraph> Vertex_contents;
-    //std::vector<std::pair<Place, std::string>> queue;
-    std::queue<Place> que;
-    //std::queue<CGraph> que;
-    //std::vector<Place> visited;
+
+    std::queue<std::pair<Place, CPath>> que;
+
     std::vector<std::vector<Place>> visited;
     Place level = 0;
-    Vertex_contents.insert({map.start, CGraph(0, "open", 0)});
+    Vertex_contents.insert({map.start, CGraph("open")});
       
     auto iter = Vertex_contents.find(map.start);
-    que.push(map.start);
+    que.push({map.start, {0, 0}});
     iter->second.addNeighbours(iter->first, map);
     iter->second.controlExistItems(map, iter->first, typeItems);
-    //visited.push_back(map.start);
+
     visited.push_back(std :: vector<Place>());
     visited[level].push_back(map.start);
     
@@ -166,73 +184,60 @@ std::list<Place> find_path(const Map &map) {
     
     while(!que.empty())
     {
-        auto node = Vertex_contents.find(que.front());
+        auto node = Vertex_contents.find(que.front().first);
+        //Place currentNode = node->first;
+//        if(currentNode == 6) // 1
+//            std::cout << "Control vertex!" << std::endl;
+        CPath addInfVer = que.front().second;
         que.pop();
+        
+        
         for(Place i = 0; i < node->second.getNeighbours().size(); i++) {
-            Place currentNode = node->first;
-            if(node->second.visitedOrNot(visited[node->second.getLevel()], node->second.getNeighbours()[i]) == false) {
-                Vertex_contents.insert({node->second.getNeighbours()[i], CGraph(node->second.getDistance() + 1, "open", node->second.getLevel())});
+            if(node->second.visitedOrNot(visited[addInfVer.getLevel()], node->second.getNeighbours()[i]) == false) {
                 
                 auto tmpNode = Vertex_contents.find(node->second.getNeighbours()[i]);
-                Place newNode = tmpNode->first;
-                tmpNode->second.controlExistItems(map, tmpNode->first, typeItems);
                 
-                if(node->second.getTypesItems() < tmpNode->second.getTypesItems()) {
+                if(tmpNode == Vertex_contents.end()) {
+                    Vertex_contents.insert({node->second.getNeighbours()[i], CGraph("open")});
+                    tmpNode = Vertex_contents.find(node->second.getNeighbours()[i]);
+                    tmpNode->second.addNeighbours(tmpNode->first, map);
+                    tmpNode->second.controlExistItems(map, tmpNode->first, typeItems);
+                }
+
+                //Place newNode = tmpNode->first;
+
+                if(addInfVer.newOrNotNewItem(addInfVer.getTraceItem(), tmpNode->second.getContItem()) == true) {
+                //if(addInfVer.getTraceItem().size() == 0 && tmpNode->second.getTypesItems() != 0) {
                     level++;
-                    tmpNode->second.changeLevel(level);
                     visited.push_back(std :: vector<Place>());
                     visited[level].push_back(tmpNode->first);
+                    que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, node->second.getContItem()}});
                 } else {
-                    visited[node->second.getLevel()].push_back(tmpNode->first);
-                    tmpNode->second.changeLevel(node->second.getLevel());
+                    visited[addInfVer.getLevel()].push_back(tmpNode->first);
+                    if(node->second.getTypesItems() != 0 && tmpNode->second.getTypesItems() == 0)
+                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), node->second.getContItem()}});
+                    else
+                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), addInfVer.getTraceItem()}});
                 }
-                
-                if(node->second.getTypesItems() > 0) {
-                    tmpNode->second.addNewTraceItem(node->second.getContItem());
-                }
-                   
-                tmpNode->second.addTraceItem(node->second.getContItem());
-                que.push(tmpNode->first);
-                //que.push(node->second.getNeighbours()[i]);
-                //visited.push_back(node->second.getNeighbours()[i]);
             }
         }
-        auto newNode = Vertex_contents.find(que.front());
-        if(newNode->second.getCondition() == "open")
-            newNode->second.addNeighbours(newNode->first, map);
-        else
-            newNode->second.changeDistantion(node->second.getDistance());
-        //newNode->second.controlExistItems(map, newNode->first, typeItems);
         
+        auto newNode = Vertex_contents.find(que.front().first);
         
-        if(level > 7)
+        if(level > 3) //hodnota 3 je uzitecna //5 //6 //7
+        {
+            std::cout << "Control level!" << std::endl;
+        }
+        
+        if(newNode->first == map.end && addInfVer.getTraceItem().size() == typeItems) {
+            std::cout << newNode->first << std::endl;
+            std::cout << addInfVer.getTraceItem().size() << std::endl;
+            
             break;
-        
-        if(newNode->first == map.end && newNode->second.getTypesItems() == typeItems)
-            break;
+        }
             //return m_path;
         node->second.changeCondition("close");
     }
-
-    
-    
-    
-    
-    
-  //    m_path.push_back(map.start);
-  //    if(!map.items.empty())
-  //    {
-  //        for(auto it = map.items.at(0).begin(); it != map.items.at(0).end(); ++it)
-  //            std :: cout << (*it) << " ";
-  //        std :: cout << std :: endl;
-  //    }
-      
-  //    auto it = map.items.at(0).begin();
-  //
-  //    if((map.items.size() == 0 || (map.items.size() == 1 && it[0] == map.start))
-  //       && map.start == map.end)
-  //        return m_path;
-      
       
       
        return m_path;
