@@ -43,11 +43,15 @@ public:
     : m_distance(distance), m_condition(condition), m_level(level) {}
     
     Place getTypesItems(void) const { return m_contItem.size(); }
+    Place getTraceItems(void) const { return m_traceItem.size(); }
+    std::string getCondition(void) const { return m_condition; }
+    std::vector<Place> getContItem(void) const { return m_contItem; }
     std::vector<Place> getNeighbours(void) const { return m_neighbours; }
     Place getDistance(void) const { return m_distance; }
     Place getLevel(void) const { return m_level; }
     void changeLevel(Place level) { m_level = level; }
     void changeCondition(std::string newCondition) { m_condition = newCondition; }
+    void changeDistantion(Place distantion) { m_distance = distantion + 1; }
     
     void addNeighbours(Place name, const Map &map)
     {
@@ -69,6 +73,36 @@ public:
         }
     }
     
+    void addTraceItem(std::vector<Place> contItem)
+    {
+        if(contItem.size() != 0) {
+            for(Place i = 0; i < contItem.size(); i++) {
+                for(Place j = 0; j < m_traceItem.size(); j++) {
+                    if(contItem[i] == m_traceItem[j])
+                        break;
+                    else if(j == m_traceItem.size() - 1)
+                        m_traceItem.push_back(contItem[i]);
+                }
+            }
+        }
+    }
+    
+    void addNewTraceItem(std::vector<Place> contItem)
+    {
+        if(m_traceItem.size() == 0) {
+            for(Place i = 0; i < contItem.size(); i++) {
+                m_traceItem.push_back(contItem[i]);
+            }
+        } else {
+            
+        }
+    }
+    
+//    bool controlRightItems(std::vector<Place> contItem)
+//    {
+//        if(contItem)
+//    }
+    
     bool visitedOrNot(std::vector<Place> vis, Place name)
     {
         for(Place i = 0; i < vis.size(); i++) {
@@ -81,6 +115,7 @@ public:
 private:
     Place m_distance;
     std::vector<Place> m_contItem;
+    std::vector<Place> m_traceItem;
     std::vector<Place> m_neighbours;
     std::string m_condition;
     Place m_level;
@@ -124,7 +159,7 @@ std::list<Place> find_path(const Map &map) {
     visited.push_back(std :: vector<Place>());
     visited[level].push_back(map.start);
     
-//    if(que.front().getName() == map.end && que.front().getTypesItems() == typeItems) {
+//    if(que.front() == map.end && iter->second.getTypesItems() == typeItems) {
 //        m_path.push_back(map.start);
 //        return m_path;
 //    }
@@ -134,10 +169,12 @@ std::list<Place> find_path(const Map &map) {
         auto node = Vertex_contents.find(que.front());
         que.pop();
         for(Place i = 0; i < node->second.getNeighbours().size(); i++) {
+            Place currentNode = node->first;
             if(node->second.visitedOrNot(visited[node->second.getLevel()], node->second.getNeighbours()[i]) == false) {
                 Vertex_contents.insert({node->second.getNeighbours()[i], CGraph(node->second.getDistance() + 1, "open", node->second.getLevel())});
                 
                 auto tmpNode = Vertex_contents.find(node->second.getNeighbours()[i]);
+                Place newNode = tmpNode->first;
                 tmpNode->second.controlExistItems(map, tmpNode->first, typeItems);
                 
                 if(node->second.getTypesItems() < tmpNode->second.getTypesItems()) {
@@ -149,18 +186,27 @@ std::list<Place> find_path(const Map &map) {
                     visited[node->second.getLevel()].push_back(tmpNode->first);
                     tmpNode->second.changeLevel(node->second.getLevel());
                 }
+                
+                if(node->second.getTypesItems() > 0) {
+                    tmpNode->second.addNewTraceItem(node->second.getContItem());
+                }
+                   
+                tmpNode->second.addTraceItem(node->second.getContItem());
                 que.push(tmpNode->first);
                 //que.push(node->second.getNeighbours()[i]);
                 //visited.push_back(node->second.getNeighbours()[i]);
             }
         }
         auto newNode = Vertex_contents.find(que.front());
-        newNode->second.addNeighbours(newNode->first, map);
+        if(newNode->second.getCondition() == "open")
+            newNode->second.addNeighbours(newNode->first, map);
+        else
+            newNode->second.changeDistantion(node->second.getDistance());
         //newNode->second.controlExistItems(map, newNode->first, typeItems);
         
         
-//        if(level > 7)
-//            break;
+        if(level > 7)
+            break;
         
         if(newNode->first == map.end && newNode->second.getTypesItems() == typeItems)
             break;
