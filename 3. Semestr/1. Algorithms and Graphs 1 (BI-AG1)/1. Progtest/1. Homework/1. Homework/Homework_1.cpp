@@ -110,29 +110,38 @@ public:
     void changeLevel(Place level) { m_level = level; }
     std::vector<Place> getTraceItem(void) { return m_traceItem; }
     
-    bool newOrNotNewItem(std::vector<Place> father, std::vector<Place> son)
+    bool newOrNotNewItem(std::vector<Place> father, std::vector<Place> son, std::vector<Place> & itemPath)
     {
         if(father.size() == 0 && son.size() != 0)
             return true;
         
+        for(Place i = 0; i < m_traceItem.size(); i++) {
+            itemPath.push_back(m_traceItem[i]);
+        }
+        
         Place oldSize = father.size();
+        
+        Place newSize = oldSize;
         
         for(Place i = 0; i < father.size(); i++) {
             for(Place j = 0; j < son.size(); j++) {
                 if(father[i] == son[j])
                     break;
-                else if(j == father.size() - 1)
-                    m_traceItem.push_back(son[i]);
+                else if(j == father.size() - 1) {
+                    newSize++; //m_traceItem.push_back(son[i]);
+                    itemPath.push_back(son[i]);
+                }
             }
         }
         
-        Place newSize = father.size();
+        //Place newSize = m_traceItem.size();
         
         if(oldSize == newSize)
             return false;
         else
             return true;
     }
+    
     
 private:
     Place m_distance;
@@ -185,9 +194,9 @@ std::list<Place> find_path(const Map &map) {
     while(!que.empty())
     {
         auto node = Vertex_contents.find(que.front().first);
-        //Place currentNode = node->first;
-//        if(currentNode == 6) // 1
-//            std::cout << "Control vertex!" << std::endl;
+        Place currentNode = node->first;
+        if(currentNode == 4) // 1
+            std::cout << "Control vertex!" << std::endl;
         CPath addInfVer = que.front().second;
         que.pop();
         
@@ -204,20 +213,26 @@ std::list<Place> find_path(const Map &map) {
                     tmpNode->second.controlExistItems(map, tmpNode->first, typeItems);
                 }
 
-                //Place newNode = tmpNode->first;
+                Place newNode = tmpNode->first;
 
-                if(addInfVer.newOrNotNewItem(addInfVer.getTraceItem(), tmpNode->second.getContItem()) == true) {
-                //if(addInfVer.getTraceItem().size() == 0 && tmpNode->second.getTypesItems() != 0) {
+                std::vector<Place> newItemPath;
+                if(addInfVer.newOrNotNewItem(addInfVer.getTraceItem(), tmpNode->second.getContItem(), newItemPath) == true) {
                     level++;
                     visited.push_back(std :: vector<Place>());
                     visited[level].push_back(tmpNode->first);
-                    que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, node->second.getContItem()}});
+                    if(addInfVer.getTraceItem().size() > 0)
+                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, newItemPath}});
+                        //que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, addInfVer.getTraceItem()}});
+                    else
+                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, node->second.getContItem()}});
                 } else {
                     visited[addInfVer.getLevel()].push_back(tmpNode->first);
                     if(node->second.getTypesItems() != 0 && tmpNode->second.getTypesItems() == 0)
+                        //que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), newItemPath}});
                         que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), node->second.getContItem()}});
                     else
                         que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), addInfVer.getTraceItem()}});
+                    //que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), newItemPath}});
                 }
             }
         }
@@ -232,6 +247,7 @@ std::list<Place> find_path(const Map &map) {
         if(newNode->first == map.end && addInfVer.getTraceItem().size() == typeItems) {
             std::cout << newNode->first << std::endl;
             std::cout << addInfVer.getTraceItem().size() << std::endl;
+            std::cout << addInfVer.getDistance() << std::endl;
             
             break;
         }
