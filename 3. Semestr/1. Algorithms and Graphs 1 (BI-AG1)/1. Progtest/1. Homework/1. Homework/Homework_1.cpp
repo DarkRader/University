@@ -39,14 +39,15 @@ struct std::hash<std::pair<F, S>> {
 class CGraph
 {
 public:
-    CGraph(std::string condition)
-    : m_condition(condition) {}
+    CGraph(void) {}
     
     Place getTypesItems(void) const { return m_contItem.size(); }
-    std::string getCondition(void) const { return m_condition; }
+    
+    std::vector<std::vector<Place>> getMaxItem(void) const { return m_maxItem; };
     std::vector<Place> getContItem(void) const { return m_contItem; }
     std::vector<Place> getNeighbours(void) const { return m_neighbours; }
-    void changeCondition(std::string newCondition) { m_condition = newCondition; }
+    
+    void addMaxItem (std::vector<Place> maxItem) { m_maxItem.push_back(maxItem); }
     
     void addNeighbours(Place name, const Map &map)
     {
@@ -80,15 +81,28 @@ public:
 private:
     std::vector<Place> m_contItem;
     std::vector<Place> m_neighbours;
-    std::string m_condition;
+    std::vector<std::vector<Place>> m_maxItem;
+    
 };
 
 class CPath
 {
 public:
-    CPath(Place distance, Place level) : m_distance(distance), m_level(level) {}
-    CPath(Place distance, Place level, std::vector<Place> contItem) : m_distance(distance), m_level(level)
+    CPath(Place distance, Place level, std::list<Place> path, Place name) : m_distance(distance), m_level(level)
     {
+        for(auto itr = path.begin(); itr != path.end(); itr++) {
+            m_path.push_back(*itr);
+        }
+        m_path.push_back(name);
+    }
+    
+    CPath(Place distance, Place level, std::vector<Place> contItem, std::list<Place> path, Place name) : m_distance(distance), m_level(level)
+    {
+        for(auto itr = path.begin(); itr != path.end(); itr++) {
+            m_path.push_back(*itr);
+        }
+        m_path.push_back(name);
+        
         if(m_traceItem.size() == 0) {
             for(Place i = 0; i < contItem.size(); i++) {
                 m_traceItem.push_back(contItem[i]);
@@ -107,34 +121,49 @@ public:
     
     Place getDistance(void) { return m_distance; }
     Place getLevel(void) const { return m_level; }
-    void changeLevel(Place level) { m_level = level; }
+    std::list<Place> getListPath(void) { return m_path; }
     std::vector<Place> getTraceItem(void) { return m_traceItem; }
+    
+    void changeLevel(Place level) { m_level = level; }
+
+    void addStartItem(std::vector<Place> items)
+    {
+        for(Place i = 0; i < items.size(); i++)
+        {
+            m_traceItem.push_back(items[i]);
+        }
+    }
     
     bool newOrNotNewItem(std::vector<Place> father, std::vector<Place> son, std::vector<Place> & itemPath)
     {
-        if(father.size() == 0 && son.size() != 0)
+        if(father.size() == 0 && son.size() != 0) {
+            for(Place i = 0; i < son.size(); i++)
+                itemPath.push_back(son[i]);
             return true;
+        }
         
         for(Place i = 0; i < m_traceItem.size(); i++) {
             itemPath.push_back(m_traceItem[i]);
         }
         
         Place oldSize = father.size();
-        
         Place newSize = oldSize;
+        Place alrExist = 0;
         
-        for(Place i = 0; i < father.size(); i++) {
-            for(Place j = 0; j < son.size(); j++) {
-                if(father[i] == son[j])
+        for(Place i = 0; i < son.size(); i++) {
+            for(Place j = 0; j < father.size(); j++) {
+                if(father[j] == son[i]) {
+                    alrExist = 1;
                     break;
+                }
                 else if(j == father.size() - 1) {
-                    newSize++; //m_traceItem.push_back(son[i]);
+                    newSize++;
                     itemPath.push_back(son[i]);
                 }
             }
+            if(alrExist == 1)
+                break;
         }
-        
-        //Place newSize = m_traceItem.size();
         
         if(oldSize == newSize)
             return false;
@@ -142,61 +171,124 @@ public:
             return true;
     }
     
+    bool closeRouteOrNot(std::vector<Place> & itemPath, std::vector<std::vector<Place>> maxItem)
+    {
+        if(maxItem.size() == 0)
+            return true;
+        
+        Place exBigger = 0;
+        
+        for(Place i = 0; i < maxItem.size(); i++) {
+            if(maxItem[i].size() < itemPath.size())
+                exBigger = 1;
+            else {
+                if(haveNewItem(maxItem[i], itemPath) == false)
+                    return false;
+                    
+                exBigger = 0;
+            }
+        }
+        
+        if(exBigger == 1)
+            return true;
+     
+        return true;
+    }
     
 private:
     Place m_distance;
     Place m_level;
     std::vector<Place> m_traceItem;
-    //std::list<Place> m_path;
+    std::list<Place> m_path;
+
+    bool haveNewItem(std::vector<Place> maxItem, std::vector<Place> itemPath)
+    {
+        for(Place i = 0; i < itemPath.size(); i++) {
+            for(Place j = 0; j < maxItem.size(); j++) {
+                if(maxItem[j] == itemPath[i]) {
+                    continue;
+                }
+                else if(j == maxItem.size() - 1) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
     
 };
 
 //control, that we don't have any empty type of items
-int control_items(const Map &map)
+bool control_items(const Map &map, Place & items)
 {
-    int i;
+    Place i;
     for(i = 0; i < map.items.size(); i++)
         if(map.items[i].size() == 0)
-            return -1;
-    return i;
+            return false;
+    items = i;
+    return true;
 }
+
+//bool controlItemRoom (const Map &map)
+//{
+//    for(Place i = 0; i < map.items.size(); i++) {
+//        for(auto itr = map.items[i].begin(); itr != map.items[i].end(); itr++) {
+//            for(Place t = 0; t < map.connections.size(); t++) {
+//                if(*itr == map.connections[t].first || *itr == map.connections[t].second)
+//                    break;
+//                if(t == map.connections.size() - 1)
+//                    return false;
+//            }
+//        }
+//    }
+//
+//    return true;
+//}
 
 std::list<Place> find_path(const Map &map) {
     //list for path
-    std::list<Place> m_path;
+    std::list<Place> path;
     Place typeItems = 0;
+    
+    if(map.connections.size() == 0)
+        return path;
   
-    typeItems = control_items(map);
-    if(typeItems == -1)
-        return m_path;
+    if(control_items(map, typeItems) == false)
+        return path;
+    
+//    if(controlItemRoom(map) == false)
+//        return path;
       
     std::unordered_map<Place, CGraph> Vertex_contents;
-
     std::queue<std::pair<Place, CPath>> que;
-
     std::vector<std::vector<Place>> visited;
+    Vertex_contents.insert({map.start, CGraph()});
     Place level = 0;
-    Vertex_contents.insert({map.start, CGraph("open")});
       
     auto iter = Vertex_contents.find(map.start);
-    que.push({map.start, {0, 0}});
     iter->second.addNeighbours(iter->first, map);
     iter->second.controlExistItems(map, iter->first, typeItems);
+    que.push({map.start, {0, 0, path, map.start}});
+    
+    if(iter->second.getContItem().size() > 0) {
+        que.front().second.addStartItem(iter->second.getContItem());
+    }
 
     visited.push_back(std :: vector<Place>());
     visited[level].push_back(map.start);
     
-//    if(que.front() == map.end && iter->second.getTypesItems() == typeItems) {
-//        m_path.push_back(map.start);
-//        return m_path;
-//    }
+    if(que.front().first == map.end && iter->second.getTypesItems() == typeItems) {
+        path.push_back(map.start);
+        return path;
+    }
     
     while(!que.empty())
     {
         auto node = Vertex_contents.find(que.front().first);
         Place currentNode = node->first;
-        if(currentNode == 4) // 1
-            std::cout << "Control vertex!" << std::endl;
+//        if(currentNode == 3) // 1
+//            std::cout << "Control vertex!" << std::endl;
         CPath addInfVer = que.front().second;
         que.pop();
         
@@ -207,56 +299,42 @@ std::list<Place> find_path(const Map &map) {
                 auto tmpNode = Vertex_contents.find(node->second.getNeighbours()[i]);
                 
                 if(tmpNode == Vertex_contents.end()) {
-                    Vertex_contents.insert({node->second.getNeighbours()[i], CGraph("open")});
+                    Vertex_contents.insert({node->second.getNeighbours()[i], CGraph()});
                     tmpNode = Vertex_contents.find(node->second.getNeighbours()[i]);
                     tmpNode->second.addNeighbours(tmpNode->first, map);
                     tmpNode->second.controlExistItems(map, tmpNode->first, typeItems);
                 }
 
-                Place newNode = tmpNode->first;
+                //Place newNode = tmpNode->first;
 
                 std::vector<Place> newItemPath;
                 if(addInfVer.newOrNotNewItem(addInfVer.getTraceItem(), tmpNode->second.getContItem(), newItemPath) == true) {
+                    if(addInfVer.closeRouteOrNot(newItemPath, tmpNode->second.getMaxItem()) == false)
+                        continue;
                     level++;
                     visited.push_back(std :: vector<Place>());
                     visited[level].push_back(tmpNode->first);
-                    if(addInfVer.getTraceItem().size() > 0)
-                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, newItemPath}});
-                        //que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, addInfVer.getTraceItem()}});
-                    else
-                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, node->second.getContItem()}});
+                    tmpNode->second.addMaxItem(newItemPath);
+                    que.push({tmpNode->first, {addInfVer.getDistance() + 1, level, newItemPath, addInfVer.getListPath(), tmpNode->first}});
                 } else {
+                    if(addInfVer.closeRouteOrNot(newItemPath, tmpNode->second.getMaxItem()) == false)
+                        continue;
                     visited[addInfVer.getLevel()].push_back(tmpNode->first);
-                    if(node->second.getTypesItems() != 0 && tmpNode->second.getTypesItems() == 0)
-                        //que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), newItemPath}});
-                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), node->second.getContItem()}});
-                    else
-                        que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), addInfVer.getTraceItem()}});
-                    //que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), newItemPath}});
+                    tmpNode->second.addMaxItem(newItemPath);
+                    que.push({tmpNode->first, {addInfVer.getDistance() + 1, addInfVer.getLevel(), newItemPath, addInfVer.getListPath(), tmpNode->first}});
                 }
             }
         }
         
-        auto newNode = Vertex_contents.find(que.front().first);
-        
-        if(level > 3) //hodnota 3 je uzitecna //5 //6 //7
-        {
-            std::cout << "Control level!" << std::endl;
+        if(currentNode == map.end && addInfVer.getTraceItem().size() == typeItems) {
+            return addInfVer.getListPath();
         }
         
-        if(newNode->first == map.end && addInfVer.getTraceItem().size() == typeItems) {
-            std::cout << newNode->first << std::endl;
-            std::cout << addInfVer.getTraceItem().size() << std::endl;
-            std::cout << addInfVer.getDistance() << std::endl;
-            
-            break;
-        }
-            //return m_path;
-        node->second.changeCondition("close");
+        //path = addInfVer.getListPath();
     }
       
       
-       return m_path;
+       return path;
 }
 
 #ifndef __PROGTEST__
@@ -265,11 +343,78 @@ using TestCase = std::pair<size_t, Map>;
 
 // Class template argument deduction exists since C++17 :-)
 const std::array examples = {
-    TestCase{5, Map{11, 0, 10,
-        {{0, 1}, {0, 2}, {0, 5}, {1, 3}, {1, 4}, {1, 8}, {5, 9}, {5, 6}, {5, 10}, {2, 7}, {7, 6}, {8, 10}, {7, 10}},
-        {{2, 6, 3, 9}, {4, 9}}
+    //        0
+    TestCase{1, Map{2, 0, 0,
+    {{0, 1}},
+    {{0}}
     }},
-    
+    //        1
+    TestCase{3, Map{2, 0, 0,
+    {{0, 1}},
+    {{1}}
+    }},
+    //        2
+    TestCase{3, Map{4, 0, 1,
+    {{0, 2}, {2, 3}, {0, 3}, {3, 1}},
+    {}
+    }},
+    //        3
+    TestCase{4, Map{4, 0, 1,
+    {{0, 2}, {2, 3}, {0, 3}, {3, 1}},
+    {{2}}
+    }},
+    //        4
+    TestCase{0, Map{4, 0, 1,
+    {{0, 2}, {2, 3}, {0, 3}, {3, 1}},
+    {{2}, {}}
+    }},
+    //        5
+    TestCase{0, Map{6, 1, 4,
+    {{1, 2}, {2, 3}, {2, 4}},
+    {{5}}
+    }},
+    //        6
+    TestCase{7, Map{6, 1, 5,
+    {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}},
+    {{0}, {4}}
+    }},
+    //        7
+    TestCase{0, Map{6, 1, 4,
+    {{1, 2}, {2, 3}, {2, 4}},
+    {{5}, {1}, {2}, {3}, {4}}
+    }},
+    //       8
+    TestCase{0, Map{6, 1, 4,
+    {},
+    {{5}, {1}, {2}, {3}, {4}}
+    }},
+    //       9
+    TestCase{0, Map{6, 1, 1,
+    {},
+    {{5}, {1}, {2}, {3}, {4}}
+    }},
+    //      10
+    TestCase{5, Map{5, 0, 2,
+    {{1, 4}, {1, 3}, {2, 3}, {2, 4}, {0, 3}, {0, 4}},
+    {{1, 3}, {3}, {4}}
+    }},
+    //      11
+    TestCase{6, Map{6, 2, 4,
+    {{0, 3}, {0, 4}, {0, 5}, {1, 3}, {1, 4}, {1, 5}, {2, 3}, {2, 4}, {2, 5},},
+    {{5}, {5}, {1}, {0, 1}, {0}, {3}, {4}}
+    }},
+    //      12
+    TestCase{5, Map{11, 0, 10,
+    {{0, 1}, {0, 2}, {0, 5}, {1, 3}, {1, 4}, {1, 8}, {5, 9}, {5, 6}, {5, 10}, {2, 7}, {7, 6}, {8, 10}, {7, 10}},
+    {{2, 6, 3, 9}, {4, 9}}
+    }},
+    TestCase{5 ,Map{11, 0, 10,
+    {{0, 5}, {0, 1 }, {0, 7}, {1, 2}, {1,3}, {1, 4}, {3, 10}, {5, 6}, {5, 10}, {5, 8}, {8, 9}, {7, 9}, {9, 10} },
+    {
+    {{2, 6, 8, 7}, {4, 6 }}
+    }
+    }
+    },
   TestCase{ 1, Map{ 2, 0, 0,
     { { 0, 1 } },
     { { 0 } }
@@ -309,3 +454,5 @@ int main() {
 }
 
 #endif
+
+
