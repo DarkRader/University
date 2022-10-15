@@ -83,13 +83,6 @@ private:
 class CPath
 {
 public:
-    CPath(Place distance, Place level, std::list<Place> path, Place name) : m_distance(distance), m_level(level)
-    {
-        for(auto itr = path.begin(); itr != path.end(); itr++)
-            m_path.push_back(*itr);
-        m_path.push_back(name);
-    }
-    
     CPath(Place distance, Place level, std::vector<Place> contItem, std::list<Place> path, Place name) : m_distance(distance), m_level(level)
     {
         for(auto itr = path.begin(); itr != path.end(); itr++) {
@@ -118,12 +111,6 @@ public:
     std::list<Place> getListPath(void) { return m_path; }
     std::vector<Place> getTraceItem(void) { return m_traceItem; }
     void changeLevel(Place level) { m_level = level; }
-
-    void addStartItem(std::vector<Place> items)
-    {
-        for(Place i = 0; i < items.size(); i++)
-            m_traceItem.push_back(items[i]);
-    }
     
     bool newOrNotNewItem(std::vector<Place> father, std::vector<Place> son, std::vector<Place> & itemPath)
     {
@@ -218,7 +205,7 @@ std::list<Place> find_path(const Map &map) {
     
     if(map.connections.size() == 0 || control_items(map) == false)
         return path;
-      
+  
     std::unordered_map<Place, CGraph> Vertex_contents;
     std::queue<std::pair<Place, CPath>> que;
     std::vector<std::vector<Place>> visited;
@@ -226,13 +213,9 @@ std::list<Place> find_path(const Map &map) {
     Place level = 0;
       
     auto iter = Vertex_contents.find(map.start);
-    que.push({map.start, {0, 0, path, map.start}});
+    que.push({map.start, {0, 0, iter->second.getContItem(), path, map.start}});
     visited.push_back(std :: vector<Place>());
     visited[level].push_back(map.start);
-    
-    if(iter->second.getContItem().size() > 0) {
-        que.front().second.addStartItem(iter->second.getContItem());
-    }
     
     while(!que.empty())
     {
