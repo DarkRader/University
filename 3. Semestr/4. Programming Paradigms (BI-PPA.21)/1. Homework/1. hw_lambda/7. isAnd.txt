@@ -1,0 +1,1 @@
+(λ x . (x T T)((x T F) F ((x F T) F ((x F F) F T))) F)
