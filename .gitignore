@@ -5,6 +5,9 @@
 *.xcodeproj/
 DerivedData/
 
+# .idea
+*.xml
+
 # Prerequisites
 *.d
 
