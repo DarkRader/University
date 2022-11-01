@@ -42,6 +42,61 @@ struct DFA {
 
 #endif
 
+class CTransitions
+{
+public:
+    CTransitions(std::map<std::pair<State, Symbol>, std::set<State>> transitionsA,
+                 std::map<std::pair<State, Symbol>, std::set<State>> transitionsB,
+                 State state, std::set<Symbol> alph)
+    {
+        m_State = state;
+        
+        State i = 0;
+        for(auto itAlph = alph.begin(); itAlph != alph.end(); ++itAlph)
+        {
+            std::string newState = "";
+            
+            auto itA = transitionsA.find(std::make_pair(state, *itAlph));
+            m_NFAstateA.push_back(std :: set<State>());
+            if(itA != transitionsA.end()) {
+                for(auto it = itA->second.begin(); it != itA->second.end(); ++it)
+                {
+                    size_t size = m_NFAstateA[i].size();
+                    m_NFAstateA[i].insert(*it);
+                    if(m_NFAstateA[i].size() > size) {
+                        newState += *it + '0';
+                    }
+                }
+            }
+            
+            auto itB = transitionsB.find(std::make_pair(state, *itAlph));
+            m_NFAstateB.push_back(std :: set<State>());
+            if(itB != transitionsB.end()) {
+                for(auto it = itB->second.begin(); it != itB->second.end(); ++it)
+                {
+                    size_t size = m_NFAstateB[i].size();
+                    m_NFAstateB[i].insert(*it);
+                    if(m_NFAstateB[i].size() > size) {
+                        newState += *it + '0';
+                        newState += '`';
+                    }
+                }
+            }
+            m_newState.push_back(newState);
+            i++;
+        }
+    }
+    
+    std::vector<std::string> getNewState(void) const { return m_newState; }
+    State getState(void) const { return m_State; }
+    
+private:
+    std::vector<std::string> m_newState;
+    std::vector<std::set<State>> m_NFAstateA;
+    std::vector<std::set<State>> m_NFAstateB;
+    State m_State;
+};
+
 void fillAlph (const NFA& a, const NFA& b, DFA& resDFA)
 {
     for(auto itA = a.m_Alphabet.begin(), itB = b.m_Alphabet.begin();
@@ -61,6 +116,18 @@ void fillAlph (const NFA& a, const NFA& b, DFA& resDFA)
         }
 }
 
+void fillState (const NFA& a, const NFA& b, DFA& resDFA)
+{
+    std::vector<State> existState;
+
+    std::map<std::string, CTransitions> infoTransitions;
+    
+    infoTransitions.insert({"00`", CTransitions(a.m_Transitions, b.m_Transitions, 0, resDFA.m_Alphabet)});
+    
+//    for(auto it = )
+    
+}
+
 DFA unify(const NFA& a, const NFA& b)
 {
     DFA resDFA;
@@ -72,7 +139,13 @@ DFA intersect(const NFA& a, const NFA& b)
 {
     DFA resDFA;
     
+    //std::vector<State> existState;
+    
     fillAlph(a, b, resDFA);
+    
+    fillState(a, b, resDFA);
+    
+    
 
     
     return resDFA;
