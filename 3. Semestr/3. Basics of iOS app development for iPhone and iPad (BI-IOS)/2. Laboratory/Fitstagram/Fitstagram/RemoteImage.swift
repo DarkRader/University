@@ -18,21 +18,31 @@ struct RemoteImage: View {
         } else {
             ProgressView()
                 .progressViewStyle(.circular)
-                .onAppear {
-                    fetchImage()
+                .task {
+                    await fetchImage()
                 }
         }
     }
     
-    private func fetchImage() {
-        DispatchQueue.global().async {
-            let data = try! Data(contentsOf: url)
-            let image = UIImage(data: data)!
-            
-            DispatchQueue.main.async {
-                self.image = Image(uiImage: image)
+    @MainActor
+    private func fetchImage() async {
+        Task {
+            let downloadImage = Task.detached {
+                let data = try! Data(contentsOf: url)
+                return UIImage(data: data)!
             }
+            let uiImage = await downloadImage.value
+            self.image = Image(uiImage: uiImage)
+            //self.image = Image(uiImage: image)
         }
+//        DispatchQueue.global().async {
+//            let data = try! Data(contentsOf: url)
+//            let image = UIImage(data: data)!
+//
+//            DispatchQueue.main.async {
+//                self.image = Image(uiImage: image)
+//            }
+//        }
     }
     
 }

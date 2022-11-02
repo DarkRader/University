@@ -13,7 +13,7 @@ struct PostView: View {
     var body: some View {
         VStack (alignment: .leading){
             HStack {
-                Text(post.username)
+                Text(post.author.username)
                     .font(.callout)
                     .fontWeight(.semibold)
                 
@@ -24,6 +24,16 @@ struct PostView: View {
                 }
             }
             .padding(.horizontal, 8)
+            
+            Group {
+                if let photoURL = post.photos.first {
+                    AsyncImage(url: photoURL) {
+                        $0.resizable()
+                    } placeholder: {
+                        ProgressView
+                    }
+                }
+            }
             
             Image("nature")
                 .resizable()
@@ -54,7 +64,7 @@ struct PostView: View {
                 .padding(.horizontal, 8)
             
             Group {
-                Text(post.username)
+                Text(post.author.username)
                     .fontWeight(.semibold)
                 +
                 Text(" " + post.description)
@@ -82,7 +92,8 @@ struct PostView_Previews: PreviewProvider {
     static var previews: some View {
         PostView(
             post: Post(
-                username: "Artem Kuznetsov",
+                id: "1",
+                author: Author(username: "Artem Kuznetsov"),
                 likes: 1024,
                 description: "Top notch!",
                 comments: 256

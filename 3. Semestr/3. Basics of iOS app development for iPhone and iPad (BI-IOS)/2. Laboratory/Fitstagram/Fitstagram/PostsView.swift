@@ -7,12 +7,25 @@
 
 import SwiftUI
 
+//{
+//    "postedAt" : "2022-04-15T08:46:01Z",
+//    "text" : "đ¤",
+//    "id" : "E7574AAB-2E6F-43EE-A803-1234953DC36A",
+//    "photos" : [
+//        "https:\/\/fitstagram.ackee.cz:443\/images\/176C9C71-9FB9-47C8-BE0C-27C9700E3A5C.jpg"
+//    ],
+//    "likes" : [
+//
+//    ],
+//    "numberOfComments" : 0,
+//    "author" : {
+//        "username" : "zatim_bez_nazvu",
+//        "id" : "C455A70A-A20F-4CAB-8940-F260AFB2F4C6"
+//    }
+//}
+
 struct PostsView: View {
-    var posts = [
-        Post(username: "Artem Kuznetsov", likes: 1240, description: "Top notch!", comments: 256),
-        Post(username: "Maks Garbunov", likes: 4234, description: "Good view!", comments: 2553),
-        Post(username: "Gray Black", likes: 342, description: "Something cool!", comments: 35),
-    ]
+    @State var posts: [Post] = []
     
     @State var path = NavigationPath()
     
@@ -28,9 +41,14 @@ struct PostsView: View {
                     }
                 }
             }
-            .onAppear() {
-                
+            .task {
+                await fetchPosts()
             }
+//            .onAppear() {
+//                Task {
+//                    await fetchPosts()
+//                }
+//            }
             .navigationDestination(for: String.self) { string in
                 Text(string)
             }
@@ -39,7 +57,7 @@ struct PostsView: View {
             }
             .navigationDestination(for: Post.self) { post in
                 VStack {
-                    Text(post.username)
+                    Text(post.author.username)
                     
                     Text("\(post.comments)")
                     
@@ -56,20 +74,27 @@ struct PostsView: View {
         }
     }
     
-    private func fetchPosts() {
+    private func fetchPosts() async {
         var request = URLRequest(url: URL(string: "https://fitstagram.ackee.cz/api/feed/")!)
         request.httpMethod = "GET"
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error {
-                print("[ERROR]", error)
-                return
-            }
-            if let data {
-                print("[DATA]", String(data: data, encoding: .utf8)!)
-            }
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            self.posts = try JSONDecoder.decode([Post].self, from: data)
+            
         }
-        task.resume()
+
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error {
+//                print("[ERROR]", error)
+//                return
+//            }
+//            if let data {
+//                self.posts = try! JSONDecoder().decode([Post].self, from: data)
+//                //print("[DATA]", String(data: data, encoding: .utf8)!)
+//            }
+//        }
+//        task.resume() // don't forget to use it
     }
 }
 
