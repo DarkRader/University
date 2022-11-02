@@ -18,7 +18,11 @@ struct ContentView: View {
             
             CommentsView()
                 .tabItem {
-                    Label("Comments", systemImage: "person")
+                    Label("Comments", systemImage: "message")
+                }
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: "person")
                 }
         }
     }

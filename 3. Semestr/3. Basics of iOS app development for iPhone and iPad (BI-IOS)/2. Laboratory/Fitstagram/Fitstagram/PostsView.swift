@@ -28,6 +28,9 @@ struct PostsView: View {
                     }
                 }
             }
+            .onAppear() {
+                
+            }
             .navigationDestination(for: String.self) { string in
                 Text(string)
             }
@@ -51,6 +54,22 @@ struct PostsView: View {
             }
             .navigationTitle("FITstagram")
         }
+    }
+    
+    private func fetchPosts() {
+        var request = URLRequest(url: URL(string: "https://fitstagram.ackee.cz/api/feed/")!)
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error {
+                print("[ERROR]", error)
+                return
+            }
+            if let data {
+                print("[DATA]", String(data: data, encoding: .utf8)!)
+            }
+        }
+        task.resume()
     }
 }
 
