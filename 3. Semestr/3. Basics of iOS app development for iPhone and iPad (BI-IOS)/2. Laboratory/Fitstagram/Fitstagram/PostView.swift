@@ -26,17 +26,21 @@ struct PostView: View {
             .padding(.horizontal, 8)
             
             Group {
-                if let photoURL = post.photos.first {
-                    AsyncImage(url: photoURL) {
+                if let image = post.photos.first {
+                    AsyncImage(url: URL(string: image)) {
                         $0.resizable()
                     } placeholder: {
-                        ProgressView
+                        ProgressView()
+                            .progressViewStyle(.circular)
                     }
+                } else {
+                    Image("nature")
+                        .resizable()
                 }
             }
             
-            Image("nature")
-                .resizable()
+//            Image("nature")
+//                .resizable()
                 .frame(height: 400)
                 .aspectRatio(contentMode: .fit)
             
@@ -69,7 +73,7 @@ struct PostView: View {
                 +
                 Text(" " + post.description)
             }
-            .padding(.vertical, 4)
+            //.padding(.vertical, 4)
             .padding(.horizontal, 8)
             
             Button(action: { }) {
@@ -93,10 +97,12 @@ struct PostView_Previews: PreviewProvider {
         PostView(
             post: Post(
                 id: "1",
-                author: Author(username: "Artem Kuznetsov"),
                 likes: 1024,
+                photos: [],
                 description: "Top notch!",
-                comments: 256
-        ))
+                comments: 256,
+                author: Author(id: "1", username: "Artem Kuznetsov")
+            )
+        )
     }
 }

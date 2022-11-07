@@ -31,24 +31,26 @@ struct PostsView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            ScrollView {
-                LazyVGrid(columns: [GridItem()]) {
-                    ForEach(posts) { post in
-                        PostView(post: post)
-                            .onTapGesture {
-                                path.append(post)
+            Group {
+                if posts.isEmpty {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .task {
+                            await fetchPosts()
+                        }
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: [GridItem()]) {
+                            ForEach(posts) { post in
+                                PostView(post: post)
+                                    .onTapGesture {
+                                        path.append(post)
+                                    }
                             }
+                        }
                     }
                 }
             }
-            .task {
-                await fetchPosts()
-            }
-//            .onAppear() {
-//                Task {
-//                    await fetchPosts()
-//                }
-//            }
             .navigationDestination(for: String.self) { string in
                 Text(string)
             }
@@ -80,21 +82,10 @@ struct PostsView: View {
         
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            self.posts = try JSONDecoder.decode([Post].self, from: data)
-            
+            self.posts = try JSONDecoder().decode([Post].self, from: data)
+        } catch {
+            print("[ERROR]", error)
         }
-
-//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let error {
-//                print("[ERROR]", error)
-//                return
-//            }
-//            if let data {
-//                self.posts = try! JSONDecoder().decode([Post].self, from: data)
-//                //print("[DATA]", String(data: data, encoding: .utf8)!)
-//            }
-//        }
-//        task.resume() // don't forget to use it
     }
 }
 
