@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias User = Author
+
 struct Author: Hashable {
     let id: String
     let username: String

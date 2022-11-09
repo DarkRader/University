@@ -42,7 +42,10 @@ struct PostsView: View {
                     ScrollView {
                         LazyVGrid(columns: [GridItem()]) {
                             ForEach(posts) { post in
-                                PostView(post: post)
+                                PostView(post: post,
+                                onCommentsButtonTap: {
+                                    path.append(<#T##value: Hashable##Hashable#>)
+                                }
                                     .onTapGesture {
                                         path.append(post)
                                     }

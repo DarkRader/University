@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostView: View {
     let post: Post
+    let onCommentsButtonTap: Post
     
     var body: some View {
         VStack (alignment: .leading){
@@ -39,8 +40,6 @@ struct PostView: View {
                 }
             }
             
-//            Image("nature")
-//                .resizable()
                 .frame(height: 400)
                 .aspectRatio(contentMode: .fit)
             
@@ -76,7 +75,7 @@ struct PostView: View {
             //.padding(.vertical, 4)
             .padding(.horizontal, 8)
             
-            Button(action: { }) {
+            Button(action: {}) {
                 Text("Zobrazit vsechni komentare (\(post.comments)")
             }
             .padding(8)
