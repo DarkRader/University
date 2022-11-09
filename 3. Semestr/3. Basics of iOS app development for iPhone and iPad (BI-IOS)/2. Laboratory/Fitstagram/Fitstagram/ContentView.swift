@@ -16,10 +16,6 @@ struct ContentView: View {
                     Label("Feed", systemImage: "list.dash")
                 }
             
-            CommentsView()
-                .tabItem {
-                    Label("Comments", systemImage: "message")
-                }
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person")

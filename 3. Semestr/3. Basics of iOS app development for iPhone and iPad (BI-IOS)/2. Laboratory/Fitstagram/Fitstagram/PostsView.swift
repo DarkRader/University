@@ -42,10 +42,12 @@ struct PostsView: View {
                     ScrollView {
                         LazyVGrid(columns: [GridItem()]) {
                             ForEach(posts) { post in
-                                PostView(post: post,
+                                PostView(
+                                    post: post,
                                 onCommentsButtonTap: {
-                                    path.append(<#T##value: Hashable##Hashable#>)
+                                    path.append(post)
                                 }
+                            )
                                     .onTapGesture {
                                         path.append(post)
                                     }
@@ -61,19 +63,20 @@ struct PostsView: View {
                 Text("\(integer)")
             }
             .navigationDestination(for: Post.self) { post in
-                VStack {
-                    Text(post.author.username)
-                    
-                    Text("\(post.comments)")
-                    
-                    Button("PUSH FIRST POST") {
-                        path.append(posts[0])
-                    }
-                    
-                    Button("POP TO ROOT") {
-                        path.removeLast(path.count)
-                    }
-                }
+                CommentsView(viewModel: .init(postID: post.id))
+//                VStack {
+//                    Text(post.author.username)
+//
+//                    Text("\(post.comments)")
+//
+//                    Button("PUSH FIRST POST") {
+//                        path.append(posts[0])
+//                    }
+//
+//                    Button("POP TO ROOT") {
+//                        path.removeLast(path.count)
+//                    }
+//                }
             }
             .navigationTitle("FITstagram")
         }
@@ -92,7 +95,7 @@ struct PostsView: View {
     }
 }
 
-struct PostsView_Previews: PreviewProvider {
+struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         PostsView()
     }
