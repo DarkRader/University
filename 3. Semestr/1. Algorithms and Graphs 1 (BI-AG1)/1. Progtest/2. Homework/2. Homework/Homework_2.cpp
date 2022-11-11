@@ -18,6 +18,9 @@
 
 #endif
 
+//how to implement indexing
+//how to find key through amount
+
 //implement BVSShow
 //implement BVSMin +
 //implement BVSMax +
@@ -37,7 +40,13 @@ public:
     }
     
     size_t getSizeTree(void) const {
-        return m_treeSize;
+        return m_root->m_subTreeSize;
+    }
+    
+    std::pair<size_t, std::string> getProdKey(const std::string prod) const {
+        auto it = m_products.find(prod);
+        std::pair<size_t, std::string> indProd = {it->second, it->first};
+        return indProd;
     }
     
     bool insert (std::string product, size_t amount) {
@@ -45,82 +54,104 @@ public:
         if(!m_first) {
             auto * tmp = new CNode(product, amount);
             m_first = m_last = m_root = m_min = m_max = tmp;
-            tmp->m_index = 0;
-            m_treeSize++;
+            tmp->m_subTreeSize++;
+            m_products.insert({product, amount});
             return true;
         }
-        
+
         auto ** curPoz = &m_root;
-        
+        auto ** prevPoz = curPoz;
+        std::pair<size_t, std::string> curProd = {amount, product};
+
         while(*curPoz) {
-            if((*curPoz)->m_key == product) {
+            if((*curPoz)->m_key == curProd) {
                 return false;
-            } else if((*curPoz)->m_amount > amount) {//insert in left son
+            } else if((*curPoz)->m_key > curProd) { //go in left son
+                prevPoz = curPoz;
                 curPoz = &((*curPoz)->m_L);
-            } else {
+            } else {                                //go in right son
+                prevPoz = curPoz;
                 curPoz = &((*curPoz)->m_R);
             }
         }
-        
+
         *curPoz = new CNode(product, amount);
-        
-        if((*curPoz)->m_amount > m_max->m_amount) {
-            m_max = *curPoz;
-        } else if ((*curPoz)->m_amount < m_min->m_amount) {
-            m_min = *curPoz;
-        }
-        
-        m_last->m_son = *curPoz;
-        (*curPoz)->m_father = m_last;
+        m_products.insert({product, amount});
+
+        (*curPoz)->m_father = *prevPoz;
+        m_last->m_nextProd = *curPoz;
+        (*curPoz)->m_prevProd = m_last;
         m_last = *curPoz;
-        
-        m_treeSize++;
-        
-        changeIndex();
+        (*curPoz)->m_subTreeSize++;
+        updateSubTreeSize();
         
         return true;
     }
     
-    void changeIndex () {
+    void updateSubTreeSize() {
         auto ** curPoz = &m_last;
         
-        
+        while((*curPoz)->m_father) {
+            (*curPoz) = (*curPoz)->m_father;
+            (*curPoz)->m_subTreeSize++;
+        }
     }
     
-    size_t rankOfProduct (std::string product) {
+    size_t rankOfProduct (std::pair<size_t, std::string> product) const {
+        auto * curPoz = m_root;
         
+        size_t ind = 0;
+        while(curPoz->m_key != product) {
+            if(curPoz->m_key > product) {
+                if(curPoz->m_R) {
+                    ind = curPoz->m_R->m_subTreeSize;
+                }
+                ind++;
+                curPoz = curPoz->m_L;
+            } else if(curPoz->m_key < product) {
+                if(curPoz->m_R) {
+                    curPoz = curPoz->m_R;
+                }
+            }
+        }
         
-        return 0;
+        if(curPoz->m_R) {
+            return curPoz->m_R->m_subTreeSize + ind + 1;
+        } else {
+            return ind + 1;
+        }
     }
+    
     
 protected:
     //helping class for basic class CTree
     class CNode {
     public:
-        CNode(std::string key, size_t amount) : m_key(key), m_amount(amount) {}
-        std::string m_key;
-        size_t m_amount;
-        size_t m_index;
+        CNode(std::string key, size_t amount) {
+            m_key = {amount, key};
+        }
+        size_t m_subTreeSize = 0;
+        std::pair<size_t, std::string> m_key;
         
         CNode * m_L = nullptr;
         CNode * m_R = nullptr;
         CNode * m_father = nullptr;
-        CNode * m_son = nullptr;
+        CNode * m_nextProd = nullptr;
+        CNode * m_prevProd = nullptr;
     };
+    std::unordered_map<std::string, size_t> m_products;
+    
     CNode * m_root = nullptr;
     CNode * m_first = nullptr;
     CNode * m_last = nullptr;
     CNode * m_max = nullptr;
     CNode * m_min = nullptr;
-    size_t m_treeSize = 0;
-    //std::unordered_set<std::pair<size_t, std::string>> m_products;
     
 };
 
 // TODO implement
 template < typename Product >
 struct Bestsellers {
-    //std::unordered_map<std::string, size_t> listProducts;
     CTree tree;
     
    //The total number of tracked products
@@ -134,7 +165,8 @@ struct Bestsellers {
 
   // The most sold product has rank 1
     size_t rank(const Product& p) const {
-        return 829;
+        std::pair<size_t, std::string> prod = tree.getProdKey(p);
+        return tree.rankOfProduct(prod);
     }
     
     const Product& product(size_t rank) const {
