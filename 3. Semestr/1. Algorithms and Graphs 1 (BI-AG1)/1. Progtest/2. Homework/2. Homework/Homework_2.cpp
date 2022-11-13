@@ -18,21 +18,10 @@
 
 #endif
 
-//how to implement indexing
-//how to find key through amount
-
-//implement BVSShow
-//implement BVSMin +
-//implement BVSMax +
-//implement BVSPred +
-//implement BVSSuc +
-//implement BVSFind
-//implement BVSInsert +
-//implement BVSDelete
-
-//template<class T>
-//template < typename Product >
+template < typename Product >
 class CTree {
+protected:
+    class CNode;
 public:
     CTree(void) = default;
     ~CTree(void) {
@@ -43,71 +32,111 @@ public:
         return m_root->m_subTreeSize;
     }
     
-    std::pair<size_t, std::string> getProdKey(const std::string prod) const {
+    CNode * getRoot(void) const {
+        return m_root;
+    }
+    
+    CNode * minValue(CNode * node) {
+        if(node->m_L == nullptr) {
+            return node;
+        } else {
+            return minValue(node->m_L);
+        }
+    }
+    
+    CNode * maxValue(CNode * node) {
+        if(node->m_R == nullptr) {
+            return node;
+        } else {
+            return maxValue(node->m_R);
+        }
+    }
+    
+    void insertOrDelProd(const Product& p, size_t amount) {
+        auto it = m_products.find(p);
+        if(it == m_products.end()) {
+            std::pair<size_t, Product> key = {amount, p};
+            m_products.insert({p, amount});
+            m_root = insert(m_root, key);
+        } else {
+            std::pair<size_t, Product> key = {it->second + amount, p};
+            del(m_root, key);
+            m_root = insert(m_root, key);
+        }
+    }
+    
+    size_t findIndProd(const Product prod) const {
         auto it = m_products.find(prod);
-        std::pair<size_t, std::string> indProd = {it->second, it->first};
-        return indProd;
+        if(it == m_products.end()) {
+            throw std:: out_of_range("non-existing product");
+        } else {
+            std::pair<size_t, Product> indProd = {it->second, it->first};
+            return rankOfProduct(indProd);
+        }
     }
     
-    bool insert (std::string product, size_t amount) {
-        
-        if(!m_first) {
-            auto * tmp = new CNode(product, amount);
-            m_first = m_last = m_root = m_min = m_max = tmp;
-            tmp->m_subTreeSize++;
-            m_products.insert({product, amount});
-            return true;
-        }
-
-        auto ** curPoz = &m_root;
-        auto ** prevPoz = curPoz;
-        std::pair<size_t, std::string> curProd = {amount, product};
-
-        while(*curPoz) {
-            if((*curPoz)->m_key == curProd) {
-                return false;
-            } else if((*curPoz)->m_key > curProd) { //go in left son
-                prevPoz = curPoz;
-                curPoz = &((*curPoz)->m_L);
-            } else {                                //go in right son
-                prevPoz = curPoz;
-                curPoz = &((*curPoz)->m_R);
+    CNode * del (CNode * node, std::pair<size_t, Product> key) {
+        if(node == nullptr) {
+            return nullptr;
+        } else if(key < node->m_key) {
+            node->m_L = del(node->m_L, key);
+//            if(node->m_L && node->m_L->m_father) {
+//                node->m_L->m_father = node;
+//            }
+            node->m_subTreeSize--;
+        } else if(key > node->m_key) {
+            node->m_R = del(node->m_R, key);
+//            if(node->m_R && node->m_R->m_father) {
+//                node->m_R->m_father = node;
+//            }
+            node->m_subTreeSize--;
+        } else if(key == node->m_key) {
+            if(node->m_R == nullptr && node->m_L == nullptr) {
+                return nullptr;
+            } else if(node->m_L == nullptr) {
+                return node->m_R;
+            } else if(node->m_R == nullptr) {
+                return node->m_L;
             }
+            CNode * tmpNode = minValue(node->m_R);
+            node->m_key = tmpNode->m_key;
+            node->m_R = del(node->m_R, key);
+            node->m_subTreeSize--;
         }
-
-        *curPoz = new CNode(product, amount);
-        m_products.insert({product, amount});
-
-        (*curPoz)->m_father = *prevPoz;
-        m_last->m_nextProd = *curPoz;
-        (*curPoz)->m_prevProd = m_last;
-        m_last = *curPoz;
-        (*curPoz)->m_subTreeSize++;
-        updateSubTreeSize();
-        
-        return true;
+        return node;
     }
     
-    void updateSubTreeSize() {
-        auto ** curPoz = &m_last;
-        
-        while((*curPoz)->m_father) {
-            (*curPoz) = (*curPoz)->m_father;
-            (*curPoz)->m_subTreeSize++;
+    CNode * insert (CNode * node, std::pair<size_t, Product> key) {
+        if(node == nullptr) {
+            node = new CNode(key.second, key.first);
+            //node->m_father = father;
+            node->m_subTreeSize++;
+            return node;
         }
+        
+        if(key < node->m_key) {
+            node->m_subTreeSize++;
+            node->m_L = insert(node->m_L, key);
+        } else if(key > node->m_key) {
+            node->m_subTreeSize++;
+            node->m_R = insert(node->m_R, key);
+        }
+        return node;
     }
     
-    size_t rankOfProduct (std::pair<size_t, std::string> product) const {
+    size_t rankOfProduct (std::pair<size_t, Product> product) const {
         auto * curPoz = m_root;
         
         size_t ind = 0;
         while(curPoz->m_key != product) {
             if(curPoz->m_key > product) {
                 if(curPoz->m_R) {
-                    ind = curPoz->m_R->m_subTreeSize;
+                    ind = ind + curPoz->m_R->m_subTreeSize;
                 }
                 ind++;
-                curPoz = curPoz->m_L;
+                if(curPoz->m_L) {
+                    curPoz = curPoz->m_L;
+                }
             } else if(curPoz->m_key < product) {
                 if(curPoz->m_R) {
                     curPoz = curPoz->m_R;
@@ -122,37 +151,96 @@ public:
         }
     }
     
+    size_t fromToSell(size_t from, size_t to) const {
+        
+        size_t sum = 0;
+        
+        while(from <= to) {
+            sum = sum + sellProd(to - 1);
+            to--;
+        }
+        
+        return sum;
+    }
+    
+//    Product & indexProd (CNode * node, size_t rank) const {
+//        if((node->m_R) && (rank < node->m_R->m_subTreeSize)) {
+//            rank = indexProd(node->m_R, rank);
+//        } else if(node->m_L && (rank > (node->m_subTreeSize - node->m_L->m_subTreeSize - 1))) {
+//            rank = indexProd(node->m_L, rank - node->m_R->m_subTreeSize - 1);
+//        } else {
+//            return node;
+//        }
+//
+//        return node->m_key.second;
+//    }
+    
+    Product & indexProd (size_t rank) const {
+        auto * curPoz = m_root;
+        while(true) {
+            if((curPoz->m_R) && (rank < curPoz->m_R->m_subTreeSize)) {
+                curPoz = curPoz->m_R;
+            } else if(curPoz->m_L && (rank > (curPoz->m_subTreeSize - curPoz->m_L->m_subTreeSize - 1))) {
+                if(curPoz->m_R) {
+                    rank = rank - curPoz->m_R->m_subTreeSize - 1;
+                } else {
+                    rank = rank - 1;
+                }
+                curPoz = curPoz->m_L;
+            } else {
+                break;
+            }
+        }
+
+        return curPoz->m_key.second;
+    }
+    
+    size_t sellProd (size_t rank) const {
+        auto * curPoz = m_root;
+        while(true) {
+            if((curPoz->m_R) && (rank < curPoz->m_R->m_subTreeSize)) {
+                curPoz = curPoz->m_R;
+            } else if(curPoz->m_L && (rank > (curPoz->m_subTreeSize - curPoz->m_L->m_subTreeSize - 1))) {
+                if(curPoz->m_R) {
+                    rank = rank - curPoz->m_R->m_subTreeSize - 1;
+                } else {
+                    rank = rank - 1;
+                }
+                curPoz = curPoz->m_L;
+            } else {
+                break;
+            }
+        }
+        
+        return curPoz->m_key.first;
+    }
+    
     
 protected:
     //helping class for basic class CTree
     class CNode {
     public:
-        CNode(std::string key, size_t amount) {
+        CNode(Product key, size_t amount) {
             m_key = {amount, key};
         }
         size_t m_subTreeSize = 0;
-        std::pair<size_t, std::string> m_key;
+        std::pair<size_t, Product> m_key;
         
         CNode * m_L = nullptr;
         CNode * m_R = nullptr;
-        CNode * m_father = nullptr;
-        CNode * m_nextProd = nullptr;
-        CNode * m_prevProd = nullptr;
+        //CNode * m_father = nullptr;
     };
-    std::unordered_map<std::string, size_t> m_products;
+    std::unordered_map<Product, size_t> m_products;
     
     CNode * m_root = nullptr;
     CNode * m_first = nullptr;
     CNode * m_last = nullptr;
-    CNode * m_max = nullptr;
-    CNode * m_min = nullptr;
-    
 };
 
 // TODO implement
 template < typename Product >
 struct Bestsellers {
-    CTree tree;
+    CTree<Product> tree;
     
    //The total number of tracked products
     size_t products() const {
@@ -160,30 +248,35 @@ struct Bestsellers {
     }
 
     void sell(const Product& p, size_t amount) {
-        tree.insert(p, amount);
+        tree.insertOrDelProd(p, amount);
     }
 
   // The most sold product has rank 1
     size_t rank(const Product& p) const {
-        std::pair<size_t, std::string> prod = tree.getProdKey(p);
-        return tree.rankOfProduct(prod);
+        return tree.findIndProd(p);
     }
     
     const Product& product(size_t rank) const {
-        
-        return product(2142);
+        if(rank + 1 > tree.getSizeTree()) {
+            throw std:: out_of_range("size out of range");
+        }
+        return tree.indexProd(rank - 1);
     }
 
   // How many copies of product with given rank were sold
     size_t sold(size_t rank) const {
-        
-        return 42142;
+        if(rank == 0 || tree.getSizeTree() < rank) {
+            throw std:: out_of_range("rank out of range");
+        }
+        return tree.sellProd(rank - 1);
     }
   // The same but sum over interval of products (including from and to)
   // It must hold: sold(x) == sold(x, x)
     size_t sold(size_t from, size_t to) const {
-        
-        return 21421;
+        if(from == 0 || from > to || to > tree.getSizeTree() || from > tree.getSizeTree()) {
+            throw std:: out_of_range("sold out of range");
+        }
+        return tree.fromToSell(from, to);
     }
 
   // Bonus only, ignore if you are not interested in bonus
