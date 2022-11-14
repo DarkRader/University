@@ -750,7 +750,7 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Vytvoreni koncoveho bodu spojeni
+    // Endpoint connection
     int l = socket(AF_INET, SOCK_STREAM, 0);
     if(l < 0){
         perror("Nemohu vytvorit socket: ");
@@ -770,14 +770,14 @@ int main(int argc, char **argv) {
     adresa.sin_port = htons(port);
     adresa.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    // Prirazeni socketu k rozhranim
+    // Socket to interface
     if(bind(l, (struct sockaddr *) &adresa, sizeof(adresa)) < 0){
         perror("Problem s bind(): ");
         close(l);
         return -1;
     }
 
-    // Oznacim socket jako pasivni
+    // Mark socket as passive
     if(listen(l, 10) < 0){
         perror("Problem s listen()!");
         close(l);
@@ -788,7 +788,7 @@ int main(int argc, char **argv) {
     socklen_t velikost;
 
     while(true){
-        // Cekam na prichozi spojeni
+        // Looking forward to joining us
         int c = accept(l, (struct sockaddr *) &vzdalena_adresa, &velikost);
         if(c < 0){
             perror("Problem s accept()!");
@@ -797,10 +797,10 @@ int main(int argc, char **argv) {
         }
         pid_t pid = fork();
         if(pid == 0){
-            // Kopie hlavniho vlakna ma vlastni referenci na naslouchajici soket.
-            // Podproces, ktery obsluhuje klienta, tuto referenci nepotrebuje, takze je dobre
-            // tuto referenci smazat. V hlavnim vlakne samozrejme reference na naslouchajici
-            // soket zustava.
+            // The copy of the main train has its own reference to the listening socket.
+            // The thread that serves the client does not need this reference, so it is good
+            // delete this reference. In the main train of course references to listening
+            // the socket remains.
             close(l);
 
             struct timeval timeout;
@@ -825,14 +825,14 @@ int main(int argc, char **argv) {
             while(true){
                 FD_ZERO(&sockets);
                 FD_SET(c, &sockets);
-                // Prvnim parametrem je cislo nejvyssiho soketu v 'sockets' zvysene o jedna.
-                // (Velka jednoduchost a efektivvnost funkce je vyvazena spatnou
-                // ergonomii pro uzivatele.)
-                // Posledni z parametru je samotny timeout. Je to struktura typu 'struct timeval',
-                // ktera umoznuje casovani s presnosti na mikrosekundy (+/-). Funkci se predava
-                // odkaz na promennou a funkce ji muze modifikovat. Ve vetsine implementaci
-                // odecita funkce od hodnoty timeoutu cas straveny cekanim. Podle manualu na
-                // to nelze spolehat na vsech platformach a ve vsech implementacich funkce
+                // The first parameter is the number of the highest socket in 'sockets' increased by one.
+                // (The great simplicity and efficiency of the function is balanced by the wrong
+                // ergonomics for the user.)
+                // The last of the parameters is the timeout itself. It is a structural type of 'struct timeval',
+                // which allows timing with microsecond accuracy (+/ -). Function is sold
+                // a link to a variable and a function can modify it. In most implementations
+                // subtracts the function from the timeout value of the diet timeout. According to the manual on
+                // it cannot be trusted on all platforms and in all implementable functions
                 // select()!!!
                 retval = select(c + 1, &sockets, NULL, NULL, &timeout);
                 if(retval < 0){
@@ -841,7 +841,7 @@ int main(int argc, char **argv) {
                     return -1;
                 }
                 if(!FD_ISSET(c, &sockets)){
-                    // Zde je jasne, ze funkce select() skoncila cekani kvuli timeoutu.
+                    // Here it is clear that the select () function stopped waiting due to timeout.
                     std::cout << "Connection timeout!" << std::endl;
                     close(c);
                     return 0;
@@ -852,7 +852,6 @@ int main(int argc, char **argv) {
                     close(c);
                     return -3;
                 }
-                //std::cout << bytesRead << std::endl;
                 buffer[bytesRead] = '\0';
                 
                 //everything about authorization is implemented in the function call of this if
@@ -940,21 +939,20 @@ int main(int argc, char **argv) {
                         continue;
                     }
                 }
-                //std::cout << buffer << std::endl;
             }
             close(c);
             return 0;
         }
 
-        // Aby nam nezustavaly v systemu zombie procesy po kazdem obslouzeneme klientovi,
-        // je nutne otestovat, zda se uz nejaky podproces ukoncil.
-        // Prvni argument rika, cekej na jakykoliv proces potomka, treti argument zajisti,
-        // ze je funkce neblokujici (standardne blokujici je, coz ted opravdu nechceme).
+        // So that we do not have zombie processes in the system, we will serve the client every time,
+        // it is necessary to test whether a thread has already been terminated.
+        // The first argument says, wait for any process descendant, the third argument ensures,
+        // it's a non-blocking feature (standard blocking is what we really don't want now).
         int status = 0;
         waitpid(0, &status, WNOHANG);
 
-        close(c); // Nove vytvoreny socket je nutne zavrit v hlavnim procesu, protoze by na nem v systemu
-        // zustala reference a jeho zavreni v novem procesu by nemelo zadny efekt.
+        close(c); // The newly created socket is necessarily closed in the main process, because it would not in the system
+        // keeping the reference and closing it in the new trial would have no effect.
     }
 
     close(l);

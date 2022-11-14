@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         cerr << "Usage: client address port" << endl;
         return -1;
     }
-    // Vytvoreni koncoveho bodu spojeni
+    // Endpoint connection
     int s = socket(AF_INET, SOCK_STREAM, 0);
     if(s < 0){
         perror("Nemohu vytvorit socket: ");
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
     memcpy(&serverAddr.sin_addr, host->h_addr,
            host->h_length); // <string.h>
 
-    // Pripojeni ke vzdalenemu serveru
+    // Connected to a remote server
     if(connect(s, (struct sockaddr *) &serverAddr, sockAddrSize) < 0){
         perror("Nemohu spojit!");
         close(s);
@@ -62,18 +62,20 @@ int main(int argc, char **argv) {
     while(true){
         cout << "> ";
         cin.getline (buffer, BUFFER_SIZE - 1);
-        // Priznak MSG_NOSIGNAL znamena, ze v pripade predcasneho ukonceni
-        // na druhe strane nedojde k preruseni aktulaniho procesu signalem
-        // SIGPIPE, ale funkce send() skonci s nenulovou navratovou hodnotou
-        // a my muzeme korektne ukoncit nas program.
+        // The MSG_NOSIGNAL attribute indicates that in the case of an early termination
+        // on the other hand, there will be no interruption of the actualization process by the signal
+        // SIGPIPE, but the send () function ends with a nonzero return value
+        // and we can end our program properly.
         if(send(s, buffer, strlen(buffer), MSG_NOSIGNAL) < 0){
             perror("Nemohu odeslat data:");
             close(s);
             return -3;
         }
-//        int r = recv(s, buffer, BUFFER_SIZE, 0);
-//        return 0;
-        // Kdyz poslu "konec", ukoncim spojim se serverem
+        
+        //int r = recv(s, buffer, BUFFER_SIZE, 0);
+        //return 0;
+        
+        // When I send "end", I will end the connection to the server
         if(string("konec") == buffer)
             break;
         
