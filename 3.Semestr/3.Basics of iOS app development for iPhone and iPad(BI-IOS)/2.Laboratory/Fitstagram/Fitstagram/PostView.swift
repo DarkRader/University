@@ -2,7 +2,7 @@
 //  PostView.swift
 //  Fitstagram
 //
-//  Created by Артем on 12.10.2022.
+//  Created by DarkRader on 12.10.2022.
 //
 
 import SwiftUI
@@ -63,7 +63,7 @@ struct PostView: View {
             }
             .padding(.horizontal, 8)
 
-            Text("\(post.likes) To se mi libi")
+            Text("\(post.likes) likes")
                 .fontWeight(.semibold)
                 .padding(.horizontal, 8)
 
@@ -78,7 +78,7 @@ struct PostView: View {
             Button(action: {
                 onCommentsButtonTap()
             }) {
-                Text("Zobrazit vsechni komentare (\(post.comments)")
+                Text("View all comments (\(post.comments))")
             }
             .padding(8)
             .foregroundColor(.gray)

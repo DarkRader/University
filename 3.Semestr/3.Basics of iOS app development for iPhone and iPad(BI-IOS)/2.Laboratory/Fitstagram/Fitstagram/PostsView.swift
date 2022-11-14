@@ -2,7 +2,7 @@
 //  PostsView.swift
 //  Fitstagram
 //
-//  Created by Артем on 19.10.2022.
+//  Created by DarkRader on 19.10.2022.
 //
 
 import SwiftUI
@@ -63,20 +63,13 @@ struct PostsView: View {
                 Text("\(integer)")
             }
             .navigationDestination(for: Post.self) { post in
-                CommentsView(viewModel: .init(postID: post.id))
-//                VStack {
-//                    Text(post.author.username)
-//
-//                    Text("\(post.comments)")
-//
-//                    Button("PUSH FIRST POST") {
-//                        path.append(posts[0])
-//                    }
-//
-//                    Button("POP TO ROOT") {
-//                        path.removeLast(path.count)
-//                    }
-//                }
+
+                    InformationPost(
+                        post: post
+                    )
+                    
+//                    CommentsView(viewModel: .init(postID: post.id))
+
             }
             .navigationTitle("FITstagram")
         }

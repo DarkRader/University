@@ -2,7 +2,7 @@
 //  Comment.swift
 //  Fitstagram
 //
-//  Created by Артем on 19.10.2022.
+//  Created by DarkRader on 19.10.2022.
 //
 
 import Foundation
