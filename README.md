@@ -12,7 +12,7 @@ Hello, I'm Artem and this is my learning repository with all project, homework, 
 - [DBS - Database Systems](https://github.com/DarkRader/University/tree/main/2.Semestr/3.Database%20Systems(BI-DBS.21)%20)
 - [AG1 - Algorithms and Graphs 1](https://github.com/DarkRader/University/tree/main/3.Semestr/1.Algorithms%20and%20Graphs%201(BI-AG1))
 - [TJV - Java Technology](https://github.com/DarkRader/University/tree/main/3.Semestr/2.Java%20Technology(BI-TJV.21))
-- [IOS - Java Technology](https://github.com/DarkRader/University/tree/main/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS))
+- [IOS - Basics of iOS app development for iPhone and iPad](https://github.com/DarkRader/University/tree/main/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS))
 - [PPA - Programming Paradigms](https://github.com/DarkRader/University/tree/main/3.Semestr/4.Programming%20Paradigms(BI-PPA.21))
 - [AAG - Automata and Grammars](https://github.com/DarkRader/University/tree/main/3.Semestr/5.Automata%20and%20Grammars(BI-AAG.21))
 

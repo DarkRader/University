@@ -37,7 +37,7 @@ struct InformationPost: View {
             } else {
                 TabView {
                     ForEach(0...randomInt, id: \.self) {_ in
-                    if let image = post.photos.first {
+                        if let image = post.photos.first {
                         AsyncImage(url: URL(string: image)) {
                             $0.resizable()
                         } placeholder: {
@@ -54,6 +54,10 @@ struct InformationPost: View {
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
             
+            Text("\(post.likes) likes")
+                .fontWeight(.semibold)
+                .padding(.horizontal, 8)
+            
             HStack {
                 Text("\(post.comments) comments:")
                     .padding(8)
@@ -63,7 +67,6 @@ struct InformationPost: View {
             .padding(.horizontal, 8)
             CommentsView(viewModel: .init(postID: post.id))
         }
-//        CommentsView(viewModel: .init(postID: post.id))
     }
     
     private func fetchInfPost() async {

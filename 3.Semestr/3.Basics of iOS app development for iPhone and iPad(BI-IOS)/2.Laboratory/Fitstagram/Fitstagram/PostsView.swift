@@ -63,13 +63,9 @@ struct PostsView: View {
                 Text("\(integer)")
             }
             .navigationDestination(for: Post.self) { post in
-
                     InformationPost(
                         post: post
                     )
-                    
-//                    CommentsView(viewModel: .init(postID: post.id))
-
             }
             .navigationTitle("FITstagram")
         }
