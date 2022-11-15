@@ -22,9 +22,9 @@ int main() {
                 printf("Nespravny vstup.\n");
                 return 1;
             } else {
-                P = /*fabs(*/(strana1 + strana2 + strana3);// <= 1024 * DBL_EPSILON);
-                p = /*fabs(*/((strana1 + strana2 + strana3) / 2);// <= 1024 * DBL_EPSILON);
-                R = /*fabs(*/(sqrt(p * (p - strana1) * (p - strana2) * (p - strana3)));// <= 1024 * DBL_EPSILON);
+                P = (strana1 + strana2 + strana3);
+                p = ((strana1 + strana2 + strana3) / 2);
+                R = (sqrt(p * (p - strana1) * (p - strana2) * (p - strana3)));
                 tr = 1;
                 obd = 0;
                 ctv = 0;
@@ -37,8 +37,8 @@ int main() {
                 printf("Nespravny vstup.\n");
                 return 1;
             } else {
-                P = /*fabs(*/(2 * (strana1 + strana2));// <= 1024 * DBL_EPSILON);
-                R = /*fabs(*/(strana1 * strana2);// <= 1024 * DBL_EPSILON);
+                P = (2 * (strana1 + strana2));
+                R = (strana1 * strana2);
                 ctv = 0;
                 tr = 0;
                 obd = 1;
@@ -48,8 +48,8 @@ int main() {
                 printf("Nespravny vstup.\n");
                 return 1;
             } else {
-                P = /*fabs(*/(4 * strana1);// <= 1024 * DBL_EPSILON);
-                R = /*fabs(*/(strana1 * strana1);// <= 1024 * DBL_EPSILON);
+                P = (4 * strana1);
+                R = (strana1 * strana1);
                 obd = 0;
                 tr = 0;
                 ctv = 1;
@@ -67,7 +67,7 @@ int main() {
         obd0 = obd;
         ctv0 = ctv;
     }
-        // Obvod figur
+        // Circuit of figures
         printf("Obvod: ");
         if (tr0 == 1) {
             printf("trojuhelnik #1 ");
@@ -91,7 +91,7 @@ int main() {
             printf("ctverec #2\n");
         }
 
-        // Obsah figur
+        // Content of figures
          printf("Obsah: ");
          if (tr0 == 1) {
             printf("trojuhelnik #1 ");
@@ -114,9 +114,6 @@ int main() {
          } else if (ctv == 1) {
             printf("ctverec #2\n");
          }
-         //printf("P = %lf\nR = %lf\n", P0, R0);
-         //printf("P1 = %lf\nR1 = %lf\n", P, R);
-         //printf("tr = %d\nobd = %d\nctv = %d\n", tr0, obd0, ctv0);
-         //printf("tr1 = %d\nobd1 = %d\nctv1 = %d\n", tr, obd, ctv);
+    
     return 0;
 }

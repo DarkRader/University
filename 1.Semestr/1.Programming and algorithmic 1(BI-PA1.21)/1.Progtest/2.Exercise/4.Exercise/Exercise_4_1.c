@@ -6,8 +6,6 @@ int main() {
     printf ( "Zadejte vzorec:\n");
     char znak, rovno;
     if (scanf("%lf %c %lf %c", &x, &znak, &y, &rovno) == 4) {
-        //printf("Nespravny vstup.\n");
-        //return 1;
         if (znak == '+') {
             sum = x + y;
             if (rovno != '=') {
@@ -52,11 +50,6 @@ int main() {
         printf("Nespravny vstup.\n");
         return 0;
     }
-   // if (rovno != '=') {
-     //   printf("Nespravny vstup.\n");
-       // return 0;
-    //}
-
 
     return 0;
 }

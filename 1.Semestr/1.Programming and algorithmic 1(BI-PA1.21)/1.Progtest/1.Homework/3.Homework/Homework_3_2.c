@@ -111,8 +111,6 @@ long long int allCalculatingJoules (int y1, int m1, int d1, int h1, int i1,
                 + calculatingJoulesForHours(h2, i2));
     }
     return (DayInYear1 - dayBetweenInterval(y1, m1, d1) - 1 + dayInYears(y1, y2) + dayBetweenInterval(y2, m2, d2));
-    //return ((292886 - calculatingJoulesForHours(h1, i1)) +
-    //((DayInYear1 - dayBetweenInterval(y1, m1, d1) - 1 + dayInYears(y1, y2) + dayBetweenInterval(y2, m2, d2)) * 292886) + calculatingJoulesForHours(h2, i2));
 }
 
 long long int energyConsumption ( int y1, int m1, int d1, int h1, int i1,
