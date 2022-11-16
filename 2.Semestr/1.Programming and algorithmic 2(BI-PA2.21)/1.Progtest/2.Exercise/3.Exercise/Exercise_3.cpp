@@ -96,12 +96,6 @@ bool report ( const string & fileName, ostream & out )
         
         if(my_stream)
             return false;
-
-        // another way decide vector without use constructor
-//        struct SSeznam tmp = struct SSeznam();
-//        tmp.Name = name;
-//        tmp.Number = number;
-//        tmp.Surname = surname;
         
         list.push_back(SSeznam(name, surname, number));
         count++;
@@ -118,12 +112,10 @@ bool report ( const string & fileName, ostream & out )
         for(int i = 0; i < count; i++) {
             if(list[i].Name == buffer || list[i].Surname == buffer) {
                 out << list[i].Name << " " << list[i].Surname << " " << list[i].Number << endl;
-                //cout << list[i].Name << " " << list[i].Surname << " " << list[i].Number << endl;
                 same++;
             }
         }
         out << "->" << " " << same << endl;
-        //cout << "->" << " " << same << endl;
         
         buffer.clear();
         
