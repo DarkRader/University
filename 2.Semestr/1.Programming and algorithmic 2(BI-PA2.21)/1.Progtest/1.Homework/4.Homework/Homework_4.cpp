@@ -17,13 +17,10 @@ public:
         m_file = nullptr;
         m_lenght = 0;
         m_position = 0;
-        //printf("created %p\n", (void*)this);
     }
 
     ~CCurrentVersion(void)
     {
-        //cout << "Del: " << this;
-        //printf("Del %p\n", (void*)this );
         if (m_file)
             delete[] m_file;
         m_file = nullptr;
@@ -71,13 +68,6 @@ public:
     {
         return m_file[pos];
     }
-    
-
-//    void deepCopy (void)
-//    {
-//        m_file[3] = 100;
-//        m_file[4] = 124;
-//    }
 
     CCurrentVersion & operator =(const CCurrentVersion &newVersion)
     {
@@ -103,13 +93,12 @@ public:
     }
 
     uint32_t getLenght(void) const
-    {
-//        if(m_lenght == 0)
-//            return 0;
-        
+    {        
         return m_lenght;
     }
+    
     uint32_t getPosition(void) const {return m_position;}
+    
     void changePos(uint32_t pos)
     {
         m_position = pos;
@@ -120,6 +109,7 @@ public:
         m_lenght = del;
     }
 
+    // Debug method
     void printM_Db (void) const
     {
 
@@ -190,7 +180,6 @@ public:
         {
             delete[] m_version;
         }
- 
 
         currentLen = newFile.currentLen;
         curPosMem = newFile.curPosMem;
@@ -236,9 +225,7 @@ public:
             member = &m_version[curPosMem];
         }
         
-        
         uint32_t tmp = member->getPosition();
-    
         uint32_t returnBytes = 0;
 
         for(uint32_t i = 0; i < bytes && tmp < member->getLenght(); i++)
@@ -263,7 +250,6 @@ public:
 
         uint32_t len = member->newElements(src, bytes);
 
-
         return len;
     }
 
@@ -285,8 +271,6 @@ public:
         if(!m_version) {
             return 0;
         }
-        
-
         return member->getLenght();
     }
 ////-------------------------------------------------------------------------------------------------------------
@@ -298,8 +282,6 @@ public:
             member = &m_version[curPosMem];
         }
 
-//        if(curPosMem > currentLen - 5)
-//        {
             CCurrentVersion *tmp = nullptr;
             currentLen = currentLen + 1;
             tmp = new CCurrentVersion[currentLen];
@@ -307,24 +289,11 @@ public:
                 tmp[i] = m_version[i];
             delete [] m_version;
             m_version = tmp;
-        //}
 
         m_version[curPosMem + 1] = m_version[curPosMem];
 
         curPosMem++;
         member = &m_version[curPosMem];
-
-        //m_version[curPosMem].deepCopy();
-
-        //CCurrentVersion tmp = *member;
-        //member = newVersion;
-        //newVersion = &tmp;
-
-//        uint32_t  m = m_version[curPosMem].returnElement(3);
-//        uint32_t  m1 = m_version[curPosMem].returnElement(4);
-//
-//        uint32_t  n = m_version[curPosMem + 1].returnElement(3);
-//        uint32_t  n1 = m_version[curPosMem + 1].returnElement(4);
     }
 ////-------------------------------------------------------------------------------------------------------------
     bool                     undoVersion                   ( void )

@@ -72,7 +72,6 @@ protected:
     size_t nazv;
     size_t size;
     vector <string> addItem;
-//    vector < pair <string, size_t> > addStruct;
     vector < pair <CDataType *, string> > addStruct;
 
     virtual void print(ostream & os) const = 0;
@@ -283,7 +282,6 @@ public:
                     continue;
                 }
                 
-                
                 if(addStruct[i].first->getName() != typ.getVecStruct()[i].first->getName())
                     return false;
             }
@@ -308,7 +306,6 @@ public:
                     continue;
                 }
                 
-                
                 if(addStruct[i].first->getName() != typ.getVecStruct()[i].first->getName())
                     return true;
             }
@@ -318,7 +315,6 @@ public:
     }
     
 protected:
-//    vector < pair <CDataType *, string> > addStruct;
     void printField(ostream & os, size_t poz) {
         
     }
@@ -328,7 +324,6 @@ protected:
         os << "struct" << endl;
         os << "{" << endl;
         for(size_t i = 0; i < addStruct.size(); i++) {
-            //std :: cout <<
             if(addStruct[i].first->getName() == 1)
                 os << "int" << " " << addStruct[i].second << ";" << endl;
             else if (addStruct[i].first->getName() == 2)
