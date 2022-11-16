@@ -1,39 +1,39 @@
-##Množina pomocí BST II
+## Set using BST II
 
-Třída CTree realizuje strukturu „set“, samotné prkvy jsou řetězce. Implementace využívá BST. Vaším úkolem je doplnit metody pro vkládání a odstranění prvků a destruktor. Vyvažování stromu není potřeba. Zároveň se ukládá obousměrný spoják vložených prvků, který si ukládá pořadí jejich vložení. Třída má rozhraní:
+The CTree class implements the "set" structure, the planks themselves are strings. The implementation uses BST. Your task is to supplement the methods for inserting and removing elements and the destroyer. Balancing the tree is not necessary. At the same time, a bidirectional connector of inserted elements is stored, which stores the order of their insertion. The class has an interface:
 
-konstruktor
+constructor
 
-Nastaven na default, není třeba ho měnit.
-destruktor
+Set to default, no need to change it.
+destructor
 
-Musí správně uvolnit paměť. Implementace je Váš úkol.
-kopírující konstruktor
+He must correctly release the memory. Implementation is your task.
+copy constructor
 
-=delete, zakázán.
+=delete, disabled.
 operator=
 
-=delete, zakázán.
-bool insert(string key)
+=delete, disabled.
+bool insert (string key)
 
-Přidá do množiny prvek key, musí ho ve stromu přidat na správné místo. Porovnání se provádí relačními operátory stringu, lexikograficky, menší řetězce se ukládají do levého podstromu, větší do pravého. Také musí správně zpracovat a pamatovat si pořadí vkládání (proměnné m_First a m_Last). Vrací true pro úspěch nebo false, pokud již daný prvek existuje. Implementace je Váš úkol.
-bool erase(string key)
+To add a key element to the set, it must add it to the correct place in the tree. The comparison is made by relational string operators, lexicographically, smaller strings are stored in the left subtree, larger ones in the right. Also, it must correctly process and remember the insertion order (variables m_First and m_Last). Returns true for success or false if the element already exists. Implementation is your task.
+bool erase (string key)
 
-Odstraní z množiny prvek key. Vrací true pro úspěch, false pokud prvek nebyl nalezen. Musí prvek odstranit ze stromu a zároveň ze spojového seznamu, který si hlídá pořadí - aktualizovat správně m_NextOrder a m_PrevOrder. Je potřeba zachovat vlastnosti stromu a zároveň i vzájemné pořadí ve spojovém seznamu. Implementace je Váš úkol.
+Removes a key from the set. Returns true for success, false if element not found. It must remove the element from the tree and at the same time from the Linked List, which monitors the order-update correctly m_NextOrder and m_PrevOrder. It is necessary to preserve the properties of the tree and at the same time the mutual order in the linked list. Implementation is your task.
 m_Root
 
-Pointer na CNode pro kořen stromu.
+Pointer to CNode for tree root.
 m_First
 
-Pointer na CNode ukazující na první vložený prvek. Pomocí m_First → m_NextOrder .. → m_NextOrder → nullptr by mělo jít projít všechny prvky dle pořadí vložení.
+Pointer to CNode pointing to the first inserted element. Using m_First → m_NextOrder .. → m_NextOrder → nullptr should go through all elements according to the insertion order.
 m_Last
 
-Pointer na CNode ukazující na poslední vložený prvek.
+Pointer to CNode pointing to the last inserted element.
 CNode
 
-Pomocná třída pro uzel ve stromu. Obsahuje proměnné:
-m_Key = string daného prvku.
-m_L = pointer na levý podstrom, pokud neexistuje tak nullptr.
-m_R = pointer na pravý podstrom, pokud neexistuje tak nullptr.
-m_NextOrder = pointer na další prvek dle pořadí vložení, případně nullptr pro poslední prvek.
-m_PrevOrder = pointer na předchozí prvek dle pořadí vložení, případně nullptr pro první prvek.
+An auxiliary class for a node in a tree. Contains variables:
+m_Key = string of the element.
+m_L = pointer to the left subtree if nullptr does not exist.
+m_R = pointer to the right subtree if nullptr does not exist.
+m_NextOrder = pointer to the next element in the order of insertion, or nullptr for the last element.
+m_PrevOrder = pointer to the previous element according to the insertion order, or nullptr for the first element.
