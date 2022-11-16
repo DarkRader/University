@@ -1,9 +1,0 @@
-[1] Stránky předmětu DBS.BI-DBS FIT ČVUT Course Pages [online]. FIT ČVUT, 2022. Dostupné z: https://courses.fit.cvut.cz
-
-[2] Vzorová semestrální práce [online]. FIT ČVUT, 2022. Dostupné z: https://users.fit.cvut.cz/~hunkajir/dbs2/main.xml
-
-[3] Mockaroo Random Data Generator and API Mocking Tool. | JSON / CSV / SQL / Excel [online]. Mockaroo, 2022. Dostupné z: https://www.mockaroo.com/
-
-[4] Stack Overflow - Where Developers Learn, Share, & Build Careers [online]. Stack Overflow, 2022. Dostupné z: https://stackoverflow.com/
-
-[5] Wikipedia - internetové encyklopedii, kterou může upravovat každý [online]. Wikipedia, 2022. Dostupné z https://cs.wikipedia.org/wiki/Hlavn%C3%AD_strana

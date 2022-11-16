@@ -1,7 +1,0 @@
-Pokusím se vysvětlit, proč jsem dostal nějaké smyčky:
-
-Smyčka **smlouva - mec - majitel - subjetk - fyzicka_osoba - zamestanec - smlouva:** v mém databáze v smlouvě můžou se zúčastnit majitel a zamestanec. Oba berou ID od subjektu, stejně tak oba mohou být fyzicka_osoba. Abychom mohli jich rozlišovat potřebujeme entity majitel a zamestanec. Takže se když uzavírá smlouva majitel.id a zamestanec.id se nemůžou rovnat, a pro turo činnost potřebuju IO5, aby vyhnout této příležitost.
-
-Smyčka **smlouva - mec - majitel - subjetk  - smlouva:** v mém databáze v smlouvě můžou se zúčastnit klient (vazba subjekt -> smlouva) a majitel. Oba berou ID od subjektu, stejně tak oba mohou být fyzicka_osoba a organizace. Abychom mohli jich rozlišovat potřebujeme vazbu klient (vazba subjekt -> smlouva) a entitu majitel. Takže se když uzavírá smlouva subjekt.id a majitel.id se nemůžou rovnat, a pro turo činnost potřebuju IO5, aby vyhnout této příležitost.
-
-Smyčka **smlouva - subjekt - fyziska_osoba - smlouva:**  v mém databáze v smlouvě můžou se zúčastnit klient (vazba subjekt -> smlouva) a zamestanec. Oba berou ID od subjektu, stejně tak oba mohou být fyzicka_osoba. Abychom mohli jich rozlišovat potřebujeme vazbu klient (vazba subjekt -> smlouva) a entitu zamestanec. Takže se když uzavírá smlouva subjekt.id a zamestanec.id se nemůžou rovnat, a pro turo činnost potřebuju IO5, aby vyhnout této příležitost.
