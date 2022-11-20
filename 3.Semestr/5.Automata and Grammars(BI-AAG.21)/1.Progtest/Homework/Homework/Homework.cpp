@@ -46,10 +46,17 @@ struct DFA {
 class CTransitions
 {
 public:
-    CTransitions(const NFA& a, const NFA& b, DFA& resDFA,
+    CTransitions(const NFA& a, const NFA& b, DFA& resDFA, State operation,
                  State state, std::set<Symbol> alph, State& finalState,
                  std::map<State, std::pair <std::set<State>, std::set<State>>>& existState,
                  std::map<std::pair <std::set<State>, std::set<State>>, State>& elemOfStages) {
+        if(operation == 2) {
+            m_operation = 2;
+            m_intersect = true;
+        } else {
+            m_operation = 1;
+            m_intersect = false;
+        }
         
         fillTransition(a, b, resDFA, state, alph, existState);
         
@@ -73,7 +80,7 @@ public:
         }
         
         auto itEnd = existState.end();
-        auto itControl = existState.find((unsigned int)controlSize);
+        auto itControl = existState.find(state);
         --itEnd;
         if(itEnd == itControl && controlSize == existState.size() - 1) {
             finalState = (unsigned int)controlSize + 1;
@@ -103,14 +110,16 @@ public:
     std::vector<std::set<State>> getStateA (void) const { return m_automatA; }
     std::vector<std::set<State>> getStateB (void) const { return m_automatB; }
     std::vector<State> getTransitionTo (void) const { return m_transitionTo;}
-    State getStartState (void) const { return m_startState; }
-    State getEndState (void) const { return m_endState; }
+//    State getStartState (void) const { return m_startState; }
+//    State getEndState (void) const { return m_endState; }
     
 private:
     std::vector<std::set<State>> m_automatA;
     std::vector<std::set<State>> m_automatB;
     std::vector<State> m_transitionTo;
     std::vector<State> m_transitionFrom;
+    bool m_intersect;
+    State m_operation;
     State m_startState = 0;
     State m_endState = 0;
     
@@ -139,6 +148,9 @@ private:
                 endState.insert(*it);
                 if(endState.size() == sizeEndState && m_endState == 0) {
                     m_endState++;
+                    if(m_intersect == false) {
+                        resDFA.m_FinalStates.insert(state);
+                    }
                 }
                 fillAutomat(a, itState, itAlph, i, m_automatA, it);
             }
@@ -154,11 +166,14 @@ private:
                     }
                 }
                 endState.insert(*it);
-                if(endState.size() == sizeEndState && m_endState == 1) {
+                if(m_intersect == true && endState.size() == sizeEndState && m_endState == 1) {
                     m_endState++;
                     if(m_endState == 2) {
                         resDFA.m_FinalStates.insert(state);
                     }
+                }
+                else if(m_intersect == false && endState.size() == sizeEndState) {
+                    resDFA.m_FinalStates.insert(state);
                 }
                 fillAutomat(b, itState, itAlph, i, m_automatB, it);
             }
@@ -236,7 +251,7 @@ void fillAlph (const NFA& a, const NFA& b, DFA& resDFA) {
 //preparing new State for DFA automation
 void fillState (const NFA& a, const NFA& b, DFA& resDFA, std::map<State, CTransitions>& infoTransitions,
                 std::map<State, std::pair <std::set<State>, std::set<State>>>& existState,
-                std::map<std::pair <std::set<State>, std::set<State>>, State>& elemOfStages) {
+                std::map<std::pair <std::set<State>, std::set<State>>, State>& elemOfStages, State operation) {
     State curState = 0;
     State finalState = 0;
     size_t lenghtOfStage = 0;
@@ -246,7 +261,7 @@ void fillState (const NFA& a, const NFA& b, DFA& resDFA, std::map<State, CTransi
     
     while(true) {
         lenghtOfStage = existState.size();
-        infoTransitions.insert({curState, CTransitions(a, b, resDFA, curState, resDFA.m_Alphabet, finalState, existState, elemOfStages)});
+        infoTransitions.insert({curState, CTransitions(a, b, resDFA, operation, curState, resDFA.m_Alphabet, finalState, existState, elemOfStages)});
         curState++;
         
         if(infoTransitions.size() == finalState) {
@@ -268,7 +283,7 @@ DFA unify(const NFA& a, const NFA& b) {
     std::map<std::pair <std::set<State>, std::set<State>>, State> elemOfStages;
     
     fillAlph(a, b, resDFA);
-    fillState(a, b, resDFA, infoTransitions, existState, elemOfStages);
+    fillState(a, b, resDFA, infoTransitions, existState, elemOfStages, 1);
     renameStates(resDFA, infoTransitions, existState, elemOfStages);
     
     return resDFA;
@@ -281,7 +296,7 @@ DFA intersect(const NFA& a, const NFA& b) {
     std::map<std::pair <std::set<State>, std::set<State>>, State> elemOfStages;
     
     fillAlph(a, b, resDFA);
-    fillState(a, b, resDFA, infoTransitions, existState, elemOfStages);
+    fillState(a, b, resDFA, infoTransitions, existState, elemOfStages, 2);
     renameStates(resDFA, infoTransitions, existState, elemOfStages);
     //minimizationDFA(resDFA);
     
