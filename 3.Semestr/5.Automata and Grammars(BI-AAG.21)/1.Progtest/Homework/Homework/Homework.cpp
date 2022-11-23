@@ -48,26 +48,25 @@ struct DFA {
 class CTransition
 {
 public:
-    CTransition(const NFA& a, const NFA& b, DFA& DFA, std::queue<State> & que, State state,
-                 std::map<State, std::pair <std::set<State>, std::set<State>>>& existState,
-                 std::map<std::pair <std::set<State>, std::set<State>>, State>& elemOfStages, State op) {
+    CTransition(const NFA& a, const NFA& b, DFA& DFA, std::queue<std::pair<std::set<State>, std::set<State>>> & que, State state,
+                 std::map<std::pair <std::set<State>, std::set<State>>, State>& elemOfStages, State op,
+                 std::pair <std::set<State>, std::set<State>>& curState) {
         if(op == 2) {
             m_intersect = true;
         } else {
             m_intersect = false;
         }
         
-        fillTransition(a, b, DFA, state, existState);
+        fillTransition(a, b, DFA, state, curState);
         
         //filling new States in automation
-        size_t stage = existState.size();
-        for(auto itA = m_automatA.begin(), itB = m_automatB.begin(); itA != m_automatA.end() && itB != m_automatB.end(); ++itA, ++itB) {
+        size_t stage = elemOfStages.size();
+        for(auto itA = m_automatA.begin(), itB = m_automatB.begin(); itA != m_automatA.end(); ++itA, ++itB) {
             size_t newOrNotNewElem = elemOfStages.size();
             elemOfStages.insert({std::make_pair(*itA, *itB), (unsigned int)stage});
             if(newOrNotNewElem != elemOfStages.size()) {
                 m_transitionTo.push_back((unsigned int)stage);
-                existState.insert({(unsigned int)stage, std::make_pair(*itA, *itB)});
-                que.push((unsigned int)stage);
+                que.push(std::make_pair(*itA, *itB));
                 stage++;
             } else {
                 auto itElemStage = elemOfStages.find(std::make_pair(*itA, *itB));
@@ -88,7 +87,7 @@ public:
     
     void addTransitionInDFA(DFA& resDFA, State state, const std::set<State>& usefulState) {
         size_t i = 0;
-        for(auto itAlp = resDFA.m_Alphabet.begin(); i < m_transitionTo.size(); ++itAlp, ++i) {
+        for(auto itAlp = resDFA.m_Alphabet.begin(); itAlp != resDFA.m_Alphabet.end(); ++itAlp, ++i) {
             if(usefulOrNotState(usefulState, m_transitionTo[i]) == true) {
                resDFA.m_Transitions.insert({std::make_pair(state, *itAlp), m_transitionTo[i]});
             }
@@ -107,7 +106,7 @@ private:
     std::pair<bool, bool> m_endState = {false, false};
     bool m_intersect;
     
-    void fillAutomat(const NFA& transition, std::map<State, std::pair <std::set<State>, std::set<State>>>::iterator& itState, Symbol letter, State i, std::vector<std::set<State>>& automat, std::set<State>::iterator& it) {
+    void fillAutomat(const NFA& transition, Symbol letter, State i, std::vector<std::set<State>>& automat, std::set<State>::iterator& it) {
         auto itTran = transition.m_Transitions.find(std::make_pair(*it, letter));
         if(itTran != transition.m_Transitions.end()) {
             for(auto itAutomat = itTran->second.begin(); itAutomat != itTran->second.end(); ++itAutomat) {
@@ -116,41 +115,34 @@ private:
         }
     }
     
-    void contrEndStart(State curState, State start, const std::set<State>& End, bool& startState, bool& endState) {
+    void contrEndStart(State curState, const std::set<State>& End, bool& endState) {
         std::set<State> allEndState = End;
         size_t sizeEndState = allEndState.size();
-//        if(curState == start && startState == false) {
-//            startState = true;
-//        }
+
         allEndState.insert(curState);
         if(allEndState.size() == sizeEndState && endState == false) {
             endState = true;
         }
     }
     
-    void prepFillAut(const NFA& NFA, std::vector<std::set<State>>& automat, std::set<State> existState, bool& startState, bool& endState, State i, std::map<State, std::pair <std::set<State>, std::set<State>>>::iterator itState, Symbol letter) {
-        automat.push_back(std :: set<State>());
+    void prepFillAut(const NFA& NFA, std::vector<std::set<State>>& automat, std::set<State> existState, bool& startState, bool& endState, State i, Symbol letter) {
+        automat.push_back(std::set<State>());
         for(auto it = existState.begin(); it != existState.end(); ++it) {
-            contrEndStart(*it, NFA.m_InitialState, NFA.m_FinalStates, startState, endState);
-            fillAutomat(NFA, itState, letter, i, automat, it);
+            contrEndStart(*it, NFA.m_FinalStates, endState);
+            fillAutomat(NFA, letter, i, automat, it);
         }
     }
     
     void fillTransition(const NFA& a, const NFA& b, DFA& DFA, State state,
-                        std::map<State, std::pair <std::set<State>, std::set<State>>>& existState) {
+                        std::pair <std::set<State>, std::set<State>>& curState) {
         State i = 0;
-        auto itState = existState.find(state);
-        for(auto itAlph = DFA.m_Alphabet.begin(); itAlph != DFA.m_Alphabet.end(); ++itAlph) {
-            prepFillAut(a, m_automatA, itState->second.first, m_startState.first, m_endState.first, i, itState, *itAlph);
-            prepFillAut(b, m_automatB, itState->second.second, m_startState.second, m_endState.second, i, itState, *itAlph);
-            i++;
+        for(auto itAlph = DFA.m_Alphabet.begin(); itAlph != DFA.m_Alphabet.end(); ++itAlph, ++i) {
+            prepFillAut(a, m_automatA, curState.first, m_startState.first, m_endState.first, i, *itAlph);
+            prepFillAut(b, m_automatB, curState.second, m_startState.second, m_endState.second, i, *itAlph);
         }
         
-//        if(m_startState.first == true && m_startState.second == true) {
-//            DFA.m_InitialState = state;
-//        }
-        if(itState->second.first.size() == 1 && itState->second.second.size() == 1) {
-            if(*itState->second.first.begin() == a.m_InitialState && *itState->second.second.begin() == b.m_InitialState) {
+        if(curState.first.size() == 1 && curState.second.size() == 1) {
+            if(*curState.first.begin() == a.m_InitialState && *curState.second.begin() == b.m_InitialState) {
                 DFA.m_InitialState = state;
             }
         }
@@ -169,7 +161,8 @@ void removeUselessStates(DFA& DFA, std::map<State, CTransition>& Tran, std::set<
         usefulState.insert({*itEnd, 0});
         que.push(*itEnd);
     }
-    
+
+//--//CHECK---------------------------------------------------------------------------
     while(!que.empty()) {
         State curState = que.front();
         que.pop();
@@ -200,7 +193,6 @@ void renameStates(DFA& resDFA, std::map<State, CTransition> infoTransitions) {
         auto it = infoTransitions.find(*itState);
         it->second.addTransitionInDFA(resDFA, *itState, usefulState);
     }
-    //std::cout << "Stop!" << std::endl;
 }
 
 //fill automat all alphabet which will be in result DFA
@@ -215,20 +207,19 @@ void fillAlph (const NFA& a, const NFA& b, DFA& resDFA) {
 
 //preparing new State for DFA automation
 void fillState (const NFA& a, const NFA& b, DFA& resDFA, std::map<State, CTransition>& infoTransitions, State operation) {
-    std::map<State, std::pair <std::set<State>, std::set<State>>> existState;
     std::map<std::pair <std::set<State>, std::set<State>>, State> elemOfStages;
-    std::queue<State> que;
-    que.push(0);
+    std::pair <std::set<State>, std::set<State>> curStatePair;
+    std::queue<std::pair<std::set<State>, std::set<State>>> que;
+    que.push({{0}, {0}});
     
     elemOfStages.insert({{{0}, {0}}, 0});
-    existState.insert({0, elemOfStages.begin()->first});
-    while(!que.empty()) {
-        State curState = que.front();
+    //--//CHECK---------------------------------------------------------------------------
+    for(State i = 0; !que.empty(); ++i) {
+        std::pair <std::set<State>, std::set<State>> curState = que.front();
         que.pop();
-        
-        infoTransitions.insert({curState, CTransition(a, b, resDFA, que, curState, existState, elemOfStages, operation)});
+
+        infoTransitions.insert({i, CTransition(a, b, resDFA, que, i, elemOfStages, operation, curState)});
     }
-    //std::cout << "Stop!" << std::endl;
 }
 
 NFA fullCondition(const NFA& nfa) {
@@ -253,7 +244,7 @@ NFA fullCondition(const NFA& nfa) {
     std::set<State> newState = {(unsigned int)nfa.m_States.size()};
     fullNfa.m_States.insert((unsigned int)nfa.m_States.size());
  
-    for(size_t i = 0; i != fullNfa.m_States.size(); ++i) {
+    for(size_t i = 0; i < fullNfa.m_States.size(); ++i) {
         for(auto it = fullNfa.m_Alphabet.begin(); it != fullNfa.m_Alphabet.end(); ++it) {
             auto itCurState = nfa.m_Transitions.find({i, *it});
             if(itCurState != nfa.m_Transitions.end()) {
@@ -365,9 +356,10 @@ DFA minDKA(DFA& dfa) {
     std::map<State, State> tmpSplitState;
     std::vector<std::pair<std::vector<State>, State>> newOrNotState;
     
+    //--//CHECK---------------------------------------------------------------------------
     while(tmpSplitState != splitState) {
         tmpSplitState = splitState;
-       newOrNotState = createNewTable(dfa, splitState);
+        newOrNotState = createNewTable(dfa, splitState);
     }
     return createResAutomata(dfa, splitState, newOrNotState);
 }
@@ -383,7 +375,10 @@ DFA unify(const NFA& a, const NFA& b) {
     fillAlph(fullA, fullB, DFA);
     fillState(fullA, fullB, DFA, infoTransitions, 1);
     renameStates(DFA, infoTransitions);
-    //minDKA(resDFA);
+    if(DFA.m_Transitions.size() == 0) {
+        DFA.m_States.insert(DFA.m_InitialState);
+        return DFA;
+    }
     
     return minDKA(DFA);
 }
@@ -397,8 +392,8 @@ DFA intersect(const NFA& a, const NFA& b) {
     renameStates(DFA, infoTransitions);
     if(DFA.m_Transitions.size() == 0) {
         DFA.m_States.insert(DFA.m_InitialState);
+        return DFA;
     }
-    //minDKA(resDFA);
     
     return minDKA(DFA);
 }
