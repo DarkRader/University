@@ -10,10 +10,11 @@ import Foundation
 class CommentsViewModel: ObservableObject {
     @Published private(set) var comments: [Comment] = []
     @Published private(set) var state: CommentsScreenState = .loading
+    @Published var isNewCommentPresented = false
     
-    private let postID: Post.ID
+    let postID: Post.ID
     
-    init (postID: Post.ID) {
+    init(postID: Post.ID) {
         self.postID = postID
     }
     
@@ -22,7 +23,7 @@ class CommentsViewModel: ObservableObject {
         var request = URLRequest(url: URL(string: "https://fitstagram.ackee.cz/api/feed/\(postID)/comments")!)
         request.httpMethod = "GET"
         request.timeoutInterval = 2
-        
+
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
             

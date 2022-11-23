@@ -54,6 +54,27 @@ struct InformationPost: View {
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
             
+            HStack(spacing: 16) {
+                Button(action: { }) {
+                    systemImage("heart")
+                }
+
+                Button(action: { }) {
+                    systemImage("message")
+                }
+
+                Button(action: { }) {
+                    systemImage("paperplane")
+                }
+
+                Spacer()
+
+                Button(action: { }) {
+                    systemImage("bookmark")
+                }
+            }
+            .padding(.horizontal, 8)
+            
             Text("\(post.likes) likes")
                 .fontWeight(.semibold)
                 .padding(.horizontal, 8)
@@ -68,6 +89,14 @@ struct InformationPost: View {
             CommentsView(viewModel: .init(postID: post.id))
         }
     }
+    
+    private func systemImage(_ systemName: String) -> some View {
+        Image(systemName: systemName)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(height: 24)
+    }
+
     
     private func fetchInfPost() async {
         var request = URLRequest(url: URL(string: "https://fitstagram.ackee.cz/api/feed/")!)
