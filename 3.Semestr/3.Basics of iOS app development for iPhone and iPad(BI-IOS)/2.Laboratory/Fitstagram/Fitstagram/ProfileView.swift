@@ -8,14 +8,25 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @AppStorage("username") var username = ""
+
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 HStack {
                     Circle()
                         .frame(width: 64, height: 64)
-                    Text("username")
+
+                    Text(username.isEmpty ? "(no username)" : username)
+
+                    NavigationLink {
+                        EditProfileView()
+                    } label: {
+                        Image(systemName: "pencil")
+                    }
                 }
+                .padding()
+
                 LazyVGrid(
                     columns: [
                         GridItem(spacing: 1),
@@ -29,19 +40,19 @@ struct ProfileView: View {
                             .fill(.clear)
                             .aspectRatio(1, contentMode: .fill)
                             .overlay(
-                                AsyncImage(
-                                    url: URL(string: "https://placeimg.com/640/480/nature"),
-                                    content: { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                    },
-                                    placeholder: {
-                                        ProgressView()
-                                            .progressViewStyle(.circular)
-                                    }
-                                )
-//                                RemoteImage(url: URL(string: "https://placeimg.com/640/480/nature")!)
+//                                AsyncImage(
+//                                    url: URL(string: "https://placeimg.com/640/480/nature"),
+//                                    content: { image in
+//                                        image
+//                                            .resizable()
+//                                            .scaledToFill()
+//                                    },
+//                                    placeholder: {
+//                                        ProgressView()
+//                                            .progressViewStyle(.circular)
+//                                    }
+//                                )
+                                RemoteImage(url: URL(string: "https://placeimg.com/640/480/nature")!)
                             )
                             .clipped()
                     }
