@@ -42,8 +42,6 @@ struct DFA {
 
 #endif
 
-#define IntMax 1000000
-
 //class for preparing all needs information about transition
 class CTransition
 {
@@ -162,7 +160,6 @@ void removeUselessStates(DFA& DFA, std::map<State, CTransition>& Tran, std::set<
         que.push(*itEnd);
     }
 
-//--//CHECK---------------------------------------------------------------------------
     while(!que.empty()) {
         State curState = que.front();
         que.pop();
@@ -210,10 +207,9 @@ void fillState (const NFA& a, const NFA& b, DFA& resDFA, std::map<State, CTransi
     std::map<std::pair <std::set<State>, std::set<State>>, State> elemOfStages;
     std::pair <std::set<State>, std::set<State>> curStatePair;
     std::queue<std::pair<std::set<State>, std::set<State>>> que;
-    que.push({{0}, {0}});
+    que.push({{a.m_InitialState}, {b.m_InitialState}});
     
-    elemOfStages.insert({{{0}, {0}}, 0});
-    //--//CHECK---------------------------------------------------------------------------
+    elemOfStages.insert({{{a.m_InitialState}, {b.m_InitialState}}, 0});
     for(State i = 0; !que.empty(); ++i) {
         std::pair <std::set<State>, std::set<State>> curState = que.front();
         que.pop();
@@ -222,8 +218,8 @@ void fillState (const NFA& a, const NFA& b, DFA& resDFA, std::map<State, CTransi
     }
 }
 
-NFA fullCondition(const NFA& nfa) {
-    if(nfa.m_States.size() * nfa.m_Alphabet.size() == nfa.m_Transitions.size()) {
+NFA fullCondition(const NFA& nfa, DFA& dfa, size_t maxSize) {
+    if(maxSize * dfa.m_Alphabet.size() == nfa.m_Transitions.size()) {
         return nfa;
     }
     
@@ -233,7 +229,7 @@ NFA fullCondition(const NFA& nfa) {
         fullNfa.m_FinalStates.insert(*it);
     }
     
-    for(auto it = nfa.m_Alphabet.begin(); it != nfa.m_Alphabet.end(); ++it) {
+    for(auto it = dfa.m_Alphabet.begin(); it != dfa.m_Alphabet.end(); ++it) {
         fullNfa.m_Alphabet.insert(*it);
     }
     
@@ -241,10 +237,12 @@ NFA fullCondition(const NFA& nfa) {
         fullNfa.m_States.insert(*it);
     }
     
-    std::set<State> newState = {(unsigned int)nfa.m_States.size()};
-    fullNfa.m_States.insert((unsigned int)nfa.m_States.size());
+    std::set<State> newState = {(unsigned int)maxSize};
+    for(size_t i = fullNfa.m_States.size(); i < maxSize + 1; ++i) {
+        fullNfa.m_States.insert((unsigned int)i);
+    }
  
-    for(size_t i = 0; i < fullNfa.m_States.size(); ++i) {
+    for(size_t i = 0; i < maxSize + 1; ++i) {
         for(auto it = fullNfa.m_Alphabet.begin(); it != fullNfa.m_Alphabet.end(); ++it) {
             auto itCurState = nfa.m_Transitions.find({i, *it});
             if(itCurState != nfa.m_Transitions.end()) {
@@ -273,7 +271,7 @@ std::map<State, State> fillEndAndNotEndState(DFA& dfa) {
     return splitState;
 }
 
-bool controlEqualState(std::vector<State> newState, std::vector<std::pair<std::vector<State>, State>> newOrNotState,
+bool controlEqualState(std::vector<long long> newState, std::vector<std::pair<std::vector<long long>, State>> newOrNotState,
                        std::map<State, State>::iterator& itState) {
     State i = 0;
     for(auto it = newOrNotState.begin(); it != newOrNotState.end(); ++it, ++i) {
@@ -288,27 +286,26 @@ bool controlEqualState(std::vector<State> newState, std::vector<std::pair<std::v
     return false;
 }
 
-std::vector<std::pair<std::vector<State>, State>> createNewTable(DFA& dfa, std::map<State, State>& splitState) {
+std::vector<std::pair<std::vector<long long>, State>> createNewTable(DFA& dfa, std::map<State, State>& splitState) {
     DFA x;
     
     for(auto it = dfa.m_Transitions.begin(); it != dfa.m_Transitions.end(); ++it) {
         auto itNextState = splitState.find(it->second);
         x.m_Transitions.insert({{it->first}, itNextState->second});
-        //it->second = itNextState->second;
     }
     
-    std::vector<std::pair<std::vector<State>, State>> newOrNotState;
+    std::vector<std::pair<std::vector<long long>, State>> newOrNotState;
     State i = 0;
     auto itState = x.m_Transitions.begin();
     for(auto it = splitState.begin(); it != splitState.end(); ++it, ++i) {
         
-        std::vector<State> newState;
-        for(size_t i = 0; i < dfa.m_Alphabet.size(); ++i) {
-            if(it->first == itState->first.first) {
+        std::vector<long long> newState;
+        for(auto itAlph = dfa.m_Alphabet.begin(); itAlph != dfa.m_Alphabet.end(); ++itAlph) {
+            if(it->first == itState->first.first && itState->first.second == *itAlph) {
                 newState.push_back(itState->second);
                 itState++;
             } else {
-                newState.push_back(IntMax);
+                newState.push_back(-1);
             }
         }
 
@@ -321,7 +318,7 @@ std::vector<std::pair<std::vector<State>, State>> createNewTable(DFA& dfa, std::
     return newOrNotState;
 }
 
-DFA createResAutomata(DFA& dfa, std::map<State, State>& splitState, std::vector<std::pair<std::vector<State>, State>>& newOrNotState) {
+DFA createResAutomata(DFA& dfa, std::map<State, State>& splitState, std::vector<std::pair<std::vector<long long>, State>>& newOrNotState) {
     DFA resDFA;
     
     auto itStart = splitState.find(dfa.m_InitialState);
@@ -335,8 +332,8 @@ DFA createResAutomata(DFA& dfa, std::map<State, State>& splitState, std::vector<
         resDFA.m_States.insert((unsigned int)i);
         auto itAlph = resDFA.m_Alphabet.begin();
         for(size_t j = 0; j < newOrNotState[i].first.size(); ++j, ++itAlph) {
-            if(newOrNotState[i].first[j] != IntMax) {
-                resDFA.m_Transitions.insert({{i, *itAlph}, newOrNotState[i].first[j]});
+            if(newOrNotState[i].first[j] != -1) {
+                resDFA.m_Transitions.insert({{i, *itAlph}, (State)newOrNotState[i].first[j]});
             }
         }
     }
@@ -354,9 +351,8 @@ DFA createResAutomata(DFA& dfa, std::map<State, State>& splitState, std::vector<
 DFA minDKA(DFA& dfa) {
     std::map<State, State> splitState = fillEndAndNotEndState(dfa);
     std::map<State, State> tmpSplitState;
-    std::vector<std::pair<std::vector<State>, State>> newOrNotState;
-    
-    //--//CHECK---------------------------------------------------------------------------
+    std::vector<std::pair<std::vector<long long>, State>> newOrNotState;
+
     while(tmpSplitState != splitState) {
         tmpSplitState = splitState;
         newOrNotState = createNewTable(dfa, splitState);
@@ -366,13 +362,20 @@ DFA minDKA(DFA& dfa) {
 
 
 DFA unify(const NFA& a, const NFA& b) {
-    NFA fullA = fullCondition(a);
-    NFA fullB = fullCondition(b);
     DFA DFA;
+    fillAlph(a, b, DFA);
+    size_t maxSizeNFA = 0;
+    if(a.m_States.size() < b.m_States.size()) {
+        maxSizeNFA = b.m_States.size();
+    } else {
+        maxSizeNFA = a.m_States.size();
+    }
+    NFA fullA = fullCondition(a, DFA, maxSizeNFA);
+    NFA fullB = fullCondition(b, DFA, maxSizeNFA);
+    
     std::set<State> endState;
     std::map<State, CTransition> infoTransitions;
 
-    fillAlph(fullA, fullB, DFA);
     fillState(fullA, fullB, DFA, infoTransitions, 1);
     renameStates(DFA, infoTransitions);
     if(DFA.m_Transitions.size() == 0) {
