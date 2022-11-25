@@ -92,8 +92,6 @@ public:
         }
     }
     
-    std::vector<std::set<State>> getStateA (void) const { return m_automatA; }
-    std::vector<std::set<State>> getStateB (void) const { return m_automatB; }
     std::vector<State> getTransitionTo (void) const { return m_transitionTo;}
     
 private:
