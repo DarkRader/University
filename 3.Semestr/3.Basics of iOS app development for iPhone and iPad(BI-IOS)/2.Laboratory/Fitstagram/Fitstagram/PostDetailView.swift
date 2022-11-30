@@ -28,7 +28,7 @@ final class PostDetailViewModel: ObservableObject {
             comments = try await fetchComments()
             post = try await fetchPost()
 
-//            (post, comments) = try await (fetchPost(), fetchComments())
+            (post, comments) = try await (fetchPost(), fetchComments())
         } catch {
             print("[ERROR]", error)
         }
