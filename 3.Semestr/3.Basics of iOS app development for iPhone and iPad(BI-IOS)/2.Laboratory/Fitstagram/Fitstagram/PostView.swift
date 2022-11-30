@@ -102,7 +102,7 @@ struct PostView_Previews: PreviewProvider {
                 photos: [],
                 description: "Top notch!",
                 comments: 256,
-                author: Author(id: "1", username: "Artem Kuznetsov")
+                author: Author(id: "1", username: "Artem Kuznetsov", avatar: nil)
             ),
             onCommentsButtonTap: { }
         )

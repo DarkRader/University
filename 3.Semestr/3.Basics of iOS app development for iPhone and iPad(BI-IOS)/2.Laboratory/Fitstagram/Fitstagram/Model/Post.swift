@@ -12,6 +12,7 @@ typealias User = Author
 struct Author: Hashable {
     let id: String
     let username: String
+    let avatar: URL?
 }
 
 extension Author: Codable  { }

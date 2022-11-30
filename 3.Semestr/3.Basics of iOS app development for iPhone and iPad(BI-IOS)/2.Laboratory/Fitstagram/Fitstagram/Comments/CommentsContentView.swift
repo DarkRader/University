@@ -47,11 +47,11 @@ struct CommentsContentView_Previews: PreviewProvider {
         CommentsContentView(
             state: .comments(
                 [
-                    .init(id: "1", author: .init(id: "1", username: "igor.hromadnik"),
+                    .init(id: "1", author: .init(id: "1", username: "igor.hromadnik", avatar: nil),
                           text: "❤️❤️❤️"),
-                    .init(id: "2", author: .init(id: "2", username: "lukas.olejnik"),
+                    .init(id: "2", author: .init(id: "2", username: "lukas.olejnik", avatar: nil),
                           text: "🏎🏎🏎"),
-                    .init(id: "3", author: .init(id: "3", username: "jakub.rosocha"),
+                    .init(id: "3", author: .init(id: "3", username: "jakub.rosocha", avatar: nil),
                           text: "🤷‍♂️🤷‍♂️🤷‍♂️")
                 ]
             ),

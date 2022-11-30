@@ -63,11 +63,13 @@ struct PostsView: View {
                 Text("\(integer)")
             }
             .navigationDestination(for: Post.self) { post in
-                    InformationPost(
-                        post: post
-                    )
+                PostDetailView(viewModel: PostDetailViewModel(postID: post.id))
+//                    InformationPost(
+//                        post: post
+//                    )
             }
             .navigationTitle("FITstagram")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
