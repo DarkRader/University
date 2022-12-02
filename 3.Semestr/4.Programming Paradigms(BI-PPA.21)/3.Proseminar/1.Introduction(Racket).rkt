@@ -94,12 +94,6 @@
 (define (is-prime? n)
   (is-prime-inner? n 2))
 
-; (if (>= i n)
- ;     #t
-  ;    (if (= (modulo n i) 0)
-   ;       #f
-    ;      (is-prime-inner? n (+ i 1)))))
-
 (define (is-prime-inner? n i)
   (cond
     [(> (* i i) n ) #t]
