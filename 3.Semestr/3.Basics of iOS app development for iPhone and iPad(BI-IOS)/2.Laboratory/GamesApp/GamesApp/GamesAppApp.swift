@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct GamesAppApp: App {
+    @StateObject private var dataController = DataController()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(keyName: "title", letter: "S")
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }
