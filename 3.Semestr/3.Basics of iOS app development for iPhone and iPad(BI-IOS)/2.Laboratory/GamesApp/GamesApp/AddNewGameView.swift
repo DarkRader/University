@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 /// View which represents form to add a new game
 struct AddNewGameView: View {
     

@@ -38,8 +38,8 @@ struct ContentView: View {
             sortDescriptors: [
                 SortDescriptor(\.rating, order: .reverse),
                 SortDescriptor(\.title)
-            ],
-            predicate: NSPredicate(format: "%K BEGINSWITH %@", keyName, letter)
+            ]
+            //predicate: NSPredicate(format: "%K BEGINSWITH %@", keyName, letter)
         )
     }
     
