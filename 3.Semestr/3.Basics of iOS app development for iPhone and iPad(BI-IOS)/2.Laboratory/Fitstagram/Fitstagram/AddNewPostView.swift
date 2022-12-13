@@ -92,11 +92,7 @@ struct AddNewPostView: View {
     
 }
 
-
 func addPost(description: String, decodedString: String) async {//async {
-//        let image : UIImage = UIImage(named:"nature")!
-    
-        //let newImageDecod = convertImageToBase64Strings(img: image)
 
         guard !decodedString.isEmpty else { return }
 
@@ -113,39 +109,14 @@ func addPost(description: String, decodedString: String) async {//async {
         request.httpBody = httpBody.data(using: .utf8)
     
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            let httpResponse = response as? HTTPURLResponse
-            if (httpResponse?.statusCode == 422) {
-                let responseObject = try JSONDecoder().decode(ResponseFailure.self, from: data)
-                print("error 422: ", responseObject.message)
-            } else {
-                let responseObject = try JSONDecoder().decode(ResponseSuccess.self, from: data)
-                print("success, inserted post id: ", responseObject.id)
-            }
-            print("Control")
+            let (_, response) = try await URLSession.shared.data(for: request)
+            print(response)
 
         } catch {
             print("[ERROR]", error.localizedDescription)
         }
     
-    
-//    func convertImageToBase64Strings(img: UIImage) -> String {
-//        return img.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
-//    }
-    
     }
-
-private func getPosts() async {
-    var request = URLRequest(url: URL(string: "https://fitstagram.ackee.cz/api/feed/")!)
-    request.httpMethod = "POST"
-    
-    do {
-        let (_, _) = try await URLSession.shared.data(for: request)
-        //self.posts = try JSONDecoder().decode([Post].self, from: data)
-    } catch {
-        print("[ERROR]", error)
-    }
-}
 
 struct TestAddNewPostView_Previews: PreviewProvider {
     static var previews: some View {
@@ -194,12 +165,33 @@ struct ImagePickers: UIViewControllerRepresentable {
             didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
         ) {
             guard let image = info[.originalImage] as? UIImage else { return }
-            //let image : UIImage = UIImage(named:"nature")!
             self.image = Image(uiImage: image)
-            //self.image = Image(uiImage: image)
+            let newImage = resizeImage(image: image, targetSize: CGSize(width: 1000, height: 1000))
             self.isPresented = false
-            self.decodedString = convertImageToBase64String(img: image)
-            //print(decodedString)
+            self.decodedString = convertImageToBase64String(img: (newImage)!)
+        }
+        
+        func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {
+            let size = image.size
+            
+            let widthRatio  = targetSize.width  / size.width
+            let heightRatio = targetSize.height / size.height
+
+            var newSize: CGSize
+            if(widthRatio > heightRatio) {
+                newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+            } else {
+                newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
+            }
+            
+            let rect = CGRect(origin: .zero, size: newSize)
+            
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+            image.draw(in: rect)
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return newImage
         }
         
         func convertImageToBase64String(img: UIImage) -> String {
