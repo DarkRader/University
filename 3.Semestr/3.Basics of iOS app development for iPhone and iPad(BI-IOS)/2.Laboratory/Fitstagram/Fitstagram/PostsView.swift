@@ -29,6 +29,8 @@ struct PostsView: View {
     
     @State var path = NavigationPath()
     
+    @State private var showingAddScreen = false
+    
     var body: some View {
         NavigationStack(path: $path) {
             Group {
@@ -39,6 +41,7 @@ struct PostsView: View {
                             await fetchPosts()
                         }
                 } else {
+                    //buttonForAddPost()
                     ScrollView {
                         LazyVGrid(columns: [GridItem()]) {
                             ForEach(posts) { post in
@@ -56,20 +59,24 @@ struct PostsView: View {
                     }
                 }
             }
-            .navigationDestination(for: String.self) { string in
-                Text(string)
-            }
-            .navigationDestination(for: Int.self) { integer in
-                Text("\(integer)")
-            }
+            
             .navigationDestination(for: Post.self) { post in
                 PostDetailView(viewModel: PostDetailViewModel(postID: post.id))
-//                    InformationPost(
-//                        post: post
-//                    )
             }
             .navigationTitle("FITstagram")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingAddScreen.toggle()
+                    } label: {
+                        Label("Add a new game", systemImage: "plus")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddScreen) {
+            AddNewPostView()
         }
     }
     
