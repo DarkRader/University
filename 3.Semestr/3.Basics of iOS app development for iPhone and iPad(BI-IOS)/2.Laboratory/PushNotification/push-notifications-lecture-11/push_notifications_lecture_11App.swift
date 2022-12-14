@@ -1,14 +1,14 @@
 //
-//  PushNotificationApp.swift
-//  PushNotification
+//  push_notifications_lecture_11App.swift
+//  push-notifications-lecture-11
 //
-//  Created by DarkRader on 07.12.2022.
+//  Created by Igor Rosocha on 07.12.2022.
 //
 
 import SwiftUI
 
 @main
-struct PushNotificationApp: App {
+struct push_notifications_lecture_11App: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
