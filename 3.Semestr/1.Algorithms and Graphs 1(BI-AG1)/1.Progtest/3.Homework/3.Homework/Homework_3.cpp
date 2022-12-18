@@ -42,38 +42,38 @@ struct SVertex {
     uint64_t GiftWithoutGuard;
 };
 
-void controlOnList(const TreeProblem& infoTreeProblem, std::vector<SVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t poz,
+void controlOnList(const TreeProblem& infoTreeProblem, std::vector<SVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t i,
                    std::queue<SVertex>& que) {
-    if(infoVertex[infoTreeProblem.connections[poz].first].Neighbours.size() == 1) {
-        que.push(infoVertex[infoTreeProblem.connections[poz].first]);
-        lists.push_back(infoTreeProblem.connections[poz].first);
-        infoVertex[infoTreeProblem.connections[poz].first].GiftWithGuard = infoTreeProblem.gifts[infoTreeProblem.connections[poz].first];
-        infoVertex[infoTreeProblem.connections[poz].first].GiftWithoutGuard = 0;
-        infoVertex[infoTreeProblem.connections[poz].first].Visited = true;
+    uint64_t position = 0;
+    uint64_t gifts = 0;
+    if(infoVertex[infoTreeProblem.connections[i].first].Neighbours.size() == 1) {
+        position = infoTreeProblem.connections[i].first;
+        gifts = infoTreeProblem.connections[i].first;
+    } else if(infoVertex[infoTreeProblem.connections[i].second].Neighbours.size() == 1) {
+        position = infoTreeProblem.connections[i].second;
+        gifts = infoTreeProblem.connections[i].second;
     }
-    if(infoVertex[infoTreeProblem.connections[poz].second].Neighbours.size() == 1) {
-        que.push(infoVertex[infoTreeProblem.connections[poz].second]);
-        lists.push_back(infoTreeProblem.connections[poz].second);
-        infoVertex[infoTreeProblem.connections[poz].second].GiftWithGuard = infoTreeProblem.gifts[infoTreeProblem.connections[poz].second];
-        infoVertex[infoTreeProblem.connections[poz].second].GiftWithoutGuard = 0;
-        infoVertex[infoTreeProblem.connections[poz].second].Visited = true;
+    if(infoVertex[position].Neighbours.size() == 1) {
+        que.push(infoVertex[position]);
+        lists.push_back(position);
+        infoVertex[position].GiftWithGuard = infoTreeProblem.gifts[gifts];
+        infoVertex[position].GiftWithoutGuard = 0;
+        infoVertex[position].Visited = true;
     }
 }
 
-std::vector<uint64_t> getLists(const TreeProblem& infoTreeProblem, std::vector<SVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t poz,
+std::vector<uint64_t> getLists(const TreeProblem& infoTreeProblem, std::vector<SVertex>& infoVertex, std::vector<uint64_t>& lists,
                                std::queue<SVertex>& que) {
-
-    if(poz == infoTreeProblem.connections.size() - 1) {
-        infoVertex[infoTreeProblem.connections[poz].second].Neighbours.push_back(infoTreeProblem.connections[poz].first);
-        infoVertex[infoTreeProblem.connections[poz].first].Neighbours.push_back(infoTreeProblem.connections[poz].second);
-        controlOnList(infoTreeProblem, infoVertex, lists, poz, que);
-        return lists;
-    } else {
-        infoVertex[infoTreeProblem.connections[poz].second].Neighbours.push_back(infoTreeProblem.connections[poz].first);
-        infoVertex[infoTreeProblem.connections[poz].first].Neighbours.push_back(infoTreeProblem.connections[poz].second);
-        getLists(infoTreeProblem, infoVertex, lists, poz + 1, que);
+    for(uint64_t i = 0; i < infoTreeProblem.gifts.size(); ++i) {
+        infoVertex.push_back({i, i, false, false, 0, 0});
     }
-    controlOnList(infoTreeProblem, infoVertex, lists, poz, que);
+    for(uint64_t i = 0; i < infoTreeProblem.connections.size(); ++i) {
+        infoVertex[infoTreeProblem.connections[i].second].Neighbours.push_back(infoTreeProblem.connections[i].first);
+        infoVertex[infoTreeProblem.connections[i].first].Neighbours.push_back(infoTreeProblem.connections[i].second);
+    }
+    for(uint64_t i = 0; i < infoTreeProblem.connections.size(); ++i) {
+        controlOnList(infoTreeProblem, infoVertex, lists, i, que);
+    }
     return lists;
 }
 
@@ -135,12 +135,9 @@ void fillCrossroad(std::vector<SVertex>& infoVertex, SVertex& curVertex, const u
 
 uint64_t getRes(const TreeProblem& infoTreeProblem) {
     std::vector<SVertex> infoVertex;
-    for(uint64_t i = 0; i < infoTreeProblem.gifts.size(); ++i) {
-        infoVertex.push_back({i, i, false, false, 0, 0});
-    }
     std::vector<uint64_t> lists;
     std::queue<SVertex> que;
-    lists = getLists(infoTreeProblem, infoVertex, lists, 0, que);
+    lists = getLists(infoTreeProblem, infoVertex, lists, que);
 
     uint64_t result = 0;
     while(!que.empty()) {
@@ -150,18 +147,19 @@ uint64_t getRes(const TreeProblem& infoTreeProblem) {
         if(nextVertex == curVertex.Name && infoVertex[nextVertex].Final == false) {
             continue;
         } else {
-            if(curVertex.Final == true) {
-                if(curVertex.GiftWithGuard > curVertex.GiftWithoutGuard) {
-                    result = curVertex.GiftWithGuard;
-                } else {
-                    result = curVertex.GiftWithoutGuard;
-                }
-            }
             if(infoVertex[nextVertex].Visited == true) {
                 continue;
             }
             fillCrossroad(infoVertex, infoVertex[nextVertex], infoTreeProblem.gifts[nextVertex]);
             que.push(infoVertex[nextVertex]);
+            if(infoVertex[nextVertex].Final == true) {
+                if(infoVertex[nextVertex].GiftWithGuard > infoVertex[nextVertex].GiftWithoutGuard) {
+                    result = infoVertex[nextVertex].GiftWithGuard;
+                } else {
+                    result = infoVertex[nextVertex].GiftWithoutGuard;
+                }
+                break;
+            }
         }
     }
     return result;
