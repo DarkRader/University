@@ -29,223 +29,135 @@ struct TreeProblem {
 
 #endif
 
-//struct SVertex {
-//    SVertex(uint64_t name, uint64_t unvis, bool visited, bool final, uint64_t withGuard, uint64_t withoutGuard)
-//    : Name(name), Unvis(unvis), Visited(visited), Final(final), GiftWithGuard(withGuard), GiftWithoutGuard(withoutGuard) {}
-//    
-//    uint64_t Name;
-//    uint64_t Unvis;
-//    bool Visited;
-//    bool Final;
-//    std::vector<uint64_t> Neighbours;
-//    uint64_t GiftWithGuard;
-//    uint64_t GiftWithoutGuard;
-//};
+struct SVertex {
+    SVertex(uint64_t name, uint64_t unvis, bool visited, bool final, uint64_t withGuard, uint64_t withoutGuard)
+    : Name(name), Unvis(unvis), Visited(visited), Final(final), GiftWithGuard(withGuard), GiftWithoutGuard(withoutGuard) {}
 
-class CVertex {
-public:
-    CVertex(uint64_t name, uint64_t unvis, bool visited, bool final, uint64_t withGuard, uint64_t withoutGuard)
-    : m_name(name), m_unvis(unvis), m_visited(visited), m_final(final), m_giftWithGuard(withGuard), m_giftWithoutGuard(withoutGuard) {}
-    
-    void setNewInfo(bool visited, uint64_t withGuard, uint64_t withoutGuard) {
-        m_visited = true;
-        m_giftWithGuard = withGuard;
-        m_giftWithoutGuard = withoutGuard;
-    }
-    
-    uint64_t getName(void) const {
-        return m_name;
-    }
-    
-    uint64_t getGiftWithGuard(void) {
-        return m_giftWithGuard;
-    }
-    
-    void setGiftWithGuard(uint64_t sizeGift) {
-        m_giftWithGuard = sizeGift;
-    }
-    
-    uint64_t getGiftWithoutGuard(void) {
-        return m_giftWithoutGuard;
-    }
-    
-    void setGiftWithoutGuard(uint64_t sizeGift) {
-        m_giftWithoutGuard = sizeGift;
-    }
-    
-    void pushNeighbours (uint64_t Vertex) {
-        m_neighbours.push_back(Vertex);
-    }
-    
-    uint64_t getSizeNeighbours(void) const {
-        return m_neighbours.size();
-    }
-    
-    bool getVisited(void) const {
-        return m_visited;
-    }
-    
-    void setVisited(bool visited) {
-        m_visited = true;
-    }
-    
-    uint64_t getSpecNeighbor(uint64_t Vertex) const {
-        return m_neighbours[Vertex];
-    }
-    
-    uint64_t getUnvis(void) const {
-        return m_unvis;
-    }
-    
-    void setUnvis(uint64_t unvis) {
-        m_unvis = unvis;
-    }
-    
-    bool getFinal(void) const {
-        return m_final;
-    }
-    
-    void setFinal(bool visited) {
-        m_final = true;
-    }
-    
-private:
-    uint64_t m_name;
-    uint64_t m_unvis;
-    bool m_visited;
-    bool m_final;
-    std::vector<uint64_t> m_neighbours;
-    uint64_t m_giftWithGuard;
-    uint64_t m_giftWithoutGuard;
+    uint64_t Name;
+    uint64_t Unvis;
+    bool Visited;
+    bool Final;
+    std::vector<uint64_t> Neighbours;
+    uint64_t GiftWithGuard;
+    uint64_t GiftWithoutGuard;
 };
 
-void controlOnList(const TreeProblem& infoTreeProblem, std::vector<CVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t poz) {
-    if(infoVertex[infoTreeProblem.connections[poz].first].getSizeNeighbours() == 1) {
+void controlOnList(const TreeProblem& infoTreeProblem, std::vector<SVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t poz,
+                   std::queue<SVertex>& que) {
+    if(infoVertex[infoTreeProblem.connections[poz].first].Neighbours.size() == 1) {
+        que.push(infoVertex[infoTreeProblem.connections[poz].first]);
         lists.push_back(infoTreeProblem.connections[poz].first);
-        infoVertex[infoTreeProblem.connections[poz].first].setGiftWithGuard(infoTreeProblem.gifts[infoTreeProblem.connections[poz].first]);
-        infoVertex[infoTreeProblem.connections[poz].first].setGiftWithoutGuard(0);
-        infoVertex[infoTreeProblem.connections[poz].first].setVisited(true);
+        infoVertex[infoTreeProblem.connections[poz].first].GiftWithGuard = infoTreeProblem.gifts[infoTreeProblem.connections[poz].first];
+        infoVertex[infoTreeProblem.connections[poz].first].GiftWithoutGuard = 0;
+        infoVertex[infoTreeProblem.connections[poz].first].Visited = true;
     }
-    if(infoVertex[infoTreeProblem.connections[poz].second].getSizeNeighbours() == 1) {
+    if(infoVertex[infoTreeProblem.connections[poz].second].Neighbours.size() == 1) {
+        que.push(infoVertex[infoTreeProblem.connections[poz].second]);
         lists.push_back(infoTreeProblem.connections[poz].second);
-        infoVertex[infoTreeProblem.connections[poz].second].setGiftWithGuard(infoTreeProblem.gifts[infoTreeProblem.connections[poz].second]);
-        infoVertex[infoTreeProblem.connections[poz].second].setGiftWithoutGuard(0);
-        infoVertex[infoTreeProblem.connections[poz].second].setVisited(true);
+        infoVertex[infoTreeProblem.connections[poz].second].GiftWithGuard = infoTreeProblem.gifts[infoTreeProblem.connections[poz].second];
+        infoVertex[infoTreeProblem.connections[poz].second].GiftWithoutGuard = 0;
+        infoVertex[infoTreeProblem.connections[poz].second].Visited = true;
     }
 }
 
-std::vector<uint64_t> getLists(const TreeProblem& infoTreeProblem, std::vector<CVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t poz) {
-    
+std::vector<uint64_t> getLists(const TreeProblem& infoTreeProblem, std::vector<SVertex>& infoVertex, std::vector<uint64_t>& lists, uint64_t poz,
+                               std::queue<SVertex>& que) {
+
     if(poz == infoTreeProblem.connections.size() - 1) {
-        infoVertex[infoTreeProblem.connections[poz].second].pushNeighbours(infoTreeProblem.connections[poz].first);
-        infoVertex[infoTreeProblem.connections[poz].first].pushNeighbours(infoTreeProblem.connections[poz].second);
-        controlOnList(infoTreeProblem, infoVertex, lists, poz);
+        infoVertex[infoTreeProblem.connections[poz].second].Neighbours.push_back(infoTreeProblem.connections[poz].first);
+        infoVertex[infoTreeProblem.connections[poz].first].Neighbours.push_back(infoTreeProblem.connections[poz].second);
+        controlOnList(infoTreeProblem, infoVertex, lists, poz, que);
         return lists;
     } else {
-        infoVertex[infoTreeProblem.connections[poz].second].pushNeighbours(infoTreeProblem.connections[poz].first);
-        infoVertex[infoTreeProblem.connections[poz].first].pushNeighbours(infoTreeProblem.connections[poz].second);
-        getLists(infoTreeProblem, infoVertex, lists, poz + 1);
+        infoVertex[infoTreeProblem.connections[poz].second].Neighbours.push_back(infoTreeProblem.connections[poz].first);
+        infoVertex[infoTreeProblem.connections[poz].first].Neighbours.push_back(infoTreeProblem.connections[poz].second);
+        getLists(infoTreeProblem, infoVertex, lists, poz + 1, que);
     }
-    controlOnList(infoTreeProblem, infoVertex, lists, poz);
+    controlOnList(infoTreeProblem, infoVertex, lists, poz, que);
     return lists;
 }
 
-uint64_t controlNextVert(std::vector<CVertex>& infoVertex, CVertex& curVertex) {
-
+uint64_t controlNextVert(std::vector<SVertex>& infoVertex, SVertex& curVertex) {
     uint64_t counterNeighbours = 0;
-    uint64_t candidate = curVertex.getName();
-    for(uint64_t i = 0; i < curVertex.getSizeNeighbours(); ++i) {
-        if(infoVertex[curVertex.getSpecNeighbor(i)].getVisited() == false) {
-            candidate = curVertex.getSpecNeighbor(i);
+    uint64_t candidate = curVertex.Name;
+    for(uint64_t i = 0; i < curVertex.Neighbours.size(); ++i) {
+        if(infoVertex[curVertex.Neighbours[i]].Visited == false) {
+            candidate = curVertex.Neighbours[i];
             counterNeighbours++;
         }
         if(counterNeighbours > 1) {
-            return curVertex.getName();
+            return curVertex.Name;
         }
     }
-    
     if(counterNeighbours == 0) {
-        infoVertex[curVertex.getName()].setFinal(true);
+        infoVertex[curVertex.Name].Final = true;
     }
-    
-    infoVertex[curVertex.getName()].setUnvis(candidate);
+    infoVertex[curVertex.Name].Unvis = candidate;
     return candidate;
 }
 
-uint64_t findNextVertex(std::vector<CVertex>& infoVertex, CVertex& curVertex) {
-    if(curVertex.getSizeNeighbours() == 1) {
-        CVertex nextVertex = infoVertex[curVertex.getSpecNeighbor(0)];
-        uint64_t controlVertex = controlNextVert(infoVertex, nextVertex);
-        if(nextVertex.getName() == controlVertex) {
-            if(nextVertex.getFinal() == true) {
-                return nextVertex.getName();
-            } else {
-                return curVertex.getName();
-            }
+uint64_t findNextVertex(std::vector<SVertex>& infoVertex, SVertex& curVertex) {
+    SVertex nextVertex(0, 0, false, false, 0, 0);
+    if(curVertex.Neighbours.size() == 1) {
+        nextVertex = infoVertex[curVertex.Neighbours[0]];
+    } else {
+        nextVertex = infoVertex[curVertex.Unvis];
+    }
+    uint64_t controlVertex = controlNextVert(infoVertex, nextVertex);
+    if(nextVertex.Name == controlVertex) {
+        if(nextVertex.Final == true) {
+            return nextVertex.Name;
         } else {
-            return nextVertex.getName();
+            return curVertex.Name;
         }
     } else {
-        CVertex nextVertex = infoVertex[curVertex.getUnvis()];
-        uint64_t controlVertex = controlNextVert(infoVertex, nextVertex);
-        if(nextVertex.getName() == controlVertex) {
-            if(nextVertex.getFinal() == true) {
-                return nextVertex.getName();
-            } else {
-                return curVertex.getName();
-            }
-        } else {
-            return nextVertex.getName();
-        }
+        return nextVertex.Name;
     }
 }
 
-void fillCrossroad(std::vector<CVertex>& infoVertex, CVertex& curVertex, const uint64_t& gifts) {
-
+void fillCrossroad(std::vector<SVertex>& infoVertex, SVertex& curVertex, const uint64_t& gifts) {
     uint64_t withGuard = gifts;
     uint64_t withoutGuard = 0;
-    for(uint64_t i = 0; i < curVertex.getSizeNeighbours(); ++i) {
-        if(infoVertex[curVertex.getSpecNeighbor(i)].getVisited() == true) {
-            withGuard += infoVertex[curVertex.getSpecNeighbor(i)].getGiftWithoutGuard();
-            if(infoVertex[curVertex.getSpecNeighbor(i)].getGiftWithGuard() > infoVertex[curVertex.getSpecNeighbor(i)].getGiftWithoutGuard()) {
-                withoutGuard += infoVertex[curVertex.getSpecNeighbor(i)].getGiftWithGuard();
+    for(uint64_t i = 0; i < curVertex.Neighbours.size(); ++i) {
+        if(infoVertex[curVertex.Neighbours[i]].Visited == true) {
+            withGuard += infoVertex[curVertex.Neighbours[i]].GiftWithoutGuard;
+            if(infoVertex[curVertex.Neighbours[i]].GiftWithGuard > infoVertex[curVertex.Neighbours[i]].GiftWithoutGuard) {
+                withoutGuard += infoVertex[curVertex.Neighbours[i]].GiftWithGuard;
             } else {
-                withoutGuard += infoVertex[curVertex.getSpecNeighbor(i)].getGiftWithoutGuard();
+                withoutGuard += infoVertex[curVertex.Neighbours[i]].GiftWithoutGuard;
             }
         }
     }
-    curVertex.setNewInfo(true, withGuard, withoutGuard);
+    curVertex.Visited = true;
+    curVertex.GiftWithGuard = withGuard;
+    curVertex.GiftWithoutGuard = withoutGuard;
 }
 
 uint64_t getRes(const TreeProblem& infoTreeProblem) {
-    std::vector<CVertex> infoVertex;
-    for(size_t i = 0; i < infoTreeProblem.gifts.size(); ++i) {
+    std::vector<SVertex> infoVertex;
+    for(uint64_t i = 0; i < infoTreeProblem.gifts.size(); ++i) {
         infoVertex.push_back({i, i, false, false, 0, 0});
     }
     std::vector<uint64_t> lists;
-    lists = getLists(infoTreeProblem, infoVertex, lists, 0);
-    std::queue<CVertex> que;
-    
-    for(uint64_t i = 0; i < lists.size(); ++i) {
-        que.push(infoVertex[lists[i]]);
-    }
- 
+    std::queue<SVertex> que;
+    lists = getLists(infoTreeProblem, infoVertex, lists, 0, que);
+
     uint64_t result = 0;
     while(!que.empty()) {
-        CVertex curVertex = que.front();
+        SVertex curVertex = que.front();
         que.pop();
         uint64_t nextVertex = findNextVertex(infoVertex, curVertex);
-        if(nextVertex == curVertex.getName() && infoVertex[nextVertex].getFinal() == false) {
+        if(nextVertex == curVertex.Name && infoVertex[nextVertex].Final == false) {
             continue;
         } else {
-            if(curVertex.getFinal() == true) {
-                if(curVertex.getGiftWithGuard() > curVertex.getGiftWithoutGuard()) {
-                    result = curVertex.getGiftWithGuard();
+            if(curVertex.Final == true) {
+                if(curVertex.GiftWithGuard > curVertex.GiftWithoutGuard) {
+                    result = curVertex.GiftWithGuard;
                 } else {
-                    result = curVertex.getGiftWithoutGuard();
+                    result = curVertex.GiftWithoutGuard;
                 }
             }
-            if(infoVertex[nextVertex].getVisited() == true) {
+            if(infoVertex[nextVertex].Visited == true) {
                 continue;
             }
             fillCrossroad(infoVertex, infoVertex[nextVertex], infoTreeProblem.gifts[nextVertex]);
