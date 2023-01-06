@@ -2,7 +2,7 @@
 //  PostsView.swift
 //  Fitstagram
 //
-//  Created by Артем on 19.10.2022.
+//  Created by DarkRader on 19.10.2022.
 //
 
 import SwiftUI
@@ -29,6 +29,8 @@ struct PostsView: View {
     
     @State var path = NavigationPath()
     
+    @State private var showingAddScreen = false
+    
     var body: some View {
         NavigationStack(path: $path) {
             Group {
@@ -39,6 +41,7 @@ struct PostsView: View {
                             await fetchPosts()
                         }
                 } else {
+                    //buttonForAddPost()
                     ScrollView {
                         LazyVGrid(columns: [GridItem()]) {
                             ForEach(posts) { post in
@@ -56,29 +59,24 @@ struct PostsView: View {
                     }
                 }
             }
-            .navigationDestination(for: String.self) { string in
-                Text(string)
-            }
-            .navigationDestination(for: Int.self) { integer in
-                Text("\(integer)")
-            }
+            
             .navigationDestination(for: Post.self) { post in
-                CommentsView(viewModel: .init(postID: post.id))
-//                VStack {
-//                    Text(post.author.username)
-//
-//                    Text("\(post.comments)")
-//
-//                    Button("PUSH FIRST POST") {
-//                        path.append(posts[0])
-//                    }
-//
-//                    Button("POP TO ROOT") {
-//                        path.removeLast(path.count)
-//                    }
-//                }
+                PostDetailView(viewModel: PostDetailViewModel(postID: post.id))
             }
             .navigationTitle("FITstagram")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingAddScreen.toggle()
+                    } label: {
+                        Label("Add a new game", systemImage: "plus")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddScreen) {
+            AddNewPostView()
         }
     }
     

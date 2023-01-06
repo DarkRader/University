@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct CommentsContentView: View {
-    
     let state: CommentsScreenState
-    @State var sheetPresented = false
+    let onNewComment: () -> Void
     
     var body: some View {
         switch state {
         case .loading:
             ProgressView()
+
         case .error(let error):
             Text(error.localizedDescription)
-                .foregroundStyle(.red)
+                .foregroundColor(.red)
+
         case .comments(let comments):
             List {
                 ForEach(comments) { comment in
@@ -29,23 +30,14 @@ struct CommentsContentView: View {
                         Text(comment.text)
                     }
                 }
-                
-                Button(action: {
-                    sheetPresented = true
-                }) {
+
+                Button {
+                    onNewComment()
+                } label: {
                     Image(systemName: "plus")
-                    
                 }
             }
             .listStyle(.grouped)
-            .sheet(isPresented: $sheetPresented) {
-                NewCommentView(
-                    isPresented: $sheetPresented,
-                    onNewComment: { _ in
-                        //TODO: Handle 'onNewComment'
-                    }
-                )
-            }
         }
     }
 }
@@ -55,14 +47,15 @@ struct CommentsContentView_Previews: PreviewProvider {
         CommentsContentView(
             state: .comments(
                 [
-                .init(id: "1", author: .init(id: "1", username: "DarkRader"),
-                      text: "❤️❤️❤️"),
-                .init(id: "2", author: .init(id: "2", username: "artem_rader"),
-                      text: "🏎🏎🏎"),
-                .init(id: "3", author: .init(id: "3", username: "DarlingGather"),
-                      text: "🤷‍♂️🤷‍♂️🤷‍♂️")
+                    .init(id: "1", author: .init(id: "1", username: "igor.hromadnik", avatar: nil),
+                          text: "❤️❤️❤️"),
+                    .init(id: "2", author: .init(id: "2", username: "lukas.olejnik", avatar: nil),
+                          text: "🏎🏎🏎"),
+                    .init(id: "3", author: .init(id: "3", username: "jakub.rosocha", avatar: nil),
+                          text: "🤷‍♂️🤷‍♂️🤷‍♂️")
                 ]
-            )
+            ),
+            onNewComment: { }
         )
     }
 }

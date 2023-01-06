@@ -2,7 +2,7 @@
 //  CommentsView.swift
 //  Fitstagram
 //
-//  Created by Артем on 19.10.2022.
+//  Created by DarkRader on 19.10.2022.
 //
 
 import SwiftUI
@@ -10,16 +10,30 @@ import SwiftUI
 struct CommentsView: View {
     @StateObject var viewModel: CommentsViewModel
     
-    @State var sheetPresented = false
-    
     var body: some View {
-        CommentsContentView(state: viewModel.state)
-            .refreshable {
-                await viewModel.fetchComments()
-            }
-            .task {
-                await viewModel.fetchComments()
-            }
+        CommentsContentView(
+            state: viewModel.state,
+            onNewComment: { viewModel.isNewCommentPresented = true }
+        )
+        .refreshable {
+            await viewModel.fetchComments()
+        }
+        .task {
+            await viewModel.fetchComments()
+        }
+        .sheet(isPresented: $viewModel.isNewCommentPresented) {
+            NewCommentView(
+                viewModel: NewCommentViewModel(
+                    postID: viewModel.postID,
+                    isPresented: $viewModel.isNewCommentPresented,
+                    onNewComment: { _ in
+                        Task {
+                            await viewModel.fetchComments()
+                        }
+                    }
+                )
+            )
+        }
 //        .sheet(isPresented: $sheetPresented) {
 //            NewCommentView(
 //                isPresented: $sheetPresented,
