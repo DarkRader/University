@@ -1,0 +1,13 @@
+@import "style.css";
+
+h1 {
+    display: block;
+    text-align: center;
+    margin: 40px auto;
+    font-size: 60px;
+}
+
+a {
+    margin-left: 20px;
+    margin-bottom: 40px;
+}

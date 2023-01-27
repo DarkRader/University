@@ -1,0 +1,6 @@
+gradle-build:
+  image: openjdk:17-alpine
+  script:
+    - ./gradlew build
+    - rm -f build/libs/*plain.jar
+    - java -Dspring.main.web-application-type=none -jar build/libs/*.jar

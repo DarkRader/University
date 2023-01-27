@@ -1,0 +1,63 @@
+body {
+    background-image: url("swords.jpg");
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1 {
+    color: #ffffff;
+}
+
+h3 {
+    color: #A72608;
+}
+
+.index-menu {
+    color: #ffffff;
+    font-size: 50px;
+}
+
+th {
+    background-color: #fafafa !important;
+    color: #000000;
+}
+
+td {
+    background-color: #679289;
+    color: #ffffff;
+}
+
+tr:nth-child(odd) {
+    background-color: #71807d;
+}
+
+tr:nth-child(even) {
+    background-color: #273b3c;
+}
+
+a:link, a:visited, a:hover, a:active {
+    color: #ffffff;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+label {
+    color: #000000;
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: -5px;
+}
+
+input[type=text], input:focus[type=text], input[type=number], input:focus[type=number], input[type=date], input:focus[type=date], input[type=datetime-local], input:focus[type=datetime-local]{
+    background-color: #71807d;
+    color: #0e0c0a;
+}
+
+input:read-only[type=number] {
+    background-color: #0c333a;
+    color: #eedfc9;
+}
