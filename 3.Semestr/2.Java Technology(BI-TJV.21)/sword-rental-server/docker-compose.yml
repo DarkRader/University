@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    container_name: sword_rental_db
+    environment:
+      - POSTGRES_USER=tjv
+      - POSTGRES_PASSWORD=tjv
+      - POSTGRES_DB=tjv_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  api:
+    image: cz.cvut.fit.tjv.swordrentalserver.swordrentalapi
+    depends_on:
+      - postgres
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sword_rental_db/tjv_db
+      SPRING_DATASOURCE_USERNAME: tjv
+      SPRING_DATASOURCE_PASSWORD: tjv
