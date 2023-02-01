@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "28DC7F91-860C-4612-BE4D-0937E43CA7EA"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4387F082-EDD8-435F-88A4-9B8E07D3A5F8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "ImagePickers"
+            landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0A4BE69E-4016-46DB-9E10-3B7B34A7B02D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
+            landmarkName = "imagePickerController(_:didFinishPickingMediaWithInfo:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FDA3AE0B-CDA4-45AF-ACC0-F4DE5D056018"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "93473887-478D-4AE1-8AD4-0B715415608D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "ImagePickers"
+            landmarkType = "14">
+            <Locations>
+               <Location
+                  uuid = "93473887-478D-4AE1-8AD4-0B715415608D - f1228da5b418da82"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Fitstagram.ImagePickers.isPresented.getter : Swift.Bool"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "107"
+                  endingLineNumber = "107"
+                  offsetFromSymbolStart = "148">
+               </Location>
+               <Location
+                  uuid = "93473887-478D-4AE1-8AD4-0B715415608D - 1aca7f8766cf22be"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Fitstagram.ImagePickers.isPresented.setter : Swift.Bool"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "107"
+                  endingLineNumber = "107"
+                  offsetFromSymbolStart = "160">
+               </Location>
+               <Location
+                  uuid = "93473887-478D-4AE1-8AD4-0B715415608D - 2561f5665738208d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Fitstagram.ImagePickers.isPresented.modify : Swift.Bool"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "107"
+                  endingLineNumber = "107"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "93473887-478D-4AE1-8AD4-0B715415608D - ccb851a0301c72be"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Fitstagram.ImagePickers.isPresented.modify : Swift.Bool with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "107"
+                  endingLineNumber = "107"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  uuid = "93473887-478D-4AE1-8AD4-0B715415608D - dc55f519f4fc7246"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Fitstagram.ImagePickers.$isPresented.getter : SwiftUI.Binding&lt;Swift.Bool&gt;"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "107"
+                  endingLineNumber = "107"
+                  offsetFromSymbolStart = "172">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0C14A02A-7E32-476A-993F-F54D145A76C2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
+            landmarkName = "imagePickerController(_:didFinishPickingMediaWithInfo:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5ED880EC-1F1F-44CE-B25B-881CAB1FA732"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "addPost(description:decodedString:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "5ED880EC-1F1F-44CE-B25B-881CAB1FA732 - a5ffaa9c84dd7294"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "114"
+                  endingLineNumber = "114"
+                  offsetFromSymbolStart = "396">
+               </Location>
+               <Location
+                  uuid = "5ED880EC-1F1F-44CE-B25B-881CAB1FA732 - 2469150aa9aed095"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "114"
+                  endingLineNumber = "114"
+                  offsetFromSymbolStart = "200">
+               </Location>
+               <Location
+                  uuid = "5ED880EC-1F1F-44CE-B25B-881CAB1FA732 - 2469150aa9aed095"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "114"
+                  endingLineNumber = "114"
+                  offsetFromSymbolStart = "220">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3F99749E-DB17-48B0-B86C-65777CF28432"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "addPost(description:decodedString:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "3F99749E-DB17-48B0-B86C-65777CF28432 - aaad16706ee4ce29"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "117"
+                  endingLineNumber = "117"
+                  offsetFromSymbolStart = "2060">
+               </Location>
+               <Location
+                  uuid = "3F99749E-DB17-48B0-B86C-65777CF28432 - a5ffaa9c84dd722b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "117"
+                  endingLineNumber = "117"
+                  offsetFromSymbolStart = "568">
+               </Location>
+               <Location
+                  uuid = "3F99749E-DB17-48B0-B86C-65777CF28432 - 2469150aa9aed02a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "117"
+                  endingLineNumber = "117"
+                  offsetFromSymbolStart = "700">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9AA25872-676B-4FF7-92FE-340B74352AEF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "addPost(description:decodedString:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "9AA25872-676B-4FF7-92FE-340B74352AEF - a5ffaa9c84dd73af"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "121"
+                  endingLineNumber = "121"
+                  offsetFromSymbolStart = "1348">
+               </Location>
+               <Location
+                  uuid = "9AA25872-676B-4FF7-92FE-340B74352AEF - 2469150aa9aed1ae"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "121"
+                  endingLineNumber = "121"
+                  offsetFromSymbolStart = "268">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6306DB53-9A00-4A72-A2BC-B816B6C45D58"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "addPost(description:decodedString:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "6306DB53-9A00-4A72-A2BC-B816B6C45D58 - aaad16706ee4cfef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123"
+                  offsetFromSymbolStart = "2060">
+               </Location>
+               <Location
+                  uuid = "6306DB53-9A00-4A72-A2BC-B816B6C45D58 - a5ffaa9c84dd73ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123"
+                  offsetFromSymbolStart = "936">
+               </Location>
+               <Location
+                  uuid = "6306DB53-9A00-4A72-A2BC-B816B6C45D58 - 2469150aa9aed1ec"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Fitstagram.addPost(description: Swift.String, decodedString: Swift.String) async -&gt; ()"
+                  moduleName = "Fitstagram"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Artyom_1/University-/3.Semestr/3.Basics%20of%20iOS%20app%20development%20for%20iPhone%20and%20iPad(BI-IOS)/2.Laboratory/Fitstagram/Fitstagram/AddNewPostView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123"
+                  offsetFromSymbolStart = "740">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A4903715-14B1-45F7-AD47-8C2FBD45097F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Fitstagram/AddNewPostView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "addPost(description:decodedString:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

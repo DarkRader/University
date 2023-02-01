@@ -1,0 +1,418 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9A6D1BA72900415E002EC016 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6D1BA62900415E002EC016 /* Comment.swift */; };
+		9A6D1BAD290052BF002EC016 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6D1BAC290052BF002EC016 /* PostsView.swift */; };
+		9A7EEECB29229C7E00F8D1EC /* InformationPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7EEECA29229C7E00F8D1EC /* InformationPost.swift */; };
+		9A82199328F7053B008438AF /* FitstagramApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82199228F7053B008438AF /* FitstagramApp.swift */; };
+		9A82199528F7053B008438AF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82199428F7053B008438AF /* ContentView.swift */; };
+		9A82199728F7053D008438AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A82199628F7053D008438AF /* Assets.xcassets */; };
+		9A82199A28F7053D008438AF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A82199928F7053D008438AF /* Preview Assets.xcassets */; };
+		9A8219A128F70922008438AF /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8219A028F70922008438AF /* Post.swift */; };
+		9A8219A328F71270008438AF /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8219A228F71270008438AF /* PostView.swift */; };
+		9AA76EC429254554004129F9 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA76EC329254554004129F9 /* EditProfileView.swift */; };
+		9AB1A4F2291C2CC8003C8C81 /* NewCommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB1A4F0291C2CC8003C8C81 /* NewCommentView.swift */; };
+		9AB1A4F3291C2CC8003C8C81 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB1A4F1291C2CC8003C8C81 /* CommentsView.swift */; };
+		9AB1A4F7291C2D71003C8C81 /* CommentsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB1A4F6291C2D71003C8C81 /* CommentsContentView.swift */; };
+		9AB1A4F9291C2D92003C8C81 /* CommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB1A4F8291C2D92003C8C81 /* CommentsViewModel.swift */; };
+		9AB1A4FB291C3279003C8C81 /* CommentsScreenState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB1A4FA291C3279003C8C81 /* CommentsScreenState.swift */; };
+		9AC28568293780C800D1E495 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC28567293780C800D1E495 /* PostDetailView.swift */; };
+		9AD1530929097DF600BB6BE4 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD1530829097DF600BB6BE4 /* ProfileView.swift */; };
+		9AD1530B2909827600BB6BE4 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD1530A2909827600BB6BE4 /* RemoteImage.swift */; };
+		9ADCFD972948EA6100661F97 /* AddNewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADCFD962948EA6100661F97 /* AddNewPostView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9A6D1BA62900415E002EC016 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		9A6D1BAC290052BF002EC016 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; usesTabs = 0; };
+		9A7EEECA29229C7E00F8D1EC /* InformationPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationPost.swift; sourceTree = "<group>"; };
+		9A82198F28F7053B008438AF /* Fitstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fitstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A82199228F7053B008438AF /* FitstagramApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitstagramApp.swift; sourceTree = "<group>"; };
+		9A82199428F7053B008438AF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9A82199628F7053D008438AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9A82199928F7053D008438AF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		9A8219A028F70922008438AF /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		9A8219A228F71270008438AF /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		9AA76EC329254554004129F9 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		9AB1A4F0291C2CC8003C8C81 /* NewCommentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewCommentView.swift; path = Fitstagram/Comments/NewCommentView.swift; sourceTree = SOURCE_ROOT; };
+		9AB1A4F1291C2CC8003C8C81 /* CommentsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommentsView.swift; path = Fitstagram/Comments/CommentsView.swift; sourceTree = SOURCE_ROOT; };
+		9AB1A4F6291C2D71003C8C81 /* CommentsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsContentView.swift; sourceTree = "<group>"; };
+		9AB1A4F8291C2D92003C8C81 /* CommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewModel.swift; sourceTree = "<group>"; };
+		9AB1A4FA291C3279003C8C81 /* CommentsScreenState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsScreenState.swift; sourceTree = "<group>"; };
+		9AC28567293780C800D1E495 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
+		9AD1530829097DF600BB6BE4 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		9AD1530A2909827600BB6BE4 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
+		9ADCFD962948EA6100661F97 /* AddNewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewPostView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9A82198C28F7053B008438AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9A82198628F7053B008438AF = {
+			isa = PBXGroup;
+			children = (
+				9A82199128F7053B008438AF /* Fitstagram */,
+				9A82199028F7053B008438AF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9A82199028F7053B008438AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9A82198F28F7053B008438AF /* Fitstagram.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9A82199128F7053B008438AF /* Fitstagram */ = {
+			isa = PBXGroup;
+			children = (
+				9AB1A4F5291C2D07003C8C81 /* Comments */,
+				9AD153072909232900BB6BE4 /* Model */,
+				9A82199228F7053B008438AF /* FitstagramApp.swift */,
+				9A7EEECA29229C7E00F8D1EC /* InformationPost.swift */,
+				9A82199428F7053B008438AF /* ContentView.swift */,
+				9A8219A228F71270008438AF /* PostView.swift */,
+				9AD1530829097DF600BB6BE4 /* ProfileView.swift */,
+				9AD1530A2909827600BB6BE4 /* RemoteImage.swift */,
+				9A6D1BAC290052BF002EC016 /* PostsView.swift */,
+				9AA76EC329254554004129F9 /* EditProfileView.swift */,
+				9AC28567293780C800D1E495 /* PostDetailView.swift */,
+				9ADCFD962948EA6100661F97 /* AddNewPostView.swift */,
+				9A82199628F7053D008438AF /* Assets.xcassets */,
+				9A82199828F7053D008438AF /* Preview Content */,
+			);
+			path = Fitstagram;
+			sourceTree = "<group>";
+		};
+		9A82199828F7053D008438AF /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				9A82199928F7053D008438AF /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		9AB1A4F5291C2D07003C8C81 /* Comments */ = {
+			isa = PBXGroup;
+			children = (
+				9AB1A4F0291C2CC8003C8C81 /* NewCommentView.swift */,
+				9AB1A4F1291C2CC8003C8C81 /* CommentsView.swift */,
+				9AB1A4F6291C2D71003C8C81 /* CommentsContentView.swift */,
+				9AB1A4F8291C2D92003C8C81 /* CommentsViewModel.swift */,
+			);
+			path = Comments;
+			sourceTree = "<group>";
+		};
+		9AD153072909232900BB6BE4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9A6D1BA62900415E002EC016 /* Comment.swift */,
+				9A8219A028F70922008438AF /* Post.swift */,
+				9AB1A4FA291C3279003C8C81 /* CommentsScreenState.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9A82198E28F7053B008438AF /* Fitstagram */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9A82199D28F7053D008438AF /* Build configuration list for PBXNativeTarget "Fitstagram" */;
+			buildPhases = (
+				9A82198B28F7053B008438AF /* Sources */,
+				9A82198C28F7053B008438AF /* Frameworks */,
+				9A82198D28F7053B008438AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Fitstagram;
+			productName = Fitstagram;
+			productReference = 9A82198F28F7053B008438AF /* Fitstagram.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9A82198728F7053B008438AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					9A82198E28F7053B008438AF = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 9A82198A28F7053B008438AF /* Build configuration list for PBXProject "Fitstagram" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9A82198628F7053B008438AF;
+			productRefGroup = 9A82199028F7053B008438AF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9A82198E28F7053B008438AF /* Fitstagram */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9A82198D28F7053B008438AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9A82199A28F7053D008438AF /* Preview Assets.xcassets in Resources */,
+				9A82199728F7053D008438AF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9A82198B28F7053B008438AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AA76EC429254554004129F9 /* EditProfileView.swift in Sources */,
+				9A7EEECB29229C7E00F8D1EC /* InformationPost.swift in Sources */,
+				9AB1A4F9291C2D92003C8C81 /* CommentsViewModel.swift in Sources */,
+				9AC28568293780C800D1E495 /* PostDetailView.swift in Sources */,
+				9A6D1BA72900415E002EC016 /* Comment.swift in Sources */,
+				9AD1530929097DF600BB6BE4 /* ProfileView.swift in Sources */,
+				9AB1A4F3291C2CC8003C8C81 /* CommentsView.swift in Sources */,
+				9AB1A4FB291C3279003C8C81 /* CommentsScreenState.swift in Sources */,
+				9A8219A128F70922008438AF /* Post.swift in Sources */,
+				9AD1530B2909827600BB6BE4 /* RemoteImage.swift in Sources */,
+				9AB1A4F2291C2CC8003C8C81 /* NewCommentView.swift in Sources */,
+				9ADCFD972948EA6100661F97 /* AddNewPostView.swift in Sources */,
+				9A82199528F7053B008438AF /* ContentView.swift in Sources */,
+				9A8219A328F71270008438AF /* PostView.swift in Sources */,
+				9A6D1BAD290052BF002EC016 /* PostsView.swift in Sources */,
+				9AB1A4F7291C2D71003C8C81 /* CommentsContentView.swift in Sources */,
+				9A82199328F7053B008438AF /* FitstagramApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9A82199B28F7053D008438AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9A82199C28F7053D008438AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9A82199E28F7053D008438AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Fitstagram/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fit.cvut.Fitstagram;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9A82199F28F7053D008438AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Fitstagram/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fit.cvut.Fitstagram;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9A82198A28F7053B008438AF /* Build configuration list for PBXProject "Fitstagram" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9A82199B28F7053D008438AF /* Debug */,
+				9A82199C28F7053D008438AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9A82199D28F7053D008438AF /* Build configuration list for PBXNativeTarget "Fitstagram" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9A82199E28F7053D008438AF /* Debug */,
+				9A82199F28F7053D008438AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9A82198728F7053B008438AF /* Project object */;
+}

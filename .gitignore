@@ -2,8 +2,8 @@
 *.DS_Store
 
 # Xcode files
-*.xcodeproj/
-DerivedData/
+#*.xcodeproj/
+#DerivedData/
 
 # Docker
 .docker
