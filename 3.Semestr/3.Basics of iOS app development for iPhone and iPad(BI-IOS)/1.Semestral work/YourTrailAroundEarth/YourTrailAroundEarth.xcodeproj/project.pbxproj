@@ -11,6 +11,11 @@
 		9AA22789298AB9EE001A4984 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22788298AB9EE001A4984 /* ContentView.swift */; };
 		9AA2278B298AB9F0001A4984 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AA2278A298AB9F0001A4984 /* Assets.xcassets */; };
 		9AA2278E298AB9F0001A4984 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AA2278D298AB9F0001A4984 /* Preview Assets.xcassets */; };
+		9AA22795298ABD1E001A4984 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22794298ABD1E001A4984 /* FeedView.swift */; };
+		9AA22797298ABD41001A4984 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22796298ABD41001A4984 /* ProfileView.swift */; };
+		9AA22799298ABD8D001A4984 /* MyVisetedPlaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22798298ABD8D001A4984 /* MyVisetedPlaceView.swift */; };
+		9AA2279B298ABDC0001A4984 /* WantToVisiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA2279A298ABDC0001A4984 /* WantToVisiteView.swift */; };
+		9AA2279D298AD51B001A4984 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA2279C298AD51B001A4984 /* EditProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +24,11 @@
 		9AA22788298AB9EE001A4984 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9AA2278A298AB9F0001A4984 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AA2278D298AB9F0001A4984 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		9AA22794298ABD1E001A4984 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		9AA22796298ABD41001A4984 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		9AA22798298ABD8D001A4984 /* MyVisetedPlaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisetedPlaceView.swift; sourceTree = "<group>"; };
+		9AA2279A298ABDC0001A4984 /* WantToVisiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WantToVisiteView.swift; sourceTree = "<group>"; };
+		9AA2279C298AD51B001A4984 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +63,11 @@
 			children = (
 				9AA22786298AB9EE001A4984 /* YourTrailAroundEarthApp.swift */,
 				9AA22788298AB9EE001A4984 /* ContentView.swift */,
+				9AA22794298ABD1E001A4984 /* FeedView.swift */,
+				9AA22796298ABD41001A4984 /* ProfileView.swift */,
+				9AA2279C298AD51B001A4984 /* EditProfileView.swift */,
+				9AA22798298ABD8D001A4984 /* MyVisetedPlaceView.swift */,
+				9AA2279A298ABDC0001A4984 /* WantToVisiteView.swift */,
 				9AA2278A298AB9F0001A4984 /* Assets.xcassets */,
 				9AA2278C298AB9F0001A4984 /* Preview Content */,
 			);
@@ -137,7 +152,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AA2279D298AD51B001A4984 /* EditProfileView.swift in Sources */,
+				9AA22799298ABD8D001A4984 /* MyVisetedPlaceView.swift in Sources */,
+				9AA2279B298ABDC0001A4984 /* WantToVisiteView.swift in Sources */,
+				9AA22797298ABD41001A4984 /* ProfileView.swift in Sources */,
 				9AA22789298AB9EE001A4984 /* ContentView.swift in Sources */,
+				9AA22795298ABD1E001A4984 /* FeedView.swift in Sources */,
 				9AA22787298AB9EE001A4984 /* YourTrailAroundEarthApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
