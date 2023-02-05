@@ -14,7 +14,9 @@ struct ContentView: View {
                 .tabItem {
                     Label("Feed", systemImage: "list.dash")
                 }
-            MyVisetedPlaceView()
+            MyVisetedPlaceView(
+            keyName: "title", letter: "S"
+            )
                 .tabItem {
                     Label("Visited place", systemImage: "checklist")
                 }
