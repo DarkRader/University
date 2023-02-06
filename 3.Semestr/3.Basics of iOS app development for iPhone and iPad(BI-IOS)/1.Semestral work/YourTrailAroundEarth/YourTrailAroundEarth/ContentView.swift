@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+//    @StateObject private var dataController = DataCountryController()
+    
     var body: some View {
         TabView {
             FeedView()
                 .tabItem {
                     Label("Feed", systemImage: "list.dash")
                 }
-            MyVisetedPlaceView(
-            keyName: "title", letter: "S"
-            )
+            MyVisetedPlaceView(keyName: "title", letter: "S")
+//                .environment(\.managedObjectContext, dataController.container.viewContext)
                 .tabItem {
                     Label("Visited place", systemImage: "checklist")
                 }

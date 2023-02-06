@@ -34,6 +34,8 @@
 		9AA227C9298E9BE8001A4984 /* CountrySave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227C8298E9BE8001A4984 /* CountrySave.swift */; };
 		9AA227CB298EA0C6001A4984 /* AddNewVisitedCountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227CA298EA0C6001A4984 /* AddNewVisitedCountryView.swift */; };
 		9AA227CD298EA464001A4984 /* CountryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227CC298EA464001A4984 /* CountryListView.swift */; };
+		9AB480B72990399C00B035FA /* MyVisitedCityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB480B62990399C00B035FA /* MyVisitedCityView.swift */; };
+		9AB480BB299042B300B035FA /* AddNewVisitedCityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB480BA299042B300B035FA /* AddNewVisitedCityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +67,8 @@
 		9AA227C8298E9BE8001A4984 /* CountrySave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySave.swift; sourceTree = "<group>"; };
 		9AA227CA298EA0C6001A4984 /* AddNewVisitedCountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewVisitedCountryView.swift; sourceTree = "<group>"; };
 		9AA227CC298EA464001A4984 /* CountryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListView.swift; sourceTree = "<group>"; };
+		9AB480B62990399C00B035FA /* MyVisitedCityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVisitedCityView.swift; sourceTree = "<group>"; };
+		9AB480BA299042B300B035FA /* AddNewVisitedCityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewVisitedCityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +181,8 @@
 			children = (
 				9AA22798298ABD8D001A4984 /* MyVisetedPlaceView.swift */,
 				9AA227CA298EA0C6001A4984 /* AddNewVisitedCountryView.swift */,
+				9AB480B62990399C00B035FA /* MyVisitedCityView.swift */,
+				9AB480BA299042B300B035FA /* AddNewVisitedCityView.swift */,
 				9AA227CC298EA464001A4984 /* CountryListView.swift */,
 			);
 			path = MyVisitedPlace;
@@ -270,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AB480B72990399C00B035FA /* MyVisitedCityView.swift in Sources */,
 				9AA227AE298D6284001A4984 /* TestView.swift in Sources */,
 				9AA2279D298AD51B001A4984 /* EditProfileView.swift in Sources */,
 				9AA22799298ABD8D001A4984 /* MyVisetedPlaceView.swift in Sources */,
@@ -295,6 +302,7 @@
 				9AA227B7298D78EC001A4984 /* Landmark.swift in Sources */,
 				9AA2279F298C1BDC001A4984 /* AddCountryWantToVisitView.swift in Sources */,
 				9AA22787298AB9EE001A4984 /* YourTrailAroundEarthApp.swift in Sources */,
+				9AB480BB299042B300B035FA /* AddNewVisitedCityView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

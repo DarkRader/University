@@ -11,6 +11,8 @@ struct MyVisetedPlaceView: View {
     
     @State private var showingAddScreen = false
     
+    @State private var showReview = false
+    
     @FetchRequest private var countries: FetchedResults<CoreDataCountry>
     
     @Environment(\.managedObjectContext) private var moc
@@ -36,19 +38,41 @@ struct MyVisetedPlaceView: View {
         NavigationView {
             List {
                 ForEach(countries) { country in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(country.name ?? "")
-                                .fontWeight(.heavy)
-                            
-                            Text(country.photo ?? "")
-                                .fontWeight(.medium)
-                        }
-                        
-                        Spacer()
-                        
-                        Text(String(country.rating))
-                    }
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Text(country.flag ?? "")
+                                    Text(country.name ?? "")
+                                        .fontWeight(.heavy)
+                                }
+                                
+                                Text("Language: \(country.language ?? "")")
+                                    .fontWeight(.medium)
+                                
+//                                Image(country.countryCode ?? "NotCountryPicture")
+//                                    .resizable()
+//                                    .frame(width: 300, height: 200)
+//                                    .clipShape(Rectangle())
+                                
+                                NavigationLink(destination: MyVisitedCityView()) {
+                                    Image(country.countryCode ?? "NotCountryPicture")
+                                        .resizable()
+                                        .frame(width: 300, height: 200)
+                                        .clipShape(Rectangle())
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                                
+                                Button("Show review:") {
+                                    showReview.toggle()
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+
+                                if(showReview) {
+                                    Text(country.review ?? "")
+                                }
+                                
+                                Text("Rating: \(String(country.rating))")
+                            }
+        
                 }
                 .onDelete(perform: deleteCoreDataCountries)
             }
