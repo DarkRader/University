@@ -48,12 +48,7 @@ struct MyVisetedPlaceView: View {
                                 Text("Language: \(country.language ?? "")")
                                     .fontWeight(.medium)
                                 
-//                                Image(country.countryCode ?? "NotCountryPicture")
-//                                    .resizable()
-//                                    .frame(width: 300, height: 200)
-//                                    .clipShape(Rectangle())
-                                
-                                NavigationLink(destination: MyVisitedCityView()) {
+                                NavigationLink(destination: MyVisitedCityView(keyName: "title", letter: "S", country: country)) {
                                     Image(country.countryCode ?? "NotCountryPicture")
                                         .resizable()
                                         .frame(width: 300, height: 200)

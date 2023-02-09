@@ -15,7 +15,7 @@ struct AddNewVisitedCountryView: View {
     @State private var name = ""
     @State private var language = "English"
     @State private var review = ""
-    @State private var rating = 3
+    @State private var rating = 5
     @State private var countryName = "AC"
     
     @Environment(\.managedObjectContext) private var moc
@@ -48,10 +48,8 @@ struct AddNewVisitedCountryView: View {
                         }
                     }
                     
-                    Text(Locale.current.localizedString(forRegionCode: countryName) ?? "")
-                    Text(countryFlag(countryName))
-//                    Text(Locale.current.)
-//                    Text(Locale.current.localizedString(forLanguageCode: "cy") ?? "")
+//                    Text(Locale.current.localizedString(forRegionCode: countryName) ?? "")
+//                    Text(countryFlag(countryName))
                 }
                 
                 Section {
@@ -70,8 +68,6 @@ struct AddNewVisitedCountryView: View {
 //                        country.capital = ""
                         country.flag = countryFlag(countryName)
                         
-                        print(getLanguageISO())
-                        
                         do {
                             try moc.save()
                         } catch {
@@ -87,17 +83,6 @@ struct AddNewVisitedCountryView: View {
         }
         .navigationTitle("Add Country")
     }
-    
-    func getLanguageISO() -> String {
-//        NSLocale.preferredLanguages
-//        let locale = Locale.current.localizedString(forRegionCode: countryName)
-        let locale = Locale.current
-        guard let languageCode = locale.language.languageCode?.identifier,
-              let regionCode = locale.language.region?.identifier else {
-           return "de_DE"
-       }
-       return languageCode + "_" + regionCode
-     }
     
     func countryFlag(_ countryCode: String) -> String {
       String(String.UnicodeScalarView(countryCode.unicodeScalars.compactMap {

@@ -9,12 +9,14 @@ import SwiftUI
 
 @main
 struct YourTrailAroundEarthApp: App {
-    @StateObject private var dataController = DataCountryController()
+    @StateObject private var dataCountryController = DataCountryController()
+    @StateObject private var dataCityController = DataCityController()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, dataController.container.viewContext)
+                .environment(\.managedObjectContext, dataCountryController.container.viewContext)
+                .environment(\.managedObjectContext, dataCityController.container.viewContext)
         }
     }
 }
