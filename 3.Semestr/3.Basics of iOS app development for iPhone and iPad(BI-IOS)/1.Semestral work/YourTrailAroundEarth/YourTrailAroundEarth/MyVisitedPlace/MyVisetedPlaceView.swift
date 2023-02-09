@@ -35,7 +35,7 @@ struct MyVisetedPlaceView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(countries) { country in
                             VStack(alignment: .leading) {

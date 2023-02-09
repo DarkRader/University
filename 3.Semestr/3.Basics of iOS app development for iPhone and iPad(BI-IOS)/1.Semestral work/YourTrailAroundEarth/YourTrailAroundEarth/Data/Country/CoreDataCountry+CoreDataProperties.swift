@@ -2,7 +2,7 @@
 //  CoreDataCountry+CoreDataProperties.swift
 //  YourTrailAroundEarth
 //
-//  Created by DarkRader on 06.02.2023.
+//  Created by DarkRader on 09.02.2023.
 //
 //
 
@@ -25,46 +25,47 @@ extension CoreDataCountry {
     @NSManaged public var rating: Int16
     @NSManaged public var review: String?
     @NSManaged public var city: NSSet?
-
+    
     public var wrappedId: String {
-        id ?? "Unknow id country"
-    }
-    
-    public var wrappedName: String {
-        name ?? "Unknow name country"
-    }
-    
-    public var wrappedLanguage: String {
-        language ?? "Unknow language country"
-    }
-    
-    public var wrappedCountryCode: String {
-        countryCode ?? "Unknow countryCode country"
-    }
-    
-    public var wrappedCapital: String {
-        capital ?? "Unknow capital country"
-    }
-    
-    public var wrappedFlag: String {
-        flag ?? "Unknow flag country"
-    }
-    
-    public var wrappedRating: Int16 {
-        rating
-    }
-    
-    public var wrappedReview: String {
-        review ?? "Unknow review country"
-    }
-    
-    public var citiesList: [CoreDataCity] {
-        let set = city as? Set<CoreDataCity> ?? []
-        
-        return set.sorted {
-            $0.wrappedName < $1.wrappedName
-        }
-    }
+           id ?? "Unknow id country"
+       }
+       
+       public var wrappedName: String {
+           name ?? "Unknow name country"
+       }
+       
+       public var wrappedLanguage: String {
+           language ?? "Unknow language country"
+       }
+       
+       public var wrappedCountryCode: String {
+           countryCode ?? "Unknow countryCode country"
+       }
+       
+       public var wrappedCapital: String {
+           capital ?? "Unknow capital country"
+       }
+       
+       public var wrappedFlag: String {
+           flag ?? "Unknow flag country"
+       }
+       
+       public var wrappedRating: Int16 {
+           rating
+       }
+       
+       public var wrappedReview: String {
+           review ?? "Unknow review country"
+       }
+       
+       public var citiesList: [CoreDataCity] {
+           let set = city as? Set<CoreDataCity> ?? []
+           
+           return set.sorted {
+               $0.wrappedRating > $1.wrappedRating
+           }
+       }
+
 }
 
 // MARK: Generated accessors for city

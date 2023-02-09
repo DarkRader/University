@@ -56,6 +56,7 @@ struct AddNewVisitedCityView: View {
                     Button("Save") {
                         // Add a new city
                         let city = CoreDataCity(context: moc)
+                        city.id = UUID().uuidString
                         city.origin = country
                         city.name = name
                         city.flag = language

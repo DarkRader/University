@@ -1,19 +1,19 @@
 //
-//  MyVisitedCityView.swift
+//  MyVisitedPlaceView.swift
 //  YourTrailAroundEarth
 //
-//  Created by DarkRader on 05.02.2023.
+//  Created by DarkRader on 09.02.2023.
 //
 
 import SwiftUI
 
-struct MyVisitedCityView: View {
+struct MyVisitedPlaceView: View {
     
     @State private var showingAddScreen = false
     
     @State private var showReview = false
     
-    @FetchRequest private var cities: FetchedResults<CoreDataCity>
+    @FetchRequest private var placies: FetchedResults<CoreDataPlace>
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -21,46 +21,41 @@ struct MyVisitedCityView: View {
     
     private var letter: String
     
-    private var country: CoreDataCountry
+    private var city: CoreDataCity
     
-    init(keyName: String, letter: String, country: CoreDataCountry) {
+    init(keyName: String, letter: String, city: CoreDataCity) {
         self.keyName = keyName
         self.letter = letter
-        self.country = country
+        self.city = city
         
-        _cities = FetchRequest<CoreDataCity>(
+        _placies = FetchRequest<CoreDataPlace>(
             sortDescriptors: [
                 SortDescriptor(\.rating, order: .reverse),
                 SortDescriptor(\.name)
             ]
-            
+
         )
     }
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(country.citiesList, id: \.self) { city in
+                ForEach(city.placiesList, id: \.self) { place in
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(city.origin?.name ?? "")
-                            Text(city.name ?? "")
+                            Text(place.origin?.name ?? "")
+                            Text(place.name ?? "")
                                 .fontWeight(.heavy)
                             
                             Spacer()
                             
                             Button(action: {
-                                deleteCoreDataCities(city: city)
+                                deleteCoreDataPlacies(place: place)
                             }) {
                                Image(systemName: "trash")
                             }
                             .buttonStyle(BorderlessButtonStyle())
                         }
-                        
-                        NavigationLink(destination: MyVisitedPlaceView(keyName: "title", letter: "S", city: city)) {
-                            Text("Show visited placies in this city")
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
                         
                         Button("Show review:") {
                            showReview.toggle()
@@ -68,82 +63,80 @@ struct MyVisitedCityView: View {
                         .buttonStyle(BorderlessButtonStyle())
 
                         if(showReview) {
-                           Text(city.review ?? "")
+                           Text(place.review ?? "")
                         }
 
-                        Text("Rating: \(String(city.rating))")
+                        Text("Rating: \(String(place.rating))")
+                        
                     }
-                    
                 }
-//                .onDelete(perform: deleteCoreDataCities)
+//                .onDelete(perform: deleteCoreDataPlacies)
             }
-            .navigationTitle("Visited cities")
+            .navigationTitle("Visited placies")
             .toolbar(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingAddScreen.toggle()
                     } label: {
-                        Label("Add a new city", systemImage: "plus")
+                        Label("Add a new place", systemImage: "plus")
                     }
                 }
-                
             }
         }
         .sheet(isPresented: $showingAddScreen) {
-            AddNewVisitedCityView(country: country)
+            AddNewVisitedPlaceView(city: city)
         }
     }
     
-    private static func loadCitiesFromFileSystem() -> [City] {
+    private static func loadCitiesFromFileSystem() -> [Place] {
         let documentDirectory = FileManager.default.urls(
             for: .documentDirectory,
             in: .userDomainMask
         ).first
-        let url = documentDirectory?.appendingPathExtension(CitySave.url)
+        let url = documentDirectory?.appendingPathExtension(PlaceSave.url)
         
         guard let url = url else { return [] }
         
         do {
-            let citiesData = try Data(contentsOf: url)
+            let placiesData = try Data(contentsOf: url)
             
             do {
-                let cities = try JSONDecoder().decode([City].self, from: citiesData)
-                return cities
+                let placies = try JSONDecoder().decode([Place].self, from: placiesData)
+                return placies
             } catch {
-                print("CITIES DECODING ERROR:", error.localizedDescription)
+                print("PLACIES DECODING ERROR:", error.localizedDescription)
             }
         } catch {
-            print("CITIES LOADING ERROR:", error.localizedDescription)
+            print("PLACIES LOADING ERROR:", error.localizedDescription)
         }
         
         return []
     }
     
-    private static func loadCitiesFromUserDefaults() -> [City] {
+    private static func loadCitiesFromUserDefaults() -> [Place] {
         guard
-            let citiesData = UserDefaults.standard.data(forKey: CitySave.userDefaultsKey)
+            let placiesData = UserDefaults.standard.data(forKey: PlaceSave.userDefaultsKey)
         else { return [] }
         
         do {
-            let cities = try JSONDecoder().decode([City].self, from: citiesData)
-            return cities
+            let placies = try JSONDecoder().decode([Place].self, from: placiesData)
+            return placies
         } catch {
-            print("CITIES DECODING ERROR:", error.localizedDescription)
+            print("PLACIES DECODING ERROR:", error.localizedDescription)
         }
         
         return []
     }
-    
-    private func deleteCoreDataCities(city: CoreDataCity) {
-        moc.delete(city)
-        
+    private func deleteCoreDataPlacies(place: CoreDataPlace) {
+        moc.delete(place)
+
         try? moc.save()
     }
 }
 
-struct MyVisitedCityView_Previews: PreviewProvider {
+struct MyVisitedPlaceView_Previews: PreviewProvider {
     static var previews: some View {
-        MyVisitedCityView(keyName: "title", letter: "S", country: CoreDataCountry())
+        MyVisitedPlaceView(keyName: "title", letter: "S", city: CoreDataCity())
     }
 }

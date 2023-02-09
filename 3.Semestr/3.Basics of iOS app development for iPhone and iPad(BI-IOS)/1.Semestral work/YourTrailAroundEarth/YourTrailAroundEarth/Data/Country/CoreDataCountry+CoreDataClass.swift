@@ -2,7 +2,7 @@
 //  CoreDataCountry+CoreDataClass.swift
 //  YourTrailAroundEarth
 //
-//  Created by DarkRader on 06.02.2023.
+//  Created by DarkRader on 09.02.2023.
 //
 //
 

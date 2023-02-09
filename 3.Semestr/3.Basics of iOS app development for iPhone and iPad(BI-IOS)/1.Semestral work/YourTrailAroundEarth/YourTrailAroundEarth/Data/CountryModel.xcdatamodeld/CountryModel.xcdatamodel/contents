@@ -7,6 +7,7 @@
         <attribute name="rating" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="review" optional="YES" attributeType="String"/>
         <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataCountry" inverseName="city" inverseEntity="CoreDataCountry"/>
+        <relationship name="place" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CoreDataPlace" inverseName="origin" inverseEntity="CoreDataPlace"/>
     </entity>
     <entity name="CoreDataCountry" representedClassName="CoreDataCountry" syncable="YES">
         <attribute name="capital" optional="YES" attributeType="String"/>
@@ -18,5 +19,12 @@
         <attribute name="rating" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="review" optional="YES" attributeType="String"/>
         <relationship name="city" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CoreDataCity" inverseName="origin" inverseEntity="CoreDataCity"/>
+    </entity>
+    <entity name="CoreDataPlace" representedClassName="CoreDataPlace" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="rating" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="review" optional="YES" attributeType="String"/>
+        <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataCity" inverseName="place" inverseEntity="CoreDataCity"/>
     </entity>
 </model>
