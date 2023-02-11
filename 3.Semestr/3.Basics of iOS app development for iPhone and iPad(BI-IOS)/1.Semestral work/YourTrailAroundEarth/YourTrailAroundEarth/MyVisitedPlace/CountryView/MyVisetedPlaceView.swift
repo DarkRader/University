@@ -13,6 +13,8 @@ struct MyVisetedPlaceView: View {
     
     @State private var showReview = false
     
+    @State private var showingEditScreen = false
+    
     @FetchRequest private var countries: FetchedResults<CoreDataCountry>
     
     @Environment(\.managedObjectContext) private var moc
@@ -45,8 +47,16 @@ struct MyVisetedPlaceView: View {
                                         .fontWeight(.heavy)
                                 }
                                 
+                                Text("Continent: \(country.continent ?? "")")
+                                
+                                Text("Capital: \(country.capital ?? "")")
+                                
                                 Text("Language: \(country.language ?? "")")
-                                    .fontWeight(.medium)
+                                
+                                HStack {
+                                    Text("Currency: ")
+                                    Text((country.currency ?? "") + "(\(country.currencySymbol ?? ""))")
+                                }
                                 
                                 NavigationLink(destination: MyVisitedCityView(keyName: "title", letter: "S", country: country)) {
                                     Image(country.countryCode ?? "NotCountryPicture")
@@ -67,9 +77,26 @@ struct MyVisetedPlaceView: View {
                                 
                                 Text("Rating: \(String(country.rating))")
                             }
-        
+                            .swipeActions {
+                                Button(action: {
+                                    deleteCoreDataCountries(country: country)
+                               }) {
+                                   Text("Delete")
+                                       .background(Color.red)
+                               }
+                               .tint(Color.red)
+                                
+                                Button {
+                                    showingEditScreen.toggle()
+                                } label: {
+                                    Text("Edit")
+                                }
+                                .tint(Color.blue)
+                            }
+                            .sheet(isPresented: $showingEditScreen) {
+                                EditNewVisitedCountryView(country: country)
+                            }
                 }
-                .onDelete(perform: deleteCoreDataCountries)
             }
             .navigationTitle("Visited countries")
             .toolbar {
@@ -79,10 +106,6 @@ struct MyVisetedPlaceView: View {
                     } label: {
                         Label("Add a new country", systemImage: "plus")
                     }
-                }
-                
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
                 }
             }
         }
@@ -130,13 +153,14 @@ struct MyVisetedPlaceView: View {
         
         return []
     }
+    
+    private func editCoreDataCountries() {
+        try? moc.save()
+    }
+    
+    private func deleteCoreDataCountries(country: CoreDataCountry) {
+        moc.delete(country)
 
-    private func deleteCoreDataCountries(at offsets: IndexSet) {
-        for offset in offsets {
-            let country = countries[offset]
-            moc.delete(country)
-        }
-        
         try? moc.save()
     }
     

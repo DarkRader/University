@@ -13,7 +13,9 @@ struct MyVisitedPlaceView: View {
     
     @State private var showReview = false
     
-    @FetchRequest private var placies: FetchedResults<CoreDataPlace>
+    @State private var showingEditScreen = false
+    
+    @FetchRequest private var places: FetchedResults<CoreDataPlace>
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -28,7 +30,7 @@ struct MyVisitedPlaceView: View {
         self.letter = letter
         self.city = city
         
-        _placies = FetchRequest<CoreDataPlace>(
+        _places = FetchRequest<CoreDataPlace>(
             sortDescriptors: [
                 SortDescriptor(\.rating, order: .reverse),
                 SortDescriptor(\.name)
@@ -46,15 +48,6 @@ struct MyVisitedPlaceView: View {
                             Text(place.origin?.name ?? "")
                             Text(place.name ?? "")
                                 .fontWeight(.heavy)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                deleteCoreDataPlacies(place: place)
-                            }) {
-                               Image(systemName: "trash")
-                            }
-                            .buttonStyle(BorderlessButtonStyle())
                         }
                         
                         Button("Show review:") {
@@ -69,10 +62,29 @@ struct MyVisitedPlaceView: View {
                         Text("Rating: \(String(place.rating))")
                         
                     }
+                    .swipeActions {
+                        Button(action: {
+                            deleteCoreDataPlaces(place: place)
+                       }) {
+                           Text("Delete")
+                               .background(Color.red)
+                       }
+                       .tint(Color.red)
+                        
+                        Button {
+                            showingEditScreen.toggle()
+                        } label: {
+                            Text("Edit")
+                        }
+                        .tint(Color.blue)
+                    }
+                    .sheet(isPresented: $showingEditScreen) {
+                        EditNewVisitedPlaceView(place: place)
+                    }
                 }
 //                .onDelete(perform: deleteCoreDataPlacies)
             }
-            .navigationTitle("Visited placies")
+            .navigationTitle("Visited places")
             .toolbar(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -89,46 +101,47 @@ struct MyVisitedPlaceView: View {
         }
     }
     
-    private static func loadCitiesFromFileSystem() -> [Place] {
+    private static func loadPlacesFromFileSystem() -> [Place] {
         let documentDirectory = FileManager.default.urls(
             for: .documentDirectory,
             in: .userDomainMask
         ).first
         let url = documentDirectory?.appendingPathExtension(PlaceSave.url)
-        
+
         guard let url = url else { return [] }
-        
+
         do {
-            let placiesData = try Data(contentsOf: url)
-            
+            let placesData = try Data(contentsOf: url)
+
             do {
-                let placies = try JSONDecoder().decode([Place].self, from: placiesData)
-                return placies
+                let places = try JSONDecoder().decode([Place].self, from: placesData)
+                return places
             } catch {
-                print("PLACIES DECODING ERROR:", error.localizedDescription)
+                print("PLACES DECODING ERROR:", error.localizedDescription)
             }
         } catch {
-            print("PLACIES LOADING ERROR:", error.localizedDescription)
+            print("PLACES LOADING ERROR:", error.localizedDescription)
         }
-        
+
+        return []
+    }
+
+    private static func loadPlacesFromUserDefaults() -> [Place] {
+        guard
+            let placesData = UserDefaults.standard.data(forKey: PlaceSave.userDefaultsKey)
+        else { return [] }
+
+        do {
+            let places = try JSONDecoder().decode([Place].self, from: placesData)
+            return places
+        } catch {
+            print("PLACES DECODING ERROR:", error.localizedDescription)
+        }
+
         return []
     }
     
-    private static func loadCitiesFromUserDefaults() -> [Place] {
-        guard
-            let placiesData = UserDefaults.standard.data(forKey: PlaceSave.userDefaultsKey)
-        else { return [] }
-        
-        do {
-            let placies = try JSONDecoder().decode([Place].self, from: placiesData)
-            return placies
-        } catch {
-            print("PLACIES DECODING ERROR:", error.localizedDescription)
-        }
-        
-        return []
-    }
-    private func deleteCoreDataPlacies(place: CoreDataPlace) {
+    private func deleteCoreDataPlaces(place: CoreDataPlace) {
         moc.delete(place)
 
         try? moc.save()

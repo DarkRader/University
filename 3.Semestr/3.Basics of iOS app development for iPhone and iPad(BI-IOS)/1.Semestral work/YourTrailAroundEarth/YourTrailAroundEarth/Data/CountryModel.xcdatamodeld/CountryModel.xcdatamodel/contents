@@ -11,7 +11,10 @@
     </entity>
     <entity name="CoreDataCountry" representedClassName="CoreDataCountry" syncable="YES">
         <attribute name="capital" optional="YES" attributeType="String"/>
+        <attribute name="continent" optional="YES" attributeType="String"/>
         <attribute name="countryCode" optional="YES" attributeType="String"/>
+        <attribute name="currency" optional="YES" attributeType="String"/>
+        <attribute name="currencySymbol" optional="YES" attributeType="String"/>
         <attribute name="flag" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="language" optional="YES" attributeType="String"/>

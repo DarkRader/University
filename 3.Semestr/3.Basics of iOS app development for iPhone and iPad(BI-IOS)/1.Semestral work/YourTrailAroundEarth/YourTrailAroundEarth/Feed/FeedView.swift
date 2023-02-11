@@ -8,8 +8,89 @@
 import SwiftUI
 
 struct FeedView: View {
+    @State private var address = ""
+    @State private var countryModule: CountryModule?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+                   TextField("Enter an address", text: $address)
+                       .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                   Button(action: {
+                       self.fetchCountryInfo(address: self.address)
+                   }) {
+                       Text("Get Country Info")
+                   }
+
+                   if countryModule != nil {
+                       VStack {
+                           Text(countryModule?.data[0].type ?? "")
+                           Text(countryModule?.data[0].name ?? "")
+                           Text(countryModule?.data[0].country_code ?? "")
+                           Text(countryModule?.data[0].continent ?? "")
+                           Text(countryModule?.data[0].country_module.capital ?? "")
+                           Text(countryModule?.data[0].country_module.currencies[0].name ?? "")
+                           Text(countryModule?.data[0].country_module.currencies[0].code ?? "")
+                           Text(countryModule?.data[0].country_module.currencies[0].symbol ?? "")
+//                           Text(countryModule?.data[0].country_module.languages.code ?? "")
+//                           Text(countryModule?.data[0].country_module.languages.code ?? "")
+                           Text(Locale.current.localizedString(forLanguageCode: countryModule?.data[0].country_code ?? "") ?? "")
+                           
+
+                       }
+                   } else {
+                       VStack {
+                           Text("Loading...")
+                       }
+                   }
+               }
+               .padding()
+//        NavigationStack {
+//            NavigationLink(destination: ContentViewMap()) {
+//                Text("Testing map")
+//            }
+//        }
+    }
+    
+    func fetchCountryInfo(address: String) {
+
+        let apiKey = "92d0989cebd26dea67f59db3a280d7a6"
+        let endpoint = "http://api.positionstack.com/v1/forward?access_key=\(apiKey)&query=\(address)&country_module=1"
+
+        guard let url = URL(string: endpoint) else { return }
+
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print(error!.localizedDescription)
+                return }
+
+            print(String(data: data, encoding: .utf8) ?? "")
+
+            do {
+                let decoder = JSONDecoder()
+                let countryModule = try decoder.decode(CountryModule.self, from: data)
+                self.countryModule = countryModule
+                print("Success...")
+            } catch let DecodingError.dataCorrupted(context) {
+                print(context)
+            } catch let DecodingError.keyNotFound(key, context) {
+                print("Key '\(key)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.valueNotFound(value, context) {
+                print("Value '\(value)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.typeMismatch(type, context)  {
+                print("Type '\(type)' mismatch:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch {
+                print("error: ", error)
+            }
+        }.resume()
     }
 }
 

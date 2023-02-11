@@ -68,26 +68,26 @@ struct AddNewVisitedPlaceView: View {
             .navigationTitle("Add Place")
         }
     
-    private func saveToFileSystem(placies: [Place]) {
+    private func saveToFileSystem(places: [Place]) {
         let documentDirectory = FileManager.default.urls(
             for: .documentDirectory,
             in: .userDomainMask
         ).first
         let url = documentDirectory?.appendingPathExtension(PlaceSave.url)
-        let data = try? JSONEncoder().encode(placies)
+        let data = try? JSONEncoder().encode(places)
         
         if let url = url, let data = data {
             do {
                 try data.write(to: url)
             } catch {
-                print("PLACIES SAVE ERROR:", error.localizedDescription)
+                print("PLACES SAVE ERROR:", error.localizedDescription)
             }
         }
     }
     
-    private func storeInUserDefaults(placies: [Place]) {
+    private func storeInUserDefaults(places: [Place]) {
         UserDefaults.standard.set(
-            try? JSONEncoder().encode(placies),
+            try? JSONEncoder().encode(places),
             forKey: PlaceSave.userDefaultsKey
         )
     }

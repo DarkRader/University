@@ -18,6 +18,12 @@
 		9A147AA12995207A00859021 /* CoreDataCountry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A147A9B2995207A00859021 /* CoreDataCountry+CoreDataProperties.swift */; };
 		9A147AA22995207A00859021 /* CoreDataPlace+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A147A9C2995207A00859021 /* CoreDataPlace+CoreDataClass.swift */; };
 		9A147AA32995207A00859021 /* CoreDataPlace+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A147A9D2995207A00859021 /* CoreDataPlace+CoreDataProperties.swift */; };
+		9A147AA629955F1700859021 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A147AA529955F1700859021 /* MapModel.swift */; };
+		9A147AA82995640700859021 /* ContentViewMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A147AA72995640700859021 /* ContentViewMap.swift */; };
+		9A7EA31A299687AB00D8DE52 /* CountryModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7EA319299687AB00D8DE52 /* CountryModule.swift */; };
+		9A80B99A2997C14D00970B40 /* EditNewVisitedCountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9992997C14D00970B40 /* EditNewVisitedCountryView.swift */; };
+		9A80B99F2997C93D00970B40 /* EditNewVisitedCityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B99E2997C93D00970B40 /* EditNewVisitedCityView.swift */; };
+		9A80B9A12997C9D000970B40 /* EditNewVisitedPlaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9A02997C9D000970B40 /* EditNewVisitedPlaceView.swift */; };
 		9AA22787298AB9EE001A4984 /* YourTrailAroundEarthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22786298AB9EE001A4984 /* YourTrailAroundEarthApp.swift */; };
 		9AA22789298AB9EE001A4984 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22788298AB9EE001A4984 /* ContentView.swift */; };
 		9AA2278B298AB9F0001A4984 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AA2278A298AB9F0001A4984 /* Assets.xcassets */; };
@@ -32,7 +38,6 @@
 		9AA227A6298D4E19001A4984 /* CountryWantToVisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227A5298D4E19001A4984 /* CountryWantToVisitView.swift */; };
 		9AA227A8298D4ECA001A4984 /* CityWantToVisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227A7298D4ECA001A4984 /* CityWantToVisitView.swift */; };
 		9AA227AA298D4EE2001A4984 /* PlaceWantToVisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227A9298D4EE1001A4984 /* PlaceWantToVisitView.swift */; };
-		9AA227AC298D5C51001A4984 /* CountryListTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227AB298D5C51001A4984 /* CountryListTest.swift */; };
 		9AA227AE298D6284001A4984 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227AD298D6284001A4984 /* TestView.swift */; };
 		9AA227B1298D6BFB001A4984 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227B0298D6BFB001A4984 /* MapView.swift */; };
 		9AA227B4298D6FCD001A4984 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA227B3298D6FCD001A4984 /* LocationManager.swift */; };
@@ -64,6 +69,12 @@
 		9A147A9B2995207A00859021 /* CoreDataCountry+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CoreDataCountry+CoreDataProperties.swift"; path = "YourTrailAroundEarth/Data/Country/CoreDataCountry+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		9A147A9C2995207A00859021 /* CoreDataPlace+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CoreDataPlace+CoreDataClass.swift"; path = "YourTrailAroundEarth/Data/Place/CoreDataPlace+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		9A147A9D2995207A00859021 /* CoreDataPlace+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CoreDataPlace+CoreDataProperties.swift"; path = "YourTrailAroundEarth/Data/Place/CoreDataPlace+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		9A147AA529955F1700859021 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
+		9A147AA72995640700859021 /* ContentViewMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewMap.swift; sourceTree = "<group>"; };
+		9A7EA319299687AB00D8DE52 /* CountryModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryModule.swift; sourceTree = "<group>"; };
+		9A80B9992997C14D00970B40 /* EditNewVisitedCountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNewVisitedCountryView.swift; sourceTree = "<group>"; };
+		9A80B99E2997C93D00970B40 /* EditNewVisitedCityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNewVisitedCityView.swift; sourceTree = "<group>"; };
+		9A80B9A02997C9D000970B40 /* EditNewVisitedPlaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNewVisitedPlaceView.swift; sourceTree = "<group>"; };
 		9AA22783298AB9EE001A4984 /* YourTrailAroundEarth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourTrailAroundEarth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AA22786298AB9EE001A4984 /* YourTrailAroundEarthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourTrailAroundEarthApp.swift; sourceTree = "<group>"; };
 		9AA22788298AB9EE001A4984 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -79,7 +90,6 @@
 		9AA227A5298D4E19001A4984 /* CountryWantToVisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryWantToVisitView.swift; sourceTree = "<group>"; };
 		9AA227A7298D4ECA001A4984 /* CityWantToVisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityWantToVisitView.swift; sourceTree = "<group>"; };
 		9AA227A9298D4EE1001A4984 /* PlaceWantToVisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceWantToVisitView.swift; sourceTree = "<group>"; };
-		9AA227AB298D5C51001A4984 /* CountryListTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListTest.swift; sourceTree = "<group>"; };
 		9AA227AD298D6284001A4984 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		9AA227B0298D6BFB001A4984 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		9AA227B3298D6FCD001A4984 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -121,6 +131,45 @@
 			path = Place;
 			sourceTree = "<group>";
 		};
+		9A147AA429955EF500859021 /* TestingMaps */ = {
+			isa = PBXGroup;
+			children = (
+				9A147AA529955F1700859021 /* MapModel.swift */,
+				9A147AA72995640700859021 /* ContentViewMap.swift */,
+			);
+			path = TestingMaps;
+			sourceTree = "<group>";
+		};
+		9A80B99B2997C15400970B40 /* CountryView */ = {
+			isa = PBXGroup;
+			children = (
+				9AA22798298ABD8D001A4984 /* MyVisetedPlaceView.swift */,
+				9AA227CA298EA0C6001A4984 /* AddNewVisitedCountryView.swift */,
+				9A80B9992997C14D00970B40 /* EditNewVisitedCountryView.swift */,
+			);
+			path = CountryView;
+			sourceTree = "<group>";
+		};
+		9A80B99C2997C16300970B40 /* CityView */ = {
+			isa = PBXGroup;
+			children = (
+				9AB480B62990399C00B035FA /* MyVisitedCityView.swift */,
+				9AB480BA299042B300B035FA /* AddNewVisitedCityView.swift */,
+				9A80B99E2997C93D00970B40 /* EditNewVisitedCityView.swift */,
+			);
+			path = CityView;
+			sourceTree = "<group>";
+		};
+		9A80B99D2997C16E00970B40 /* PlaceView */ = {
+			isa = PBXGroup;
+			children = (
+				9A147A8D29951D4F00859021 /* MyVisitedPlaceView.swift */,
+				9A147A8F29951D6C00859021 /* AddNewVisitedPlaceView.swift */,
+				9A80B9A02997C9D000970B40 /* EditNewVisitedPlaceView.swift */,
+			);
+			path = PlaceView;
+			sourceTree = "<group>";
+		};
 		9AA2277A298AB9EE001A4984 = {
 			isa = PBXGroup;
 			children = (
@@ -140,6 +189,7 @@
 		9AA22785298AB9EE001A4984 /* YourTrailAroundEarth */ = {
 			isa = PBXGroup;
 			children = (
+				9A147AA429955EF500859021 /* TestingMaps */,
 				9AA227C2298E9A4B001A4984 /* Data */,
 				9AA227B5298D78BE001A4984 /* Models */,
 				9AA227AF298D6BD7001A4984 /* Views */,
@@ -182,7 +232,6 @@
 				9AA227A3298C2BC2001A4984 /* AddCountryWantToVisitViewModel.swift */,
 				9AA227A7298D4ECA001A4984 /* CityWantToVisitView.swift */,
 				9AA227A9298D4EE1001A4984 /* PlaceWantToVisitView.swift */,
-				9AA227AB298D5C51001A4984 /* CountryListTest.swift */,
 				9AA227AD298D6284001A4984 /* TestView.swift */,
 			);
 			path = WantToVisit;
@@ -210,6 +259,7 @@
 			children = (
 				9AA227B6298D78EC001A4984 /* Landmark.swift */,
 				9AA227B8298D79BC001A4984 /* LandmarkAnnotation.swift */,
+				9A7EA319299687AB00D8DE52 /* CountryModule.swift */,
 				9AA227C0298E98B0001A4984 /* Country.swift */,
 				9AB480CD29913CC100B035FA /* City.swift */,
 				9A147A9129951E3A00859021 /* Place.swift */,
@@ -220,12 +270,9 @@
 		9AA227BE298E966F001A4984 /* MyVisitedPlace */ = {
 			isa = PBXGroup;
 			children = (
-				9AA22798298ABD8D001A4984 /* MyVisetedPlaceView.swift */,
-				9AA227CA298EA0C6001A4984 /* AddNewVisitedCountryView.swift */,
-				9AB480B62990399C00B035FA /* MyVisitedCityView.swift */,
-				9AB480BA299042B300B035FA /* AddNewVisitedCityView.swift */,
-				9A147A8D29951D4F00859021 /* MyVisitedPlaceView.swift */,
-				9A147A8F29951D6C00859021 /* AddNewVisitedPlaceView.swift */,
+				9A80B99B2997C15400970B40 /* CountryView */,
+				9A80B99C2997C16300970B40 /* CityView */,
+				9A80B99D2997C16E00970B40 /* PlaceView */,
 				9AA227CC298EA464001A4984 /* CountryListView.swift */,
 			);
 			path = MyVisitedPlace;
@@ -346,14 +393,17 @@
 				9A147AA12995207A00859021 /* CoreDataCountry+CoreDataProperties.swift in Sources */,
 				9A147A9529951EAE00859021 /* PlaceSave.swift in Sources */,
 				9AA227AE298D6284001A4984 /* TestView.swift in Sources */,
+				9A147AA629955F1700859021 /* MapModel.swift in Sources */,
 				9A147A9229951E3A00859021 /* Place.swift in Sources */,
 				9A147A8E29951D4F00859021 /* MyVisitedPlaceView.swift in Sources */,
+				9A80B99F2997C93D00970B40 /* EditNewVisitedCityView.swift in Sources */,
 				9AA2279D298AD51B001A4984 /* EditProfileView.swift in Sources */,
 				9AA22799298ABD8D001A4984 /* MyVisetedPlaceView.swift in Sources */,
 				9AA2279B298ABDC0001A4984 /* WantToVisiteView.swift in Sources */,
 				9A147A9F2995207A00859021 /* CoreDataCity+CoreDataProperties.swift in Sources */,
 				9AA227B4298D6FCD001A4984 /* LocationManager.swift in Sources */,
 				9AB480CE29913CC100B035FA /* City.swift in Sources */,
+				9A80B99A2997C14D00970B40 /* EditNewVisitedCountryView.swift in Sources */,
 				9A147A9029951D6C00859021 /* AddNewVisitedPlaceView.swift in Sources */,
 				9AA227A8298D4ECA001A4984 /* CityWantToVisitView.swift in Sources */,
 				9AA227BD298D7E66001A4984 /* PlaceListView.swift in Sources */,
@@ -365,24 +415,26 @@
 				9AA227B1298D6BFB001A4984 /* MapView.swift in Sources */,
 				9A147A9E2995207A00859021 /* CoreDataCity+CoreDataClass.swift in Sources */,
 				9AA227CB298EA0C6001A4984 /* AddNewVisitedCountryView.swift in Sources */,
-				9AA227AC298D5C51001A4984 /* CountryListTest.swift in Sources */,
 				9A147AA22995207A00859021 /* CoreDataPlace+CoreDataClass.swift in Sources */,
 				9AA227C9298E9BE8001A4984 /* CountrySave.swift in Sources */,
 				9AA227A6298D4E19001A4984 /* CountryWantToVisitView.swift in Sources */,
 				9AA227CD298EA464001A4984 /* CountryListView.swift in Sources */,
 				9AA22797298ABD41001A4984 /* ProfileView.swift in Sources */,
 				9AA227C7298E9B7F001A4984 /* DataCountryController.swift in Sources */,
+				9A80B9A12997C9D000970B40 /* EditNewVisitedPlaceView.swift in Sources */,
 				9AA22789298AB9EE001A4984 /* ContentView.swift in Sources */,
 				9AB480DA2991445000B035FA /* DataCityController.swift in Sources */,
 				9AA22795298ABD1E001A4984 /* FeedView.swift in Sources */,
 				9AA227C5298E9A6F001A4984 /* CountryModel.xcdatamodeld in Sources */,
 				9AA227B9298D79BC001A4984 /* LandmarkAnnotation.swift in Sources */,
 				9AA227B7298D78EC001A4984 /* Landmark.swift in Sources */,
+				9A147AA82995640700859021 /* ContentViewMap.swift in Sources */,
 				9AA2279F298C1BDC001A4984 /* AddCountryWantToVisitView.swift in Sources */,
 				9A147A9729951ED600859021 /* DataPlaceController.swift in Sources */,
 				9AA22787298AB9EE001A4984 /* YourTrailAroundEarthApp.swift in Sources */,
 				9A147AA32995207A00859021 /* CoreDataPlace+CoreDataProperties.swift in Sources */,
 				9AB480BB299042B300B035FA /* AddNewVisitedCityView.swift in Sources */,
+				9A7EA31A299687AB00D8DE52 /* CountryModule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

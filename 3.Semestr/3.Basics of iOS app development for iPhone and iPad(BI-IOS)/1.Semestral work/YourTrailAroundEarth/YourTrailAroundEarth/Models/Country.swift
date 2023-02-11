@@ -16,4 +16,8 @@ struct Country: Identifiable, Codable {
     let language: String
     let rating: Int
     let review: String
+    
+    let continent: String
+    let currency: String
+    let currencySymbol: String
 }

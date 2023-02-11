@@ -13,6 +13,8 @@ struct MyVisitedCityView: View {
     
     @State private var showReview = false
     
+    @State private var showingEditScreen = false
+    
     @FetchRequest private var cities: FetchedResults<CoreDataCity>
     
     @Environment(\.managedObjectContext) private var moc
@@ -46,15 +48,6 @@ struct MyVisitedCityView: View {
                             Text(city.origin?.name ?? "")
                             Text(city.name ?? "")
                                 .fontWeight(.heavy)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                deleteCoreDataCities(city: city)
-                            }) {
-                               Image(systemName: "trash")
-                            }
-                            .buttonStyle(BorderlessButtonStyle())
                         }
                         
                         NavigationLink(destination: MyVisitedPlaceView(keyName: "title", letter: "S", city: city)) {
@@ -73,9 +66,27 @@ struct MyVisitedCityView: View {
 
                         Text("Rating: \(String(city.rating))")
                     }
+                    .swipeActions {
+                        Button(action: {
+                            deleteCoreDataCities(city: city)
+                       }) {
+                           Text("Delete")
+                               .background(Color.red)
+                       }
+                       .tint(Color.red)
+                        
+                        Button {
+                            showingEditScreen.toggle()
+                        } label: {
+                            Text("Edit")
+                        }
+                        .tint(Color.blue)
+                    }
+                    .sheet(isPresented: $showingEditScreen) {
+                        EditNewVisitedCityView(city: city)
+                    }
                     
                 }
-//                .onDelete(perform: deleteCoreDataCities)
             }
             .navigationTitle("Visited cities")
             .toolbar(.hidden, for: .tabBar)
@@ -101,12 +112,12 @@ struct MyVisitedCityView: View {
             in: .userDomainMask
         ).first
         let url = documentDirectory?.appendingPathExtension(CitySave.url)
-        
+
         guard let url = url else { return [] }
-        
+
         do {
             let citiesData = try Data(contentsOf: url)
-            
+
             do {
                 let cities = try JSONDecoder().decode([City].self, from: citiesData)
                 return cities
@@ -116,22 +127,22 @@ struct MyVisitedCityView: View {
         } catch {
             print("CITIES LOADING ERROR:", error.localizedDescription)
         }
-        
+
         return []
     }
-    
+
     private static func loadCitiesFromUserDefaults() -> [City] {
         guard
             let citiesData = UserDefaults.standard.data(forKey: CitySave.userDefaultsKey)
         else { return [] }
-        
+
         do {
             let cities = try JSONDecoder().decode([City].self, from: citiesData)
             return cities
         } catch {
             print("CITIES DECODING ERROR:", error.localizedDescription)
         }
-        
+
         return []
     }
     

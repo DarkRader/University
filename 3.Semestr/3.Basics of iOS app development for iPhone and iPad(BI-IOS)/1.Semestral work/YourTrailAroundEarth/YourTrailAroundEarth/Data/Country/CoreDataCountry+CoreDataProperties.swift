@@ -15,6 +15,10 @@ extension CoreDataCountry {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CoreDataCountry> {
         return NSFetchRequest<CoreDataCountry>(entityName: "CoreDataCountry")
     }
+    
+    @NSManaged public var continent: String?
+    @NSManaged public var currency: String?
+    @NSManaged public var currencySymbol: String?
 
     @NSManaged public var capital: String?
     @NSManaged public var countryCode: String?
