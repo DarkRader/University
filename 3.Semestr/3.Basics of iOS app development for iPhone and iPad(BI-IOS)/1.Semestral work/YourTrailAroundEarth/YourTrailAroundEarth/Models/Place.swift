@@ -12,4 +12,9 @@ struct Place: Identifiable, Codable {
     let name: String
     let rating: Int
     let review: String
+    
+    let street: String
+    let number: String
+    let postal_code: String
+    let type: String
 }

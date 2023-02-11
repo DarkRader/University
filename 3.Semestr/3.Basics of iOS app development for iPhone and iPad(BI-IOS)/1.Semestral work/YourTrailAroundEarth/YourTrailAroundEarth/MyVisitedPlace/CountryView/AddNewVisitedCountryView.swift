@@ -37,6 +37,10 @@ struct AddNewVisitedCountryView: View {
                 
                 Section("My review") {
                     TextEditor(text: $review)
+                        .font(.system(.body))
+                        .frame(height: max(100,20))
+                        .cornerRadius(10.0)
+                        .shadow(radius: 1.0)
                     
                     Picker("Rating", selection: $rating) {
                         ForEach(0..<11) {
@@ -63,8 +67,9 @@ struct AddNewVisitedCountryView: View {
         
         let apiKey = "92d0989cebd26dea67f59db3a280d7a6"
         let endpoint = "http://api.positionstack.com/v1/forward?access_key=\(apiKey)&query=\(address)&country_module=1"
+        let encodedEndpoint = endpoint.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
 
-        guard let url = URL(string: endpoint) else { return }
+        guard let url = URL(string: encodedEndpoint ?? "") else { return }
 
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
@@ -76,7 +81,7 @@ struct AddNewVisitedCountryView: View {
                 print(error!.localizedDescription)
                 return }
             
-            print(String(data: data, encoding: .utf8) ?? "")
+//            print(String(data: data, encoding: .utf8) ?? "")
             
             do {
                 let decoder = JSONDecoder()
@@ -104,8 +109,6 @@ struct AddNewVisitedCountryView: View {
                     print("ERROR SAVING TO CORE DATA:",
                           error.localizedDescription)
                 }
-                
-                print(self.countryModule?.data[0].country_module.capital ?? "")
                 print("Success...")
             } catch let DecodingError.dataCorrupted(context) {
                 print(context)

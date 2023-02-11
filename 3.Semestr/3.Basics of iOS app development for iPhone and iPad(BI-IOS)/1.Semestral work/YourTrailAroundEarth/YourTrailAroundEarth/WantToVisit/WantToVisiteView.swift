@@ -16,7 +16,7 @@ struct WantToVisiteView: View {
                     VStack {
                         Text("Countries I want to visit")
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 30)
+                            .padding(.horizontal, 40)
                     
                         NavigationLink(destination: CountryWantToVisitView()) {
                             Image("Country")
@@ -30,7 +30,7 @@ struct WantToVisiteView: View {
                     VStack {
                         Text("Cities I want to visit")
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 30)
+                            .padding(.horizontal, 40)
                         
                         NavigationLink(destination: CityWantToVisitView()) {
                             Image("Сity")
@@ -43,7 +43,7 @@ struct WantToVisiteView: View {
                     VStack {
                         Text("Places I want to visit")
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 30)
+                            .padding(.horizontal, 40)
                         
                         NavigationLink(destination: PlaceWantToVisitView()) {
                             Image("Place")

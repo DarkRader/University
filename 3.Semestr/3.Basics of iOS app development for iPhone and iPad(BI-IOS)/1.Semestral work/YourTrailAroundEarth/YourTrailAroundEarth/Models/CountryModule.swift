@@ -14,10 +14,18 @@ struct CountryModule: Codable {
 struct Datum: Codable {
     let latitude, longitude: Double
     let type: String?
+    let region: String?
     let name: String?
+    let country: String?
+    let locality: String?
     let country_code: String?
     let continent: String?
     let country_module: InfAboutCountry
+    
+    //Information about address
+    let street: String?
+    let number: String?
+    let postal_code: String?
 }
 
 struct InfAboutCountry: Codable {

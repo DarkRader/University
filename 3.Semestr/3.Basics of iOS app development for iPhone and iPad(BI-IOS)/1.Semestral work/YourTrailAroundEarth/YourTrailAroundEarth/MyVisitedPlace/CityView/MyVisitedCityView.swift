@@ -13,7 +13,7 @@ struct MyVisitedCityView: View {
     
     @State private var showReview = false
     
-    @State private var showingEditScreen = false
+    @State var showError = false
     
     @FetchRequest private var cities: FetchedResults<CoreDataCity>
     
@@ -41,14 +41,17 @@ struct MyVisitedCityView: View {
     
     var body: some View {
         NavigationStack {
+            Text(country.name ?? "")
+                .fontWeight(.heavy)
             List {
                 ForEach(country.citiesList, id: \.self) { city in
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(city.origin?.name ?? "")
                             Text(city.name ?? "")
                                 .fontWeight(.heavy)
                         }
+                        
+                        Text("Region: \(city.region ?? "")")
                         
                         NavigationLink(destination: MyVisitedPlaceView(keyName: "title", letter: "S", city: city)) {
                             Text("Show visited placies in this city")
@@ -75,15 +78,10 @@ struct MyVisitedCityView: View {
                        }
                        .tint(Color.red)
                         
-                        Button {
-                            showingEditScreen.toggle()
-                        } label: {
-                            Text("Edit")
+                        NavigationLink(destination: EditNewVisitedCityView(city: city)) {
+                           Text("Edit")
                         }
                         .tint(Color.blue)
-                    }
-                    .sheet(isPresented: $showingEditScreen) {
-                        EditNewVisitedCityView(city: city)
                     }
                     
                 }
@@ -102,7 +100,10 @@ struct MyVisitedCityView: View {
             }
         }
         .sheet(isPresented: $showingAddScreen) {
-            AddNewVisitedCityView(country: country)
+            AddNewVisitedCityView(showError: $showError, country: country)
+        }
+        .alert(isPresented: $showError) {
+            Alert(title: Text("Error"), message: Text("This city is not located in this country, this place is not a city or this place not exist. Check the city that you wrote"), dismissButton: .default(Text("OK")))
         }
     }
     

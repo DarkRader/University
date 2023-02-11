@@ -13,7 +13,7 @@ struct MyVisitedPlaceView: View {
     
     @State private var showReview = false
     
-    @State private var showingEditScreen = false
+    @State var showError = false
     
     @FetchRequest private var places: FetchedResults<CoreDataPlace>
     
@@ -41,13 +41,18 @@ struct MyVisitedPlaceView: View {
     
     var body: some View {
         NavigationStack {
+            Text(city.name ?? "")
+                .fontWeight(.heavy)
             List {
                 ForEach(city.placiesList, id: \.self) { place in
                     VStack(alignment: .leading) {
-                        HStack {
-                            Text(place.origin?.name ?? "")
-                            Text(place.name ?? "")
-                                .fontWeight(.heavy)
+                                                
+                        if place.type == "address" {
+                            Text("Street: \(place.street)")
+                            Text("Number of the street: \(place.number)")
+                            Text("Postal code: \(place.postal_code)")
+                        } else {
+                            Text("Venue: \(place.name ?? "")")
                         }
                         
                         Button("Show review:") {
@@ -71,18 +76,12 @@ struct MyVisitedPlaceView: View {
                        }
                        .tint(Color.red)
                         
-                        Button {
-                            showingEditScreen.toggle()
-                        } label: {
-                            Text("Edit")
+                        NavigationLink(destination: EditNewVisitedPlaceView(place: place)) {
+                           Text("Edit")
                         }
                         .tint(Color.blue)
                     }
-                    .sheet(isPresented: $showingEditScreen) {
-                        EditNewVisitedPlaceView(place: place)
-                    }
                 }
-//                .onDelete(perform: deleteCoreDataPlacies)
             }
             .navigationTitle("Visited places")
             .toolbar(.hidden, for: .tabBar)
@@ -97,7 +96,10 @@ struct MyVisitedPlaceView: View {
             }
         }
         .sheet(isPresented: $showingAddScreen) {
-            AddNewVisitedPlaceView(city: city)
+            AddNewVisitedPlaceView(showError: $showError, city: city)
+        }
+        .alert(isPresented: $showError) {
+            Alert(title: Text("Error"), message: Text("This place is not located in this city, this place is not a place or this place not exist. Check the place that you wrote"), dismissButton: .default(Text("OK")))
         }
     }
     

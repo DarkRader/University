@@ -15,6 +15,11 @@ extension CoreDataPlace {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CoreDataPlace> {
         return NSFetchRequest<CoreDataPlace>(entityName: "CoreDataPlace")
     }
+    
+    @NSManaged public var street: String
+    @NSManaged public var number: String
+    @NSManaged public var postal_code: String
+    @NSManaged public var type: String
 
     @NSManaged public var review: String?
     @NSManaged public var rating: Int16

@@ -10,7 +10,7 @@ import Foundation
 struct City: Identifiable, Codable {
     let id: String
     let name: String
-    let flag: String
+    let region: String
     let rating: Int
     let review: String
 }

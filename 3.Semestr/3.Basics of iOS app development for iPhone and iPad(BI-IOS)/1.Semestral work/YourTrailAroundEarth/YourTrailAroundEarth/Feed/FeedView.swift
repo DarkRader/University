@@ -24,17 +24,20 @@ struct FeedView: View {
 
                    if countryModule != nil {
                        VStack {
-                           Text(countryModule?.data[0].type ?? "")
+//                           Text(countryModule?.data[0].type ?? "")
                            Text(countryModule?.data[0].name ?? "")
+                           Text(countryModule?.data[0].region ?? "")
+                           Text(countryModule?.data[0].street ?? "")
+                           Text(countryModule?.data[0].number ?? "")
+                           Text(countryModule?.data[0].postal_code ?? "")
+                           Text(countryModule?.data[0].country ?? "")
                            Text(countryModule?.data[0].country_code ?? "")
                            Text(countryModule?.data[0].continent ?? "")
                            Text(countryModule?.data[0].country_module.capital ?? "")
                            Text(countryModule?.data[0].country_module.currencies[0].name ?? "")
-                           Text(countryModule?.data[0].country_module.currencies[0].code ?? "")
-                           Text(countryModule?.data[0].country_module.currencies[0].symbol ?? "")
-//                           Text(countryModule?.data[0].country_module.languages.code ?? "")
-//                           Text(countryModule?.data[0].country_module.languages.code ?? "")
-                           Text(Locale.current.localizedString(forLanguageCode: countryModule?.data[0].country_code ?? "") ?? "")
+//                           Text(countryModule?.data[0].country_module.currencies[0].code ?? "")
+//                           Text(countryModule?.data[0].country_module.currencies[0].symbol ?? "")
+//                           Text(Locale.current.localizedString(forLanguageCode: countryModule?.data[0].country_code ?? "") ?? "")
                            
 
                        }
@@ -56,8 +59,9 @@ struct FeedView: View {
 
         let apiKey = "92d0989cebd26dea67f59db3a280d7a6"
         let endpoint = "http://api.positionstack.com/v1/forward?access_key=\(apiKey)&query=\(address)&country_module=1"
+        let encodedEndpoint = endpoint.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
 
-        guard let url = URL(string: endpoint) else { return }
+        guard let url = URL(string: encodedEndpoint ?? "") else { return }
 
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {

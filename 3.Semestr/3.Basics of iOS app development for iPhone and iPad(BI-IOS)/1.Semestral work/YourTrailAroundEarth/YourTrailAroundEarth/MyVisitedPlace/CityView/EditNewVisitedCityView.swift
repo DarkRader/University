@@ -11,12 +11,61 @@ struct EditNewVisitedCityView: View {
     
     private var city: CoreDataCity
     
+    @State private var rating = 5
+    @State private var review = ""
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    @Environment(\.managedObjectContext) private var moc
+    
     init(city: CoreDataCity) {
         self.city = city
     }
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            Form {
+                Section("My old review") {
+                    Text(city.review ?? "")
+                }
+                
+                Section("My review") {
+                    TextEditor(text: $review)
+                        .font(.system(.body))
+                        .frame(height: max(100,20))
+                        .cornerRadius(10.0)
+                        .shadow(radius: 1.0)
+                    
+                    Picker("Rating", selection: $rating) {
+                        ForEach(0..<11) {
+                            Text(String($0))
+                        }
+                    }
+                }
+                
+                Section {
+                    Button("Save") {
+                        
+                        if review != "" {
+                            city.review = review
+                        }
+
+                        city.rating = Int16(rating)
+                        
+//                        do {
+//                            try? moc.save(country)
+//                        } catch {
+//                            print("ERROR UPDATE TO CORE DATA:",
+//                                  error.localizedDescription)
+//                        }
+                        
+                        dismiss()
+                    }
+                }
+
+            }
+            .toolbar(.hidden, for: .tabBar)
+        }
     }
 }
 

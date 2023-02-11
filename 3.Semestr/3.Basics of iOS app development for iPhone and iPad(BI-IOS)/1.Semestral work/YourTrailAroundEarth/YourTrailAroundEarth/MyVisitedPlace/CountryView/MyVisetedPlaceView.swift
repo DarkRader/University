@@ -13,7 +13,7 @@ struct MyVisetedPlaceView: View {
     
     @State private var showReview = false
     
-    @State private var showingEditScreen = false
+    @State private var editCountry = CoreDataCountry()
     
     @FetchRequest private var countries: FetchedResults<CoreDataCountry>
     
@@ -54,7 +54,7 @@ struct MyVisetedPlaceView: View {
                                 Text("Language: \(country.language ?? "")")
                                 
                                 HStack {
-                                    Text("Currency: ")
+                                    Text("Currency:")
                                     Text((country.currency ?? "") + "(\(country.currencySymbol ?? ""))")
                                 }
                                 
@@ -64,7 +64,6 @@ struct MyVisetedPlaceView: View {
                                         .frame(width: 300, height: 200)
                                         .clipShape(Rectangle())
                                 }
-                                .buttonStyle(BorderlessButtonStyle())
                                 
                                 Button("Show review:") {
                                     showReview.toggle()
@@ -82,19 +81,13 @@ struct MyVisetedPlaceView: View {
                                     deleteCoreDataCountries(country: country)
                                }) {
                                    Text("Delete")
-                                       .background(Color.red)
                                }
                                .tint(Color.red)
                                 
-                                Button {
-                                    showingEditScreen.toggle()
-                                } label: {
-                                    Text("Edit")
+                                NavigationLink(destination: EditNewVisitedCountryView(country: country)) {
+                                   Text("Edit")
                                 }
                                 .tint(Color.blue)
-                            }
-                            .sheet(isPresented: $showingEditScreen) {
-                                EditNewVisitedCountryView(country: country)
                             }
                 }
             }
@@ -152,10 +145,6 @@ struct MyVisetedPlaceView: View {
         }
         
         return []
-    }
-    
-    private func editCoreDataCountries() {
-        try? moc.save()
     }
     
     private func deleteCoreDataCountries(country: CoreDataCountry) {

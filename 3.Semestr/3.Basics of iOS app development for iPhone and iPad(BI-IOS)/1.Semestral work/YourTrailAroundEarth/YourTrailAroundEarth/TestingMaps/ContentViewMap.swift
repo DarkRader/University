@@ -11,6 +11,18 @@ import MapKit
 struct ContentViewMap: View {
     @StateObject private var mapAPI = MapAPI()
     @State private var text = ""
+    
+    private var startLocation: String
+    
+    private var startDelta: Double
+    
+    private var suitableDelta: Double
+    
+    init(startLocation: String, startDelta: Double, suitableDelta: Double) {
+        self.startLocation = startLocation
+        self.startDelta = startDelta
+        self.suitableDelta = suitableDelta
+    }
 
     var body: some View {
         VStack {
@@ -18,9 +30,16 @@ struct ContentViewMap: View {
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
 
-             Button("Find address") {
-                mapAPI.getLocation(address: text, delta: 0.5)
-             }
+            if text != "" {
+                Button("Find address") {
+                    mapAPI.getLocation(address: text, delta: suitableDelta)
+                }
+            } else {
+                Button("Show current location") {
+                    mapAPI.getLocation(address: startLocation, delta: startDelta)
+                }
+            }
+            
 
              Map(coordinateRegion: $mapAPI.region, annotationItems: mapAPI.locations) { location in
                 MapMarker(coordinate: location.coordinate, tint: .blue)
@@ -33,6 +52,6 @@ struct ContentViewMap: View {
 
 struct ContentViewMap_Previews: PreviewProvider {
     static var previews: some View {
-        ContentViewMap()
+        ContentViewMap(startLocation: "USA", startDelta: 20, suitableDelta: 5)
     }
 }

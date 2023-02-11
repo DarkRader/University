@@ -16,7 +16,7 @@ extension CoreDataCity {
         return NSFetchRequest<CoreDataCity>(entityName: "CoreDataCity")
     }
 
-    @NSManaged public var flag: String?
+    @NSManaged public var region: String?
     @NSManaged public var id: String?
     @NSManaged public var name: String?
     @NSManaged public var rating: Int16
@@ -36,8 +36,8 @@ extension CoreDataCity {
        rating
     }
 
-    public var wrappedFlag: String {
-       flag ?? "Unknow flag City"
+    public var wrappedRegion: String {
+        region ?? "Unknow region City"
     }
 
     public var wrappedReview: String {
