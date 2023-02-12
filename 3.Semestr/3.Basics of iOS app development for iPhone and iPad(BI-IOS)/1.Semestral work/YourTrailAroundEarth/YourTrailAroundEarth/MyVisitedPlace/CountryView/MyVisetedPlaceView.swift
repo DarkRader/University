@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct MyVisetedPlaceView: View {
+    @State private var mapAPI = MapAPI()
     
     @State private var showingAddScreen = false
     
-    @State private var showReview = false
+    @State private var showMap = false
+    
+    @State private var selectedObject: CoreDataCountry?
     
     @State private var editCountry = CoreDataCountry()
     
@@ -41,38 +44,10 @@ struct MyVisetedPlaceView: View {
             List {
                 ForEach(countries) { country in
                             VStack(alignment: .leading) {
-                                HStack {
-                                    Text(country.flag ?? "")
-                                    Text(country.name ?? "")
-                                        .fontWeight(.heavy)
-                                }
                                 
-                                Text("Continent: \(country.continent ?? "")")
-                                
-                                Text("Capital: \(country.capital ?? "")")
-                                
-                                Text("Language: \(country.language ?? "")")
-                                
-                                HStack {
-                                    Text("Currency:")
-                                    Text((country.currency ?? "") + "(\(country.currencySymbol ?? ""))")
-                                }
-                                
-                                NavigationLink(destination: MyVisitedCityView(keyName: "title", letter: "S", country: country)) {
-                                    Image(country.countryCode ?? "NotCountryPicture")
-                                        .resizable()
-                                        .frame(width: 300, height: 200)
-                                        .clipShape(Rectangle())
-                                }
-                                
-                                Button("Show review:") {
-                                    showReview.toggle()
-                                }
-                                .buttonStyle(BorderlessButtonStyle())
-
-                                if(showReview) {
-                                    Text(country.review ?? "")
-                                }
+                                countryView(for: country)
+                                getPositionView(for: country, for: mapAPI)                                
+                                showReviewView(for: country, for: selectedObject)
                                 
                                 Text("Rating: \(String(country.rating))")
                             }
@@ -104,6 +79,70 @@ struct MyVisetedPlaceView: View {
         }
         .sheet(isPresented: $showingAddScreen) {
             AddNewVisitedCountryView()
+        }
+        .sheet(isPresented: $showMap) {
+            ShowLocationOnMapView(mapAPI: $mapAPI)
+        }
+    }
+    
+    private func showReviewView(for country: CoreDataCountry, for selectedObject: CoreDataCountry?) -> some View {
+        return VStack(alignment: .leading) {
+            Button(action: {
+                self.selectedObject = self.selectedObject == country ? nil : country
+            }) {
+                Text("Show review:")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            
+            if self.selectedObject == country {
+                Text(country.review ?? "")
+            }
+        }
+    }
+    
+    private func getPositionView(for country: CoreDataCountry, for mapAPI: MapAPI) -> some View {
+       return  HStack {
+           Button(action: {
+               mapAPI.getLocation(address: country.name ?? "", delta: 20)
+           }) {
+               Image(systemName: "location")
+           }
+           .buttonStyle(BorderlessButtonStyle())
+           
+           Button(action: {
+               showMap.toggle()
+           }) {
+               Image(systemName: "mappin.and.ellipse")
+           }
+           .buttonStyle(BorderlessButtonStyle())
+       }
+    }
+    
+    private func countryView(for country: CoreDataCountry) -> some View {
+        return VStack(alignment: .leading) {
+            HStack {
+                Text(country.flag ?? "")
+                Text(country.name ?? "")
+                    .fontWeight(.heavy)
+            }
+            
+            Group {
+                Text("Continent: \(country.continent ?? "")")
+                Text("Capital: \(country.capital ?? "")")
+                Text("Language: \(country.language ?? "")")
+            }
+            
+            HStack {
+                Text("Currency:")
+                Text((country.currency ?? "") + "(\(country.currencySymbol ?? ""))")
+            }
+            
+            NavigationLink(destination: MyVisitedCityView(keyName: "title", letter: "S", country: country)) {
+                Image(uiImage: UIImage(named: country.countryCode ?? "") ?? UIImage(named: "NotCountryPicture")!)
+                    .resizable()
+                    .frame(width: 300, height: 200)
+                    .clipShape(Rectangle())
+            }
         }
     }
     

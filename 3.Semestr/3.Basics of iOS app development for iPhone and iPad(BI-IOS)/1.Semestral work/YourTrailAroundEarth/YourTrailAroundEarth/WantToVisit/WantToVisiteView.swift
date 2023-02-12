@@ -54,21 +54,7 @@ struct WantToVisiteView: View {
                     }
                     .padding(.vertical, 30)
                 }
-            //            .navigationTitle("Favourit")
-            //            .navigationBarTitleDisplayMode(.inline)
-            //            .toolbar {
-            //                ToolbarItem(placement: .navigationBarTrailing) {
-            //                    Button {
-            //                        showingAddScreen.toggle()
-            //                    } label: {
-            //                        Label("Add a new place", systemImage: "plus")
-            //                    }
-            //                }
-            //            }
-            //            .sheet(isPresented: $showingAddScreen) {
-            //                AddCountryWantToVisitView()
-            //            }
-                    }
+            }
         }
     }
 }

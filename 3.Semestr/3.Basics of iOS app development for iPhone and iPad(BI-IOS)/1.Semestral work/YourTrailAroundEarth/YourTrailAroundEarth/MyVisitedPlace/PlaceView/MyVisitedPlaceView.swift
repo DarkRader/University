@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct MyVisitedPlaceView: View {
+    @State private var mapAPI = MapAPI()
     
     @State private var showingAddScreen = false
     
-    @State private var showReview = false
+    @State private var showMap = false
+    
+    @State private var selectedObject: CoreDataPlace?
     
     @State var showError = false
     
@@ -47,22 +50,9 @@ struct MyVisitedPlaceView: View {
                 ForEach(city.placiesList, id: \.self) { place in
                     VStack(alignment: .leading) {
                                                 
-                        if place.type == "address" {
-                            Text("Street: \(place.street)")
-                            Text("Number of the street: \(place.number)")
-                            Text("Postal code: \(place.postal_code)")
-                        } else {
-                            Text("Venue: \(place.name ?? "")")
-                        }
-                        
-                        Button("Show review:") {
-                           showReview.toggle()
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
-
-                        if(showReview) {
-                           Text(place.review ?? "")
-                        }
+                        placeView(for: place)                        
+                        getPositionView(for: place, for: mapAPI)
+                        showReviewView(for: place, for: selectedObject)
 
                         Text("Rating: \(String(place.rating))")
                         
@@ -95,11 +85,63 @@ struct MyVisitedPlaceView: View {
                 }
             }
         }
+        .sheet(isPresented: $showMap) {
+            ShowLocationOnMapView(mapAPI: $mapAPI)
+        }
         .sheet(isPresented: $showingAddScreen) {
             AddNewVisitedPlaceView(showError: $showError, city: city)
         }
         .alert(isPresented: $showError) {
             Alert(title: Text("Error"), message: Text("This place is not located in this city, this place is not a place or this place not exist. Check the place that you wrote"), dismissButton: .default(Text("OK")))
+        }
+    }
+    
+    private func showReviewView(for place: CoreDataPlace, for selectedObject: CoreDataPlace?) -> some View {
+        return VStack(alignment: .leading) {
+            Button(action: {
+                self.selectedObject = self.selectedObject == place ? nil : place
+            }) {
+                Text("Show review:")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            
+            if self.selectedObject == place {
+                Text(place.review ?? "")
+            }
+        }
+    }
+    
+    private func getPositionView(for place: CoreDataPlace, for mapAPI: MapAPI) -> some View {
+       return HStack {
+            Button(action: {
+                mapAPI.getLocation(address: place.street, delta: 0.01)
+            }) {
+                Image(systemName: "location")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+
+            Button(action: {
+                showMap.toggle()
+            }) {
+                Image(systemName: "mappin.and.ellipse")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+        }
+    }
+    
+    private func placeView(for place: CoreDataPlace) -> some View {
+        return VStack(alignment: .leading) {
+            if place.type == "address" {
+                Text("Street: \(place.street)")
+                    .fontWeight(.medium)
+                Text("Number of the street: \(place.number)")
+                    .fontWeight(.medium)
+                Text("Postal code: \(place.postal_code)")
+                    .fontWeight(.medium)
+            } else {
+                Text("Venue: \(place.name ?? "")")
+                    .fontWeight(.medium)
+            }
         }
     }
     

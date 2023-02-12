@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct CityWantToVisitView: View {
+    @State private var mapAPI = MapAPI()
     
     @State private var showingAddScreen = false
+    
+    @State private var showMap = false
     
     @State var showError = false
     
@@ -31,15 +34,8 @@ struct CityWantToVisitView: View {
             List {
                 ForEach(cities) { city in
                     VStack(alignment: .leading) {
-                        HStack {
-                            Text(city.flag ?? "")
-                            Text(city.country ?? "")
-                        }
-                        
-                        Text(city.name ?? "")
-                            .fontWeight(.heavy)
-                        
-                        Text("Region: \(city.region ?? "")")
+                        cityView(for: city)
+                        getPositionView(for: city, for: mapAPI)
                     }
                 }
                 .onDelete(perform: deleteCoreDataWantCities)
@@ -59,8 +55,43 @@ struct CityWantToVisitView: View {
         .sheet(isPresented: $showingAddScreen) {
             AddCityWantToVisitView(showError: $showError)
         }
+        .sheet(isPresented: $showMap) {
+            ShowLocationOnMapView(mapAPI: $mapAPI)
+        }
         .alert(isPresented: $showError) {
             Alert(title: Text("Error"), message: Text("This place is not a city or not exist. Check the city that you wrote"), dismissButton: .default(Text("OK")))
+        }
+    }
+    
+    private func getPositionView(for city: CoreDataCityWant, for mapAPI: MapAPI) -> some View {
+       return HStack {
+           Button(action: {
+               mapAPI.getLocation(address: city.name ?? "", delta: 1)
+           }) {
+               Image(systemName: "location")
+           }
+           .buttonStyle(BorderlessButtonStyle())
+           
+           Button(action: {
+               showMap.toggle()
+           }) {
+               Image(systemName: "mappin.and.ellipse")
+           }
+           .buttonStyle(BorderlessButtonStyle())
+       }
+    }
+    
+    private func cityView(for city: CoreDataCityWant) -> some View {
+        return VStack(alignment: .leading) {
+            HStack {
+                Text(city.flag ?? "")
+                Text(city.country ?? "")
+            }
+
+            Text(city.name ?? "")
+                .fontWeight(.heavy)
+
+            Text("Region: \(city.region ?? "")")
         }
     }
     

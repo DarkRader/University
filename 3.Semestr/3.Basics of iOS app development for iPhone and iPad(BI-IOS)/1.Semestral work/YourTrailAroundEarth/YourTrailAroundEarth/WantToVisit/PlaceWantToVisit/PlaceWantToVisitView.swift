@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct PlaceWantToVisitView: View {
+    @State private var mapAPI = MapAPI()
     
     @State private var showingAddScreen = false
+    
+    @State private var showMap = false
     
     @State var showError = false
     
@@ -30,25 +33,8 @@ struct PlaceWantToVisitView: View {
             List {
                 ForEach(places) { place in
                     VStack(alignment: .leading) {
-                        HStack {
-                            Text(place.flag ?? "")
-                            Text(place.country ?? "")
-                        }
-                        
-                        Text("City: \(place.city ?? "")")
-                                                
-                        if place.type == "address" {
-                            Text("Street: \(place.street ?? "")")
-                                .fontWeight(.medium)
-                            Text("Number of the street: \(place.number ?? "")")
-                                .fontWeight(.medium)
-                            Text("Postal code: \(place.postal_code ?? "")")
-                                .fontWeight(.medium)
-                        } else {
-                            Text("Venue: \(place.name ?? "")")
-                                .fontWeight(.medium)
-                        }
-                        
+                        placeView(for: place)
+                        getPositionView(for: place, for: mapAPI)
                     }
                 }
                 .onDelete(perform: deleteCoreDataWantPlaces)
@@ -68,8 +54,52 @@ struct PlaceWantToVisitView: View {
         .sheet(isPresented: $showingAddScreen) {
             AddPlaceWantToVisitView(showError: $showError)
         }
+        .sheet(isPresented: $showMap) {
+            ShowLocationOnMapView(mapAPI: $mapAPI)
+        }
         .alert(isPresented: $showError) {
             Alert(title: Text("Error"), message: Text("This is not a place or not exist. Check the place that you wrote"), dismissButton: .default(Text("OK")))
+        }
+    }
+    
+    private func getPositionView(for place: CoreDataPlaceWant, for mapAPI: MapAPI) -> some View {
+       return HStack {
+            Button(action: {
+                mapAPI.getLocation(address: place.street ?? "", delta: 0.01)
+            }) {
+                Image(systemName: "location")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+
+            Button(action: {
+                showMap.toggle()
+            }) {
+                Image(systemName: "mappin.and.ellipse")
+            }
+            .buttonStyle(BorderlessButtonStyle())
+        }
+    }
+    
+    private func placeView(for place: CoreDataPlaceWant) -> some View {
+        return VStack(alignment: .leading) {
+            HStack {
+                Text(place.flag ?? "")
+                Text(place.country ?? "")
+            }
+            
+            Text("City: \(place.city ?? "")")
+                                    
+            if place.type == "address" {
+                Text("Street: \(place.street ?? "")")
+                    .fontWeight(.medium)
+                Text("Number of the street: \(place.number ?? "")")
+                    .fontWeight(.medium)
+                Text("Postal code: \(place.postal_code ?? "")")
+                    .fontWeight(.medium)
+            } else {
+                Text("Venue: \(place.name ?? "")")
+                    .fontWeight(.medium)
+            }
         }
     }
     

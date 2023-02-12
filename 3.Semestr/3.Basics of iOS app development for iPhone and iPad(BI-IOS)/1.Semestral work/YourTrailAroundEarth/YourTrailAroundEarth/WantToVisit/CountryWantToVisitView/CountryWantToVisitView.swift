@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct CountryWantToVisitView: View {
+    @State private var mapAPI = MapAPI()
     
     @State private var showingAddScreen = false
+    
+    @State private var showMap = false
     
     @FetchRequest private var countries: FetchedResults<CoreDataCountryWant>
     
@@ -29,28 +32,8 @@ struct CountryWantToVisitView: View {
             List {
                 ForEach(countries) { country in
                     VStack(alignment: .leading) {
-                        HStack {
-                            Text(country.flag ?? "")
-                            Text(country.name ?? "")
-                                .fontWeight(.heavy)
-                        }
-                        
-                        Text("Continent: \(country.continent ?? "")")
-                        
-                        Text("Capital: \(country.capital ?? "")")
-                        
-                        Text("Language: \(country.language ?? "")")
-                        
-                        HStack {
-                            Text("Currency:")
-                            Text((country.currency ?? "") + "(\(country.currencySymbol ?? ""))")
-                        }
-                        
-                        Image(country.countryCode ?? "NotCountryPicture")
-                            .resizable()
-                            .frame(width: 300, height: 200)
-                            .clipShape(Rectangle())
-                        
+                        countryView(for: country)
+                        getPositionView(for: country, for: mapAPI)
                     }
                 }
                 .onDelete(perform: deleteCoreDataWantCountries)
@@ -69,6 +52,51 @@ struct CountryWantToVisitView: View {
         }
         .sheet(isPresented: $showingAddScreen) {
             AddCountryWantToVisitView()
+        }
+        .sheet(isPresented: $showMap) {
+            ShowLocationOnMapView(mapAPI: $mapAPI)
+        }
+    }
+    
+    private func getPositionView(for country: CoreDataCountryWant, for mapAPI: MapAPI) -> some View {
+       return HStack {
+           Button(action: {
+               mapAPI.getLocation(address: country.name ?? "", delta: 20)
+           }) {
+               Image(systemName: "location")
+           }
+           .buttonStyle(BorderlessButtonStyle())
+           
+           Button(action: {
+               showMap.toggle()
+           }) {
+               Image(systemName: "mappin.and.ellipse")
+           }
+           .buttonStyle(BorderlessButtonStyle())
+       }
+    }
+    
+    private func countryView(for country: CoreDataCountryWant) -> some View {
+        return VStack(alignment: .leading) {
+            HStack {
+                Text(country.flag ?? "")
+                Text(country.name ?? "")
+                    .fontWeight(.heavy)
+            }
+            
+            Text("Continent: \(country.continent ?? "")")
+            Text("Capital: \(country.capital ?? "")")
+            Text("Language: \(country.language ?? "")")
+            
+            HStack {
+                Text("Currency:")
+                Text((country.currency ?? "") + "(\(country.currencySymbol ?? ""))")
+            }
+            
+            Image(uiImage: UIImage(named: country.countryCode ?? "") ?? UIImage(named: "NotCountryPicture")!)
+                .resizable()
+                .frame(width: 300, height: 200)
+                .clipShape(Rectangle())
         }
     }
     
