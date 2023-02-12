@@ -1,31 +1,26 @@
 //
-//  AddNewVisitedPlaceView.swift
+//  AddPlaceWantToVisitView.swift
 //  YourTrailAroundEarth
 //
-//  Created by DarkRader on 09.02.2023.
+//  Created by DarkRader on 12.02.2023.
 //
 
 import SwiftUI
 
-struct AddNewVisitedPlaceView: View {
+struct AddPlaceWantToVisitView: View {
     
     @State private var countryModule: CountryModule?
     
     @Binding var showError: Bool
     
     @State private var name = ""
-    @State private var review = ""
-    @State private var rating = 5
     
     @Environment(\.managedObjectContext) private var moc
     
     @Environment(\.dismiss) private var dismiss
     
-    private var city: CoreDataCity
-    
-    init(showError: Binding<Bool>, city: CoreDataCity) {
+    init(showError: Binding<Bool>) {
         self._showError = showError
-        self.city = city
     }
     
     var body: some View {
@@ -33,7 +28,7 @@ struct AddNewVisitedPlaceView: View {
             Form {
                 
                 Section("Find city on map") {
-                    NavigationLink(destination: ContentViewMap(startLocation: city.name ?? "", startDelta: 0.5, suitableDelta: 0.01)) {
+                    NavigationLink(destination: ContentViewMap(startLocation: name, startDelta: 0.5, suitableDelta: 0.01)) {
                         Text("View places in the city on the map")
                     }
                 }
@@ -44,34 +39,18 @@ struct AddNewVisitedPlaceView: View {
                         text: $name
                     )
                 }
-                    
-                    Section("My review") {
-                        TextEditor(text: $review)
-                            .font(.system(.body))
-                            .frame(height: max(100,20))
-                            .cornerRadius(10.0)
-                            .shadow(radius: 1.0)
+                
+                Section {
+                    Button("Save") {
+                        //Add a new place
+                        self.fetchCountryInfo(address: name)
                         
-                        Picker("Rating", selection: $rating) {
-                            ForEach(0..<11) {
-                                Text(String($0))
-                            }
-                        }
-                    }
-                    
-                    Section {
-                        Button("Save") {
-                            //Add a new place
-                            self.fetchCountryInfo(address: name)
-                            
-                            dismiss()
-                        }
+                        dismiss()
                     }
                 }
-                
             }
-            .navigationTitle("Add Place")
         }
+    }
     
     func fetchCountryInfo(address: String) {
 
@@ -106,20 +85,16 @@ struct AddNewVisitedPlaceView: View {
                     if countryModule.data[0].type ?? "" == "locality" || countryModule.data[0].type ?? "" == "country" {
                         print("This is not a place.")
                         showError = true
-                    } else if countryModule.data[0].locality ?? "" == city.name {
-                        print(countryModule.data[0].locality ?? "")
-                        print(city.name ?? "")
-                        print("This place is not located in this city")
-                        showError = true
                     } else {
 
-                        let place = CoreDataPlace(context: moc)
+                        let place = CoreDataPlaceWant(context: moc)
 
                         place.id = UUID().uuidString
-                        place.origin = city
                         place.name = name
-                        place.review = review
-                        place.rating = Int16(rating)
+                        
+                        place.flag = self.countryModule?.data[0].country_module.flag ?? "Not found"
+                        place.country = self.countryModule?.data[0].country ?? "Not found"
+                        place.city = self.countryModule?.data[0].locality ?? "Not found"
                         
                         place.street = self.countryModule?.data[0].street ?? "Not found."
                         place.number = self.countryModule?.data[0].number ?? "Not found."
@@ -154,12 +129,12 @@ struct AddNewVisitedPlaceView: View {
         }.resume()
     }
     
-    private func saveToFileSystem(places: [Place]) {
+    private func saveToFileSystem(places: [PlaceWantToVisit]) {
         let documentDirectory = FileManager.default.urls(
             for: .documentDirectory,
             in: .userDomainMask
         ).first
-        let url = documentDirectory?.appendingPathExtension(PlaceSave.url)
+        let url = documentDirectory?.appendingPathExtension(PlaceWantSave.url)
         let data = try? JSONEncoder().encode(places)
         
         if let url = url, let data = data {
@@ -171,7 +146,7 @@ struct AddNewVisitedPlaceView: View {
         }
     }
     
-    private func storeInUserDefaults(places: [Place]) {
+    private func storeInUserDefaults(places: [PlaceWantToVisit]) {
         UserDefaults.standard.set(
             try? JSONEncoder().encode(places),
             forKey: PlaceSave.userDefaultsKey
@@ -179,11 +154,11 @@ struct AddNewVisitedPlaceView: View {
     }
 }
 
-struct AddNewVisitedPlaceView_Previews: PreviewProvider {
+struct AddPlaceWantToVisitView_Previews: PreviewProvider {
     
     @State static var showError = false
     
     static var previews: some View {
-        AddNewVisitedPlaceView(showError: $showError, city: CoreDataCity())
+        AddPlaceWantToVisitView(showError: $showError)
     }
 }

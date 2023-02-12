@@ -9,6 +9,13 @@
         <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataCountry" inverseName="city" inverseEntity="CoreDataCountry"/>
         <relationship name="place" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CoreDataPlace" inverseName="origin" inverseEntity="CoreDataPlace"/>
     </entity>
+    <entity name="CoreDataCityWant" representedClassName="CoreDataCityWant" syncable="YES" codeGenerationType="class">
+        <attribute name="country" optional="YES" attributeType="String"/>
+        <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="region" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="CoreDataCountry" representedClassName="CoreDataCountry" syncable="YES">
         <attribute name="capital" optional="YES" attributeType="String"/>
         <attribute name="continent" optional="YES" attributeType="String"/>
@@ -23,6 +30,17 @@
         <attribute name="review" optional="YES" attributeType="String"/>
         <relationship name="city" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CoreDataCity" inverseName="origin" inverseEntity="CoreDataCity"/>
     </entity>
+    <entity name="CoreDataCountryWant" representedClassName="CoreDataCountryWant" syncable="YES" codeGenerationType="class">
+        <attribute name="capital" optional="YES" attributeType="String"/>
+        <attribute name="continent" optional="YES" attributeType="String"/>
+        <attribute name="countryCode" optional="YES" attributeType="String"/>
+        <attribute name="currency" optional="YES" attributeType="String"/>
+        <attribute name="currencySymbol" optional="YES" attributeType="String"/>
+        <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="language" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="CoreDataPlace" representedClassName="CoreDataPlace" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -33,5 +51,16 @@
         <attribute name="street" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
         <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataCity" inverseName="place" inverseEntity="CoreDataCity"/>
+    </entity>
+    <entity name="CoreDataPlaceWant" representedClassName="CoreDataPlaceWant" syncable="YES" codeGenerationType="class">
+        <attribute name="city" optional="YES" attributeType="String"/>
+        <attribute name="country" optional="YES" attributeType="String"/>
+        <attribute name="flag" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="number" optional="YES" attributeType="String"/>
+        <attribute name="postal_code" optional="YES" attributeType="String"/>
+        <attribute name="street" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
     </entity>
 </model>

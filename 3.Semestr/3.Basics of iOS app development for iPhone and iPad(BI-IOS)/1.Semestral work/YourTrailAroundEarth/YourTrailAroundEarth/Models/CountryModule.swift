@@ -30,6 +30,7 @@ struct Datum: Codable {
 
 struct InfAboutCountry: Codable {
     let capital: String?
+    let flag: String?
     let currencies: [Currency]
     let languages: Lang
 }
