@@ -11,23 +11,42 @@ struct ProfileView: View {
     @State private var showingEditProfileScreen = false
     @State var avatar: Image?
     
+    @FetchRequest private var countries: FetchedResults<CoreDataCountry>
+    
+    @AppStorage("profileImageData") private var profileImageData: Data?
     @AppStorage("username") var username = "username"
     @AppStorage("firstname") var firstname = "Name"
     @AppStorage("lastname") var lastname = "Surname"
-    @State var birthday = Date()
-//    @AppStorage("birthday", store: ) var birthday = Data()
     @AppStorage("email") var email = "Email"
     @AppStorage("phoneNumber") var phoneNumber = "Phone Number"
-    @AppStorage("visitedCountry") var visitedCountry = "0 (visited country)"
+    
+    @State private var countryVis = 0
+    
+    init() {
+     _countries = FetchRequest<CoreDataCountry>(
+            sortDescriptors: [
+                SortDescriptor(\.rating, order: .reverse),
+                SortDescriptor(\.name)
+            ]
+            
+        )
+    }
     
     var body: some View {
         NavigationView {
             VStack {
                 VStack {
-                    Image("profile-ava")
-                        .resizable()
-                        .frame(width: 120, height: 120)
-                        .clipShape(Circle())
+                    if let data = profileImageData, let image = UIImage(data: data) {
+                       Image(uiImage: image)
+                            .resizable()
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                   } else {
+                       Image("profile-ava")
+                           .resizable()
+                           .frame(width: 120, height: 120)
+                           .clipShape(Circle())
+                   }
                     
                     Text(username)
                         .font(.title)
@@ -45,7 +64,7 @@ struct ProfileView: View {
                     
                     HStack {
                         Image(systemName: "birthday.cake")
-                        Text(birthday.formatted())
+                        Text("15/02/2002")
                     }
                     
                     HStack {
@@ -60,7 +79,7 @@ struct ProfileView: View {
                     
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
-                        Text(visitedCountry)
+                        Text("\(countries.self.count.formatted()) (visited country)")
                     }
                 }
                 
@@ -87,7 +106,6 @@ struct ProfileView: View {
                 username: $username,
                 firstname: $firstname,
                 lastname: $lastname,
-                birthday: $birthday,
                 email: $email,
                 phoneNumber: $phoneNumber
             )

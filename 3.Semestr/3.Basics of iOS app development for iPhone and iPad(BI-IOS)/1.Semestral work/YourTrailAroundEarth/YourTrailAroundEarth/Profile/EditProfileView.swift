@@ -16,7 +16,6 @@ struct EditProfileView: View {
     @Binding var username: String
     @Binding var firstname: String
     @Binding var lastname: String
-    @Binding var birthday: Date
     @Binding var email: String
     @Binding var phoneNumber: String
     
@@ -70,9 +69,6 @@ struct EditProfileView: View {
                 Section("Last Name") {
                     TextEditor(text: $lastname)
                 }
-                Section("Birthday") {
-                    DatePicker("Day of bithday", selection: $birthday, displayedComponents: .date)
-                }
                 Section("Email") {
                     TextEditor(text: $email)
                 }
@@ -102,7 +98,6 @@ struct EditProfileView_Previews: PreviewProvider {
     @State static var username = ""
     @State static var firstname =  ""
     @State static var lastname = ""
-    @State static var birthday = Date()
     @State static var email = ""
     @State static var phoneNumber = ""
     
@@ -112,7 +107,6 @@ struct EditProfileView_Previews: PreviewProvider {
             username: $username,
             firstname: $firstname,
             lastname: $lastname,
-            birthday: $birthday,
             email: $email,
             phoneNumber: $phoneNumber
         )
