@@ -36,6 +36,13 @@
 		9A80B9BE299927AF00970B40 /* AddCityWantToVisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9BD299927AF00970B40 /* AddCityWantToVisitView.swift */; };
 		9A80B9C12999408900970B40 /* AddPlaceWantToVisitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9C02999408900970B40 /* AddPlaceWantToVisitView.swift */; };
 		9A80B9C3299946CC00970B40 /* ShowLocationOnMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9C2299946CC00970B40 /* ShowLocationOnMapView.swift */; };
+		9A80B9C5299A723500970B40 /* TestDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9C4299A723500970B40 /* TestDataView.swift */; };
+		9A80B9C7299A769100970B40 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9C6299A769100970B40 /* Post.swift */; };
+		9A80B9C9299A7AAF00970B40 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9C8299A7AAF00970B40 /* RemoteImage.swift */; };
+		9A80B9CB299A88B900970B40 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9CA299A88B900970B40 /* PostView.swift */; };
+		9A80B9CE299A9A6500970B40 /* PostSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9CD299A9A6500970B40 /* PostSave.swift */; };
+		9A80B9D0299A9A9400970B40 /* DataPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9CF299A9A9400970B40 /* DataPostController.swift */; };
+		9A80B9D4299AA6FC00970B40 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A80B9D3299AA6FC00970B40 /* AddPostView.swift */; };
 		9AA22787298AB9EE001A4984 /* YourTrailAroundEarthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22786298AB9EE001A4984 /* YourTrailAroundEarthApp.swift */; };
 		9AA22789298AB9EE001A4984 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA22788298AB9EE001A4984 /* ContentView.swift */; };
 		9AA2278B298AB9F0001A4984 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AA2278A298AB9F0001A4984 /* Assets.xcassets */; };
@@ -98,6 +105,13 @@
 		9A80B9BD299927AF00970B40 /* AddCityWantToVisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCityWantToVisitView.swift; sourceTree = "<group>"; };
 		9A80B9C02999408900970B40 /* AddPlaceWantToVisitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlaceWantToVisitView.swift; sourceTree = "<group>"; };
 		9A80B9C2299946CC00970B40 /* ShowLocationOnMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowLocationOnMapView.swift; sourceTree = "<group>"; };
+		9A80B9C4299A723500970B40 /* TestDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDataView.swift; sourceTree = "<group>"; };
+		9A80B9C6299A769100970B40 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		9A80B9C8299A7AAF00970B40 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
+		9A80B9CA299A88B900970B40 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		9A80B9CD299A9A6500970B40 /* PostSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSave.swift; sourceTree = "<group>"; };
+		9A80B9CF299A9A9400970B40 /* DataPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPostController.swift; sourceTree = "<group>"; };
+		9A80B9D3299AA6FC00970B40 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
 		9AA22783298AB9EE001A4984 /* YourTrailAroundEarth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourTrailAroundEarth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AA22786298AB9EE001A4984 /* YourTrailAroundEarthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourTrailAroundEarthApp.swift; sourceTree = "<group>"; };
 		9AA22788298AB9EE001A4984 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -267,6 +281,15 @@
 			path = PlaceWantToVisit;
 			sourceTree = "<group>";
 		};
+		9A80B9CC299A9A4300970B40 /* Post */ = {
+			isa = PBXGroup;
+			children = (
+				9A80B9CD299A9A6500970B40 /* PostSave.swift */,
+				9A80B9CF299A9A9400970B40 /* DataPostController.swift */,
+			);
+			path = Post;
+			sourceTree = "<group>";
+		};
 		9AA2277A298AB9EE001A4984 = {
 			isa = PBXGroup;
 			children = (
@@ -297,6 +320,7 @@
 				9AA227BF298E9686001A4984 /* Feed */,
 				9AA22786298AB9EE001A4984 /* YourTrailAroundEarthApp.swift */,
 				9AA22788298AB9EE001A4984 /* ContentView.swift */,
+				9A80B9C4299A723500970B40 /* TestDataView.swift */,
 				9AA2278A298AB9F0001A4984 /* Assets.xcassets */,
 				9AA2278C298AB9F0001A4984 /* Preview Content */,
 			);
@@ -356,6 +380,7 @@
 				9AA227B6298D78EC001A4984 /* Landmark.swift */,
 				9AA227B8298D79BC001A4984 /* LandmarkAnnotation.swift */,
 				9A7EA319299687AB00D8DE52 /* CountryModule.swift */,
+				9A80B9C6299A769100970B40 /* Post.swift */,
 				9A80B9A82999146B00970B40 /* Visited */,
 				9A80B9A92999148500970B40 /* WantToVisite */,
 			);
@@ -376,6 +401,9 @@
 			isa = PBXGroup;
 			children = (
 				9AA22794298ABD1E001A4984 /* FeedView.swift */,
+				9A80B9CA299A88B900970B40 /* PostView.swift */,
+				9A80B9D3299AA6FC00970B40 /* AddPostView.swift */,
+				9A80B9C8299A7AAF00970B40 /* RemoteImage.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -383,6 +411,7 @@
 		9AA227C2298E9A4B001A4984 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				9A80B9CC299A9A4300970B40 /* Post */,
 				9A80B9AC29991A1D00970B40 /* PlaceWantToVisit */,
 				9A80B9AB29991A1400970B40 /* CityWantToVisit */,
 				9A80B9AA299919FC00970B40 /* CountryWantToVisit */,
@@ -489,8 +518,10 @@
 				9A80B9BA29991D8C00970B40 /* DataCityWantController.swift in Sources */,
 				9A80B9B229991AF100970B40 /* CitySaveWant.swift in Sources */,
 				9AB480B72990399C00B035FA /* MyVisitedCityView.swift in Sources */,
+				9A80B9C9299A7AAF00970B40 /* RemoteImage.swift in Sources */,
 				9A80B9BE299927AF00970B40 /* AddCityWantToVisitView.swift in Sources */,
 				9A147AA12995207A00859021 /* CoreDataCountry+CoreDataProperties.swift in Sources */,
+				9A80B9C7299A769100970B40 /* Post.swift in Sources */,
 				9A80B9A72999146600970B40 /* PlaceWantToVisit.swift in Sources */,
 				9A147A9529951EAE00859021 /* PlaceSave.swift in Sources */,
 				9AA227AE298D6284001A4984 /* TestView.swift in Sources */,
@@ -502,7 +533,9 @@
 				9A80B9A3299913F500970B40 /* CountryWantToVisit.swift in Sources */,
 				9AA22799298ABD8D001A4984 /* MyVisetedPlaceView.swift in Sources */,
 				9AA2279B298ABDC0001A4984 /* WantToVisiteView.swift in Sources */,
+				9A80B9CE299A9A6500970B40 /* PostSave.swift in Sources */,
 				9A147A9F2995207A00859021 /* CoreDataCity+CoreDataProperties.swift in Sources */,
+				9A80B9D0299A9A9400970B40 /* DataPostController.swift in Sources */,
 				9AA227B4298D6FCD001A4984 /* LocationManager.swift in Sources */,
 				9AB480CE29913CC100B035FA /* City.swift in Sources */,
 				9A80B99A2997C14D00970B40 /* EditNewVisitedCountryView.swift in Sources */,
@@ -514,10 +547,12 @@
 				9AA227C1298E98B0001A4984 /* Country.swift in Sources */,
 				9AB480D82991441600B035FA /* CitySave.swift in Sources */,
 				9AA227AA298D4EE2001A4984 /* PlaceWantToVisitView.swift in Sources */,
+				9A80B9CB299A88B900970B40 /* PostView.swift in Sources */,
 				9A80B9C3299946CC00970B40 /* ShowLocationOnMapView.swift in Sources */,
 				9AA227B1298D6BFB001A4984 /* MapView.swift in Sources */,
 				9A147A9E2995207A00859021 /* CoreDataCity+CoreDataClass.swift in Sources */,
 				9AA227CB298EA0C6001A4984 /* AddNewVisitedCountryView.swift in Sources */,
+				9A80B9C5299A723500970B40 /* TestDataView.swift in Sources */,
 				9A80B9B829991BB000970B40 /* DataPlaceWantController.swift in Sources */,
 				9A147AA22995207A00859021 /* CoreDataPlace+CoreDataClass.swift in Sources */,
 				9AA227C9298E9BE8001A4984 /* CountrySave.swift in Sources */,
@@ -534,6 +569,7 @@
 				9A80B9B629991B8500970B40 /* PlaceSaveWant.swift in Sources */,
 				9AA227B7298D78EC001A4984 /* Landmark.swift in Sources */,
 				9A147AA82995640700859021 /* ContentViewMap.swift in Sources */,
+				9A80B9D4299AA6FC00970B40 /* AddPostView.swift in Sources */,
 				9AA2279F298C1BDC001A4984 /* AddCountryWantToVisitView.swift in Sources */,
 				9A80B9A52999145100970B40 /* CityWantToVisit.swift in Sources */,
 				9A147A9729951ED600859021 /* DataPlaceController.swift in Sources */,

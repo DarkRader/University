@@ -15,6 +15,7 @@ struct YourTrailAroundEarthApp: App {
     @StateObject private var dataCountryWantController = DataCountryWantController()
     @StateObject private var dataCityWantController = DataCityWantController()
     @StateObject private var dataPlaceWantController = DataPlaceWantController()
+    @StateObject private var dataPostController = DataPostController()
     
     var body: some Scene {
         WindowGroup {
@@ -25,6 +26,7 @@ struct YourTrailAroundEarthApp: App {
                 .environment(\.managedObjectContext, dataCountryWantController.container.viewContext)
                 .environment(\.managedObjectContext, dataCityWantController.container.viewContext)
                 .environment(\.managedObjectContext, dataPlaceWantController.container.viewContext)
+                .environment(\.managedObjectContext, dataPostController.container.viewContext)
         }
     }
 }
