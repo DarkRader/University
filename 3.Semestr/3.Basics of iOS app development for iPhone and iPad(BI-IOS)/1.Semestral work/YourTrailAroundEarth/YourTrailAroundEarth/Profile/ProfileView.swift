@@ -17,6 +17,9 @@ struct ProfileView: View {
     @AppStorage("username") var username = "username"
     @AppStorage("firstname") var firstname = "Name"
     @AppStorage("lastname") var lastname = "Surname"
+    @AppStorage("dateOfBirthday") var dateOfBirthday = "15"
+    @AppStorage("monthOfBirthday") var monthOfBirthday = "02"
+    @AppStorage("yearOfBirthday") var yearOfBirthday = "2002"
     @AppStorage("email") var email = "Email"
     @AppStorage("phoneNumber") var phoneNumber = "Phone Number"
     
@@ -64,7 +67,7 @@ struct ProfileView: View {
                     
                     HStack {
                         Image(systemName: "birthday.cake")
-                        Text("15/02/2002")
+                        Text("\(dateOfBirthday)/\(monthOfBirthday)/\(yearOfBirthday)")
                     }
                     
                     HStack {
@@ -106,6 +109,9 @@ struct ProfileView: View {
                 username: $username,
                 firstname: $firstname,
                 lastname: $lastname,
+                dateOfBirthday: $dateOfBirthday,
+                monthOfBirthday: $monthOfBirthday,
+                yearOfBirthday: $yearOfBirthday,
                 email: $email,
                 phoneNumber: $phoneNumber
             )

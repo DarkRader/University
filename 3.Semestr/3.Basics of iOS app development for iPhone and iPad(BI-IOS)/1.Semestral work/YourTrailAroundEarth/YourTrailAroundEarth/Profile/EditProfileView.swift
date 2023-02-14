@@ -16,6 +16,9 @@ struct EditProfileView: View {
     @Binding var username: String
     @Binding var firstname: String
     @Binding var lastname: String
+    @Binding var dateOfBirthday: String
+    @Binding var monthOfBirthday: String
+    @Binding var yearOfBirthday: String
     @Binding var email: String
     @Binding var phoneNumber: String
     
@@ -69,6 +72,13 @@ struct EditProfileView: View {
                 Section("Last Name") {
                     TextEditor(text: $lastname)
                 }
+                Section("Bitrhday") {
+                    HStack {
+                        TextEditor(text: $dateOfBirthday)
+                        TextEditor(text: $monthOfBirthday)
+                        TextEditor(text: $yearOfBirthday)
+                    }
+                }
                 Section("Email") {
                     TextEditor(text: $email)
                 }
@@ -98,6 +108,9 @@ struct EditProfileView_Previews: PreviewProvider {
     @State static var username = ""
     @State static var firstname =  ""
     @State static var lastname = ""
+    @State static var dateOfBirthday = ""
+    @State static var monthOfBirthday = ""
+    @State static var yearOfBirthday = ""
     @State static var email = ""
     @State static var phoneNumber = ""
     
@@ -107,6 +120,9 @@ struct EditProfileView_Previews: PreviewProvider {
             username: $username,
             firstname: $firstname,
             lastname: $lastname,
+            dateOfBirthday: $dateOfBirthday,
+            monthOfBirthday: $monthOfBirthday,
+            yearOfBirthday: $yearOfBirthday,
             email: $email,
             phoneNumber: $phoneNumber
         )

@@ -57,7 +57,7 @@ struct PostView: View {
                 }
             }
             .padding(.horizontal, 8)
-            
+          
             RemoteImage(url: URL(string: post.photo ?? "")!)
                 .frame(width: 360, height: 300)
             
