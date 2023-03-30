@@ -39,32 +39,16 @@ using namespace std;
 #endif /* __PROGTEST__ */ 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CCompanyProblem {
-public:
-    CCompanyProblem(AProblemPack problemPack, size_t idProblemPack) : m_problemPack(problemPack), m_idProblemPack(idProblemPack) {
-       
-    }
-    
-//    for(size_t i = 0; i < m_problemPack->m_Problems.size(); ++i) {
-//        m_problems.emplace_back(m_problemPack->m_Problems[i]);
-//    }
-//
-//    printf("Control problem pack");
-    
-private:
-    AProblemPack m_problemPack;
-    size_t m_idProblemPack;
-//    vector<AProblem> m_problems;
-};
 
-
-class COptimizer ;
+class COptimizer;
 class CThreadWork {
 public:
     CThreadWork() {}
     ~CThreadWork() {}
 
     void createThread(int tid, COptimizer & opt) {
+        
+        
         printf("Thread %d: Start\n", tid);
 
         this_thread::sleep_for(chrono::seconds(5));
@@ -73,54 +57,88 @@ public:
     }
 
 private:
-    mutex mtx1;
-    mutex mtx2;
+//    mutex mtx;
     condition_variable cv_full;
     condition_variable cv_empty;
 };
 
-class CCompanyProblemPack {
+class CListProblem {
 public:
-    CCompanyProblemPack(ACompany company, size_t idCompany) : m_company(company), m_idCompany(idCompany) {
-        thread(&CCompanyProblemPack::createCommunicationThread, this);
-        thread(&CCompanyProblemPack::createDeliveredThread, this);
+    CListProblem(size_t id, AProblem problem) : m_id(id), m_problem(problem) {}
+    
+    size_t getId(void) {
+        return m_id;
     }
-    
-//    size_t idProblemPack = 0;
-//    while(m_problemsPack.empty() ||  m_problemsPack.back() != nullptr) {
-//        AProblemPack newProblemPack = company->waitForPack();
-//        m_problemsPack.emplace_back(newProblemPack);
-//        idProblemPack++;
-//    }
-//
-//    printf("Control!");
-    
+
 private:
-    ACompany m_company;
-    size_t m_idCompany;
-    
-    thread m_commThread;
-    thread m_delivThread;
-    vector<AProblemPack> m_problemsPack;
-    
-    void createCommunicationThread(void) {
-        size_t idProblemPack = 0;
-        while(true) {
-            AProblemPack newProblemPack = m_company->waitForPack();
-            
+    size_t m_id;
+    AProblem m_problem;
+};
+
+class CListProblemPack {
+public:
+    CListProblemPack(size_t id, AProblemPack newProblemPack) : m_id(id), m_problemPack(newProblemPack)  {
+        for(size_t i = 0; i < m_problemPack->m_Problems.size(); ++i) {
+            m_problems.emplace_back(CListProblem(i, m_problemPack->m_Problems[i]));
         }
     }
     
-    void createDeliveredThread(void) {
-        
+    size_t getId(void) {
+        return m_id;
     }
+    
+    AProblemPack getProblemPack(void) {
+        return m_problemPack;
+    }
+
+private:
+    size_t m_id;
+    AProblemPack m_problemPack;
+    vector<CListProblem> m_problems;
 };
+
+//class CCompanyProblems {
+//public:
+//    CCompanyProblems(size_t id, ACompany company, COptimizer * opt) : m_id(id), m_company(company), m_opt(opt) {
+////        createCommunicationThread();
+//        m_commThread = thread(&CCompanyProblems::createCommunicationThread, this);
+//        m_delivThread = thread(&CCompanyProblems::createDeliveredThread, this);
+//    }
+//
+//private:
+//    size_t m_id;
+//    ACompany m_company;
+//    COptimizer * m_opt;
+//
+//    thread m_commThread;
+//    thread m_delivThread;
+//    vector<CListProblemPack> m_problemsPack;
+//
+//    void createCommunicationThread(void/*size_t id, ACompany company, COptimizer * opt*/) {
+//
+//        size_t idProblemPack = 0;
+////        printf("id : %d\n", m_id);
+//        while(true) {
+//            AProblemPack newProblemPack = m_company->waitForPack();
+//            if(newProblemPack == nullptr) {
+//                break;
+//            }
+//            m_problemsPack.emplace_back(CListProblemPack(idProblemPack, newProblemPack));
+//            idProblemPack++;
+//        }
+//
+//    }
+//
+//    void createDeliveredThread(void) {
+//
+//    }
+//};
 
 class COptimizer 
 {
   public:
     COptimizer(void) {
-        m_currentIdCompany = 0;
+        m_id = 0;
     }
     
     static bool usingProgtestSolver(void) {
@@ -132,10 +150,10 @@ class COptimizer
     }
     
     void start(int threadCount) {
-        CThreadWork some;
+//        CThreadWork some;
         for(int i = 0; i < threadCount; i++) {
             //printf("Start:     Creating thread %d\n", i);
-            m_threads.push_back(thread(&CThreadWork::createThread, &some, i, ref(*this)));
+            m_threads.emplace_back(thread(&CThreadWork::createThread, &m_worker, i, ref(*this)));
         }
     }
     
@@ -144,20 +162,58 @@ class COptimizer
             t.join();
         }
     }
-                    //std::shared_ptr<CProblem> - in file common.h
+    //std::shared_ptr<CProblem> - in file common.h
     void addCompany(ACompany company) {
-        m_companies.emplace_back(CCompanyProblemPack(company, m_currentIdCompany));
-        m_currentIdCompany++;
+        m_companies.emplace_back(CCompanyProblems(m_id, company, this));
+        m_id++;
     }
     
   private:
-    size_t m_currentIdCompany;
-    vector<CCompanyProblemPack> m_companies;
+    class CCompanyProblems;
+    size_t m_id;
+    mutex m_mtx;
     
+    CThreadWork m_worker;
     vector<thread> m_threads;
-//    thread m_commThread;
-//    thread m_delivThread;
-    mutex mtx;
+    vector<CCompanyProblems> m_companies;
+    
+    class CCompanyProblems {
+    public:
+        CCompanyProblems(size_t id, ACompany company, COptimizer * opt) : m_id(id), m_company(company), m_opt(opt) {
+    //        createCommunicationThread();
+            m_commThread = thread(&CCompanyProblems::createCommunicationThread, this);
+            m_delivThread = thread(&CCompanyProblems::createDeliveredThread, this);
+        }
+        
+    private:
+        size_t m_id;
+        ACompany m_company;
+        COptimizer * m_opt;
+        
+        thread m_commThread;
+        thread m_delivThread;
+        vector<CListProblemPack> m_problemsPack;
+        
+        void createCommunicationThread(void/*size_t id, ACompany company, COptimizer * opt*/) {
+            
+            size_t idProblemPack = 0;
+            printf("id : %zu\n", m_id);
+            while(true) {
+                AProblemPack newProblemPack = m_company->waitForPack();
+                if(newProblemPack == nullptr) {
+                    break;
+                }
+                m_problemsPack.emplace_back(CListProblemPack(idProblemPack, newProblemPack));
+                idProblemPack++;
+            }
+            
+            
+        }
+        
+        void createDeliveredThread(void) {
+
+        }
+    };
 };
 
 // TODO: COptimizer implementation goes here
