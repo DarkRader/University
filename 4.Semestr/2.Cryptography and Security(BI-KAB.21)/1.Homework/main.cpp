@@ -21,10 +21,9 @@
 
 using namespace std;
 
-#define MESSANGE_SIZE 32 // SHA-512 outputs 64 bytes (512 bits)
-#define HASH_DATA_SIZE 64
+#define MESSANGE_SIZE 64 // SHA-512 outputs 64 bytes (512 bits)
 
-bool calculateHash(const unsigned char* messageData, unsigned char* hashData) {
+bool calculateHash(const unsigned char *messageData, unsigned char *hashData) {
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
     if (ctx == NULL) {
         return false;
@@ -51,22 +50,30 @@ bool calculateHash(const unsigned char* messageData, unsigned char* hashData) {
 
 int findHash (int bits, char ** message, char ** hash) {
     //Check input parameters
-    if(!message || !hash || bits < 0 || bits > 512) {
+    if(bits < 0 || bits > 512) {
         return 0;
     }
 
-    unsigned char messageData[MESSANGE_SIZE];
+    unsigned char * messageData = (unsigned char*) malloc(64 * sizeof(unsigned char));
 
-    // prepare the message data
+    // check if message is provided
+    if(!messageData) {
+        free(messageData);
+        return 0;
+    }
+
+    // prepare a random message
     if (RAND_bytes(messageData, MESSANGE_SIZE) != 1) {
+        free(messageData);
         return 0;
     }
 
     // hash the message until the required number of bits is achieved
     while (true) {
         //Init data
-        unsigned char hashData[HASH_DATA_SIZE];
+        unsigned char hashData[MESSANGE_SIZE];
         if(calculateHash(messageData, hashData) == false) {
+            free(messageData);
             return 0;
         }
 
@@ -82,30 +89,28 @@ int findHash (int bits, char ** message, char ** hash) {
 
         //Converts a byte array to a hexadecimal string.
         if (found) {
-            char *hashStr = new char[129];
-            for (int i = 0; i < HASH_DATA_SIZE; ++i) {
+            char * hashStr = (char *) malloc(129);
+            for (int i = 0; i < MESSANGE_SIZE; ++i) {
                 snprintf(hashStr + 2 * i, 3, "%02x", hashData[i]);
             }
             hashStr[128] = '\0';
             *hash = hashStr;
 
-
-            char *messageStr = new char[65];
+            char * messageStr = (char *) malloc(129);
             for (int i = 0; i < MESSANGE_SIZE; ++i) {
                 snprintf(messageStr + 2 * i, 3, "%02x", messageData[i]);
             }
-            messageStr[HASH_DATA_SIZE] = '\0';
+            messageStr[128] = '\0';
             *message = messageStr;
 
+            free(messageData);
             return 1;
         }
 
-        // update the message with a random value
-        if (RAND_bytes(messageData, MESSANGE_SIZE) != 1) {
-            return 0;
+        for (int i = 0; i < MESSANGE_SIZE; ++i) {
+            messageData[i] = hashData[i % 64];
         }
     }
-    return 0;
 }
 
 int findHashEx (int bits, char ** message, char ** hash, const char * hashFunction) {
@@ -155,17 +160,13 @@ int checkHash(int bits, char * hexString) {
         }
     }
 
-    free(hash);
+    delete[] hash;
     return result;
 }
 
 int main (void) {
     char * message, * hash;
     assert(findHash(0, &message, &hash) == 1);
-//    printf("Hash textu \"%s\" je: ", message);
-//    for (unsigned int i = 0; i < strlen(message) ; i++)
-//        printf("%02x", hash[i]);
-//    printf("\n");
     assert(message && hash && checkHash(0, hash));
     free(message);
     free(hash);
