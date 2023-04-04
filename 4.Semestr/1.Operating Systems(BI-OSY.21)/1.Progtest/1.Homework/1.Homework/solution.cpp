@@ -41,7 +41,7 @@ using namespace std;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class COptimizer;
-class CFirmaProblemPack;
+class CFirmProblemPack;
 //class CThreadWork {
 //public:
 //    CThreadWork(int tid, mutex &mtx, condition_variable &cv) : m_tid(tid), m_mtx(mtx), m_cv(cv) {
@@ -72,9 +72,9 @@ class CFirmaProblemPack;
 ////    condition_variable cv_empty;
 //};
 
-class CFirmaProblem {
+class CFirmProblem {
 public:
-    CFirmaProblem(size_t id, size_t packId, size_t firmaId, AProblem problem) : m_id(id), m_packId(packId), m_firmaId(firmaId), m_problem(problem) {}
+    CFirmProblem(size_t id, size_t packId, size_t firmaId, AProblem problem) : m_id(id), m_packId(packId), m_firmaId(firmaId), m_problem(problem) {}
 
     size_t getId(void) {
         return m_id;
@@ -87,9 +87,12 @@ private:
     AProblem m_problem;
 };
 
-class CFirmaProblemPack {
+class CFirmProblemPack {
 public:
-    CFirmaProblemPack(size_t id, size_t firmaId, AProblemPack newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack)  {}
+    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack)  {
+        n_numOfPr = newProblemPack->m_Problems.size();
+        m_solved = false;
+    }
     
     size_t getId(void) {
         return m_id;
@@ -106,16 +109,18 @@ public:
 private:
     size_t m_id;
     size_t m_firmaId;
+    size_t n_numOfPr;
+    bool m_solved;
     AProblemPack m_problemPack;
 };
 
-class CFirma {
+class CFirm {
 public:
-    CFirma(size_t id, ACompany company, mutex & mtx, condition_variable & cv) : m_id(id), m_company(company), m_mtx(mtx), m_cv(cv) {}
+    CFirm(size_t id, ACompany company, mutex & mtx, condition_variable & cv) : m_id(id), m_company(company), m_mtx(mtx), m_cv(cv) {}
     
-    void createCommunicateTread(vector<thread> &threads, queue<CFirmaProblemPack> &queueProblemPack) {
-        m_instThread = thread(&CFirma::createInstalerThread, this, ref(threads), ref(queueProblemPack));
-        m_delivThread = thread(&CFirma::createDeliveredThread, this);
+    void createCommunicateTread(vector<thread> &threads, queue<CFirmProblemPack> &queueProblemPack) {
+        m_instThread = thread(&CFirm::createInstalerThread, this, ref(threads), ref(queueProblemPack));
+        m_delivThread = thread(&CFirm::createDeliveredThread, this);
     }
     
 private:
@@ -128,15 +133,16 @@ private:
     thread m_delivThread;
 
     
-    void createInstalerThread(vector<thread> &threads, queue<CFirmaProblemPack> &queueProblemPack) {
+    void createInstalerThread(vector<thread> &threads, queue<CFirmProblemPack> &queueProblemPack) {
         size_t idProblemPack = 0;
         printf("id : %zu\n", m_id);
         while(true) {
             AProblemPack newProblemPack = m_company->waitForPack();
             if(newProblemPack == nullptr) {
+                //TODO some flag
                 break;
             }
-            CFirmaProblemPack firmaProblemPack(idProblemPack, m_id, newProblemPack);
+            CFirmProblemPack firmaProblemPack(idProblemPack, m_id, newProblemPack);
             idProblemPack++;
             {
                 lock_guard<mutex> ul (m_mtx);
@@ -170,18 +176,29 @@ class COptimizer
       // dummy implementation if usingProgtestSolver() returns true
     }
     
-    void solvingSpecificProblem(CFirmaProblemPack &problem) {
-        vector<CFirmaProblem> problems;
-        for(size_t i = 0; problem.getProblemPack()->m_Problems.size(); ++i) {
-            problems.emplace_back(CFirmaProblem(i, problem.getId(), problem.getFirmaId(), problem.getProblemPack()->m_Problems[i]));
-        }
+    void solvingSpecificProblem(CFirmProblemPack &problem) {
+//        vector<CFirmProblem> problems;
+//        for(size_t i = 0; problem.getProblemPack()->m_Problems.size(); ++i) {
+//            problems.emplace_back(CFirmProblem(i, problem.getId(), problem.getFirmaId(), problem.getProblemPack()->m_Problems[i]));
+//        }
+        printf("First control!");
+        problem.getProblemPack()->m_Problems.erase(problem.getProblemPack()->m_Problems.begin());
+        printf("Second control!");
+        problem.getProblemPack()->m_Problems.erase(problem.getProblemPack()->m_Problems.begin());
+        printf("Next control!");
+        problem.getProblemPack()->m_Problems.erase(problem.getProblemPack()->m_Problems.begin());
+        AProgtestSolver solve;
+        
+//        problems[0]
+        
+        
         
     }
     
     void working(int threadNum) {
         printf("Thread %d: Start\n", threadNum);
         while(true) {
-            std::unique_lock<std::mutex> lock(m_mtxForPackProblem);
+            std::unique_lock<std::mutex> lock(m_mtxInstaler);
             m_cv.wait(lock, [this] {return !m_queueProblemPack.empty(); });
             
             if(m_queueProblemPack.empty()) {
@@ -219,20 +236,20 @@ class COptimizer
     
     //std::shared_ptr<CProblem> - in file common.h
     void addCompany(ACompany company) {
-        m_companies.emplace_back(CFirma(m_numOfFirm, company, m_mtxForPackProblem, m_cv));
+        m_companies.emplace_back(CFirm(m_numOfFirm, company, m_mtxInstaler, m_cv));
         m_numOfFirm++;
     }
     
   private:
     size_t m_numOfFirm;
-    mutex m_mtxForPackProblem;
-    mutex m_mtxForSolvedProblem;
+    mutex m_mtxInstaler;
+    mutex m_mtxWorker;
     condition_variable m_cv;
     
-    queue<CFirmaProblemPack> m_queueProblemPack;
+    queue<CFirmProblemPack> m_queueProblemPack;
     
     vector<thread> m_threads;
-    vector<CFirma> m_companies;
+    vector<CFirm> m_companies;
 };
 // TODO: COptimizer implementation goes here
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
