@@ -41,36 +41,6 @@ using namespace std;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class COptimizer;
-class CFirmProblemPack;
-//class CThreadWork {
-//public:
-//    CThreadWork(int tid, mutex &mtx, condition_variable &cv) : m_tid(tid), m_mtx(mtx), m_cv(cv) {
-//        printf("Thread %d: Start\n", tid);
-//    }
-//    ~CThreadWork() {}
-//
-//    void working() {
-//        while(true) {
-//            std::unique_lock<std::mutex> lock(m_mtx);
-//
-//            m_cv.wait(lock, [this] {return m_is_work; });
-//
-//            //TODO do some work
-//
-//            printf("Thread %d: Do this work!\n", m_tid);
-//        }
-//    }
-//
-//
-//private:
-//    COptimizer * m_opt;
-//    bool m_is_work;
-//
-//    int m_tid;
-//    mutex &m_mtx;
-//    condition_variable &m_cv;
-////    condition_variable cv_empty;
-//};
 
 class CFirmProblem {
 public:
@@ -89,9 +59,22 @@ private:
 
 class CFirmProblemPack {
 public:
-    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack)  {
-        n_numOfPr = newProblemPack->m_Problems.size();
+    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack) {
+        m_size = newProblemPack->m_Problems.size();
         m_solved = false;
+        m_curPos = 0;
+    }
+
+    void addProblem(AProgtestSolver &solver) {
+        solver->addProblem(m_problemPack->m_Problems[m_curPos]);
+        m_curPos++;
+        if(m_curPos == m_size - 1) {
+            m_solved = true;
+        }
+    }
+
+    bool getSolved(void) {
+        return m_solved;
     }
     
     size_t getId(void) {
@@ -109,7 +92,8 @@ public:
 private:
     size_t m_id;
     size_t m_firmaId;
-    size_t n_numOfPr;
+    size_t m_size;
+    size_t m_curPos;
     bool m_solved;
     AProblemPack m_problemPack;
 };
@@ -162,6 +146,7 @@ class COptimizer
   public:
     COptimizer(void) {
         m_numOfFirm = 0;
+        m_solver = createProgtestSolver();
     }
     
     COptimizer(size_t numOfFirm) {
@@ -176,29 +161,29 @@ class COptimizer
       // dummy implementation if usingProgtestSolver() returns true
     }
     
-    void solvingSpecificProblem(CFirmProblemPack &problem) {
-//        vector<CFirmProblem> problems;
-//        for(size_t i = 0; problem.getProblemPack()->m_Problems.size(); ++i) {
-//            problems.emplace_back(CFirmProblem(i, problem.getId(), problem.getFirmaId(), problem.getProblemPack()->m_Problems[i]));
-//        }
-        printf("First control!");
-        problem.getProblemPack()->m_Problems.erase(problem.getProblemPack()->m_Problems.begin());
-        printf("Second control!");
-        problem.getProblemPack()->m_Problems.erase(problem.getProblemPack()->m_Problems.begin());
-        printf("Next control!");
-        problem.getProblemPack()->m_Problems.erase(problem.getProblemPack()->m_Problems.begin());
-        AProgtestSolver solve;
-        
-//        problems[0]
-        
-        
-        
+    void solvingSpecificProblem(CFirmProblemPack &problem, unique_lock<mutex> &lock) {
+
+        if(!m_solver->hasFreeCapacity()) {
+            m_solver = createProgtestSolver();
+        }
+
+        while(m_solver->hasFreeCapacity()) {
+            problem.addProblem(m_solver);
+        }
+
+        lock.unlock();
+
+        m_solver->solve();
+
+        lock.lock();
+
+        m_cv.notify_one();
     }
     
     void working(int threadNum) {
         printf("Thread %d: Start\n", threadNum);
         while(true) {
-            std::unique_lock<std::mutex> lock(m_mtxInstaler);
+            unique_lock<mutex> lock(m_mtxInstaler);
             m_cv.wait(lock, [this] {return !m_queueProblemPack.empty(); });
             
             if(m_queueProblemPack.empty()) {
@@ -206,9 +191,9 @@ class COptimizer
             }
 
             auto task = m_queueProblemPack.front();
-            m_queueProblemPack.pop();
-            lock.unlock();
-            solvingSpecificProblem(task);
+//            m_queueProblemPack.pop();
+//            lock.unlock();
+            solvingSpecificProblem(task, lock);
         }
 
     }
@@ -245,6 +230,7 @@ class COptimizer
     mutex m_mtxInstaler;
     mutex m_mtxWorker;
     condition_variable m_cv;
+    AProgtestSolver m_solver;
     
     queue<CFirmProblemPack> m_queueProblemPack;
     

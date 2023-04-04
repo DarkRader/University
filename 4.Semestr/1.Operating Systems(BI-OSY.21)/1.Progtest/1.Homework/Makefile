@@ -14,7 +14,7 @@ test: solution.o sample_tester.o
 	$(LD) $(CXXFLAGS) -o $@ $^ -L./$(MACHINE) -lprogtest_solver -lpthread
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $< -g
 
 lib: progtest_solver.o
 	mkdir -p $(MACHINE)
