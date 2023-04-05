@@ -41,6 +41,46 @@ using namespace std;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class COptimizer;
+class CFirmProblemPack;
+class CSolver {
+public:
+    CSolver() {
+        m_solver = createProgtestSolver();
+    }
+
+    void addProblem(AProblem &problem) {
+        m_solver->addProblem(problem);
+        m_containSolver[m_containSolver.size() - 1].second++;
+    }
+
+    void solve() {
+        m_solver->solve();
+    }
+
+    bool getCapacity() {
+        return m_solver->hasFreeCapacity();
+    }
+
+    void newSolver() {
+        m_solver = createProgtestSolver();
+        m_containSolver.clear();
+    }
+
+    void addProblemPack(CFirmProblemPack & problemPack) {
+        m_containSolver.push_back({problemPack, 0});
+    }
+
+    void deliverSolvingProblem() {
+        for(size_t i = 0; i < m_containSolver.size(); ++i) {
+            
+        }
+    }
+
+private:
+    AProgtestSolver m_solver;
+    vector<pair<CFirmProblemPack&, size_t>> m_containSolver;
+
+};
 
 class CFirmProblem {
 public:
@@ -59,34 +99,39 @@ private:
 
 class CFirmProblemPack {
 public:
-    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack) {
+    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack &newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack) {
         m_size = newProblemPack->m_Problems.size();
         m_solved = false;
+        m_loaded = false;
         m_curPos = 0;
+        m_solvingProblem = 0;
     }
 
-    void addProblem(AProgtestSolver &solver) {
-        solver->addProblem(m_problemPack->m_Problems[m_curPos]);
+    void addProblem(CSolver &solver) {
+        solver.addProblem(m_problemPack->m_Problems[m_curPos]);
         m_curPos++;
         if(m_curPos == m_size - 1) {
-            m_solved = true;
+            m_loaded = true;
         }
+    }
+
+    void addProblemPack(CSolver &solver) {
+        solver.addProblemPack(*this);
+    }
+
+    bool getLoaded() {
+        return m_loaded;
     }
 
     bool getSolved(void) {
         return m_solved;
     }
-    
-    size_t getId(void) {
-        return m_id;
-    }
-    
-    size_t getFirmaId(void) {
-        return m_firmaId;
-    }
-    
-    AProblemPack getProblemPack(void) {
-        return m_problemPack;
+
+    void deliveredSolvingProblem(size_t numSolProblem) {
+        m_solvingProblem += numSolProblem;
+        if(m_solvingProblem == m_size) {
+            m_solved = true;
+        }
     }
 
 private:
@@ -94,8 +139,10 @@ private:
     size_t m_firmaId;
     size_t m_size;
     size_t m_curPos;
+    size_t m_solvingProblem;
     bool m_solved;
-    AProblemPack m_problemPack;
+    bool m_loaded;
+    AProblemPack &m_problemPack;
 };
 
 class CFirm {
@@ -146,7 +193,7 @@ class COptimizer
   public:
     COptimizer(void) {
         m_numOfFirm = 0;
-        m_solver = createProgtestSolver();
+        m_solver = CSolver();
     }
     
     COptimizer(size_t numOfFirm) {
@@ -161,23 +208,30 @@ class COptimizer
       // dummy implementation if usingProgtestSolver() returns true
     }
     
-    void solvingSpecificProblem(CFirmProblemPack &problem, unique_lock<mutex> &lock) {
+    void solvingSpecificProblem(/*CFirmProblemPack &problem,*/ unique_lock<mutex> &lock) {
 
-        if(!m_solver->hasFreeCapacity()) {
-            m_solver = createProgtestSolver();
+        if(!m_solver.getCapacity()) {
+            m_solver.newSolver();
+            m_solver.addProblemPack(m_queueProblemPack.front());
         }
 
-        while(m_solver->hasFreeCapacity()) {
-            problem.addProblem(m_solver);
+        while(m_solver.getCapacity()) {
+            m_queueProblemPack.front().addProblem(m_solver);
+            if(m_queueProblemPack.front().getLoaded()) {
+                m_queueProblemPack.pop();
+                if(m_solver.getCapacity()) {
+                    m_solver.addProblemPack(m_queueProblemPack.front());
+                }
+            }
         }
-
-        lock.unlock();
-
-        m_solver->solve();
-
-        lock.lock();
 
         m_cv.notify_one();
+
+        lock.unlock();
+        m_solver.solve();
+        lock.lock();
+
+//        m_solver
     }
     
     void working(int threadNum) {
@@ -190,10 +244,8 @@ class COptimizer
                 break;
             }
 
-            auto task = m_queueProblemPack.front();
-//            m_queueProblemPack.pop();
-//            lock.unlock();
-            solvingSpecificProblem(task, lock);
+            CFirmProblemPack &task = m_queueProblemPack.front();
+            solvingSpecificProblem(lock);
         }
 
     }
@@ -201,8 +253,6 @@ class COptimizer
     void start(int threadCount) {
         for(int i = 0; i < threadCount; i++) {
             printf("Start:     Creating thread %d\n", i);
-//            CThreadWork newThread(i, m_mtxForPackProblem, m_cv);
-//            m_threads.emplace_back(thread(&CThreadWork::working, &newThread));
             m_threads.emplace_back(&COptimizer::working, this, i);
         }
 
@@ -230,7 +280,7 @@ class COptimizer
     mutex m_mtxInstaler;
     mutex m_mtxWorker;
     condition_variable m_cv;
-    AProgtestSolver m_solver;
+    CSolver m_solver;
     
     queue<CFirmProblemPack> m_queueProblemPack;
     
