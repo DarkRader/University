@@ -69,7 +69,7 @@ public:
 
     AProblem &addProblem() {
         m_curPos++;
-        if(m_curPos == m_size - 1) {
+        if(m_curPos == m_size) {
             m_loaded = true;
         }
 
@@ -95,6 +95,10 @@ public:
         return m_problemPack;
     }
 
+    size_t getPackProblemId() {
+        return m_id;
+    }
+
     size_t getFirmaId() {
         return m_firmaId;
     }
@@ -117,6 +121,9 @@ public:
     }
 
     void addProblem(CFirmProblemPack &problemPack) {
+        if(m_containSolver.size() == 0) {
+            m_containSolver.push_back({problemPack, 0});
+        }
         m_solver->addProblem(problemPack.addProblem());
         m_containSolver[m_containSolver.size() - 1].second++;
     }
@@ -130,6 +137,9 @@ public:
     }
 
     void newSolver() {
+//        if(m_solver->hasFreeCapacity() == false) {
+//            printf("Capacity is not free!\n");
+//        }
         m_solver = createProgtestSolver();
         m_containSolver.clear();
     }
@@ -201,6 +211,10 @@ private:
         }
         m_instalFinish = true;
     }
+
+    void controlFunction(unique_lock<mutex> &lock) {
+        printf("Control!");
+    }
     
     void createDeliveredThread(void) {
         while(true) {
@@ -211,6 +225,7 @@ private:
 
             lock.unlock();
             if(solved.getSolved()) {
+                controlFunction(lock);
                 m_company->solvedPack(solved.getSolvedPack());
                 m_queueSolvedPack.pop();
             }
@@ -242,18 +257,21 @@ class COptimizer
     
     void solvingSpecificProblem(unique_lock<mutex> &lock) {
 
+        printf("Start or continue to solving %zu: pack problem\n", m_queueProblemPack.front().getPackProblemId());
         if(!m_solver.getCapacity()) {
             m_solver.newSolver();
             m_solver.addProblemPack(m_queueProblemPack.front());
         }
 
         while(m_solver.getCapacity()) {
-            m_solver.addProblemPack(m_queueProblemPack.front());
+
+            m_solver.addProblem(m_queueProblemPack.front());
             if(m_queueProblemPack.front().getLoaded()) {
                 m_companies[m_queueProblemPack.front().getFirmaId()]->push(m_queueProblemPack.front());
                 m_queueProblemPack.pop();
-                if(m_solver.getCapacity()) {
+                if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
                     m_solver.addProblemPack(m_queueProblemPack.front());
+                    printf("Start or continue to solving %zu: pack problem\n", m_queueProblemPack.front().getPackProblemId());
                 }
             }
         }
