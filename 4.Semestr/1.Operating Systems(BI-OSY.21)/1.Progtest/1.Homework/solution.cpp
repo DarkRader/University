@@ -39,27 +39,9 @@ using namespace std;
 #endif /* __PROGTEST__ */ 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-class COptimizer;
-
-class CFirmProblem {
-public:
-    CFirmProblem(size_t id, size_t packId, size_t firmaId, AProblem problem) : m_id(id), m_packId(packId), m_firmaId(firmaId), m_problem(problem) {}
-
-    size_t getId(void) {
-        return m_id;
-    }
-
-private:
-    size_t m_id;
-    size_t m_packId;
-    size_t m_firmaId;
-    AProblem m_problem;
-};
-
 class CFirmProblemPack {
 public:
-    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack &newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack) {
+    CFirmProblemPack(size_t id, size_t firmaId, AProblemPack newProblemPack) : m_id(id), m_firmaId(firmaId), m_problemPack(newProblemPack) {
         m_size = newProblemPack->m_Problems.size();
         m_solved = false;
         m_loaded = false;
@@ -67,9 +49,10 @@ public:
         m_solvingProblem = 0;
     }
 
-    AProblem &addProblem() {
+    AProblem addProblem() {
         m_curPos++;
         if(m_curPos == m_size) {
+            printf("All problem of pack %zu: added!\n", m_id);
             m_loaded = true;
         }
 
@@ -87,11 +70,12 @@ public:
     void deliveredSolvingProblem(size_t numSolProblem) {
         m_solvingProblem += numSolProblem;
         if(m_solvingProblem == m_size) {
+            printf("All problem of pack %zu: solved!\n", m_id);
             m_solved = true;
         }
     }
 
-    AProblemPack &getSolvedPack() {
+    AProblemPack getSolvedPack() {
         return m_problemPack;
     }
 
@@ -111,7 +95,7 @@ private:
     size_t m_solvingProblem;
     bool m_solved;
     bool m_loaded;
-    AProblemPack &m_problemPack;
+    AProblemPack m_problemPack;
 };
 
 class CSolver {
@@ -137,9 +121,6 @@ public:
     }
 
     void newSolver() {
-//        if(m_solver->hasFreeCapacity() == false) {
-//            printf("Capacity is not free!\n");
-//        }
         m_solver = createProgtestSolver();
         m_containSolver.clear();
     }
@@ -156,6 +137,10 @@ public:
         for(size_t i = 0; i < m_containSolver.size(); ++i) {
             m_containSolver[i].first.deliveredSolvingProblem(m_containSolver[i].second);
         }
+    }
+
+    CFirmProblemPack &getLastContainSolver() {
+        return m_containSolver[m_containSolver.size() - 1].first;
     }
 
 private:
@@ -201,13 +186,14 @@ private:
             if (newProblemPack == nullptr) {
                 break;
             }
-            CFirmProblemPack firmaProblemPack(idProblemPack, m_id, newProblemPack);
-            idProblemPack++;
+            //push problemPack in queue and move work to worker
             {
+                //shared_ptr<CFirmProblemPack> (new CFirmProblemPack(idProblemPack, m_id, newProblemPack));
                 lock_guard<mutex> ul(m_mtxOpt);
-                queueProblemPack.push(firmaProblemPack);
+                queueProblemPack.push(CFirmProblemPack(idProblemPack, m_id, newProblemPack));
                 m_cvOpt.notify_one();
             }
+            idProblemPack++;
         }
         m_instalFinish = true;
     }
@@ -264,10 +250,10 @@ class COptimizer
         }
 
         while(m_solver.getCapacity()) {
-
             m_solver.addProblem(m_queueProblemPack.front());
             if(m_queueProblemPack.front().getLoaded()) {
-                m_companies[m_queueProblemPack.front().getFirmaId()]->push(m_queueProblemPack.front());
+//                m_companies[m_queueProblemPack.front().getFirmaId()]->push(m_queueProblemPack.front());
+                m_companies[m_queueProblemPack.front().getFirmaId()]->push(m_solver.getLastContainSolver());
                 m_queueProblemPack.pop();
                 if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
                     m_solver.addProblemPack(m_queueProblemPack.front());
@@ -282,6 +268,7 @@ class COptimizer
         m_solver.solve();
         lock.lock();
 
+        printf("Some work solving!\n");
         m_solver.deliverSolvingProblem();
         m_solver.clear();
     }
@@ -297,6 +284,7 @@ class COptimizer
             }
 
 //            CFirmProblemPack &task = m_queueProblemPack.front();
+
             solvingSpecificProblem(lock);
         }
 
