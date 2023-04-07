@@ -100,3 +100,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Specific files
+4.Semestr/1.Operating Systems(BI-OSY.21)/1.Progtest/1.Homework/test
