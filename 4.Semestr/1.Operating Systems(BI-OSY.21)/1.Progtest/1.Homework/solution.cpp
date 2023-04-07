@@ -208,26 +208,21 @@ private:
         }
         printf("All problem of company %zu: solved!", m_id);
     }
-
-    void controlFunction(unique_lock<mutex> &lock) {
-        printf("Control!");
-    }
     
     void createDeliveredThread(void) {
         while(true) {
             unique_lock<mutex> lock(m_mtx);
             m_cv.wait(lock, [this] {return !m_queueSolvedPack.empty(); });
 
-            if(m_queueSolvedPack.empty() && m_instalFinish) {
-                break;
-            }
+//            if(m_queueSolvedPack.empty() && m_instalFinish) {
+//                break;
+//            }
 
             shared_ptr<CFirmProblemPack> solved = m_queueSolvedPack.front();
 
             lock.unlock();
             if(solved->getSolved()) {
-                printf("Pack %zu: Delivered!", solved->getPackProblemId());
-                controlFunction(lock);
+                printf("Pack %zu: Delivered!\n", solved->getPackProblemId());
                 m_company->solvedPack(solved->getSolvedPack());
                 m_queueSolvedPack.pop();
             }
@@ -265,7 +260,7 @@ class COptimizer
             m_solver.addProblemPack(m_queueProblemPack.front());
         }
 
-        while(m_solver.getCapacity()) {
+        while(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
             m_solver.addProblem(m_queueProblemPack.front());
             if(m_queueProblemPack.front()->getLoaded()) {
                 m_companies[m_queueProblemPack.front()->getFirmaId()]->push(m_queueProblemPack.front());
