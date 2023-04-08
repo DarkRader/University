@@ -243,6 +243,10 @@ public:
         return newContainSolver;
     }
 
+    AProgtestSolver getSolver() {
+        return m_solver;
+    }
+
 private:
     AProgtestSolver m_solver;
     vector<pair<shared_ptr<CFirmProblemPack>, size_t>> m_containSolver;
@@ -296,11 +300,12 @@ public:
 
 //        vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver = m_solver.getContainSolver();
         vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver = m_solver.copyContainSolver();
+        AProgtestSolver solver = m_solver.getSolver();
         m_solver.newSolver();
         m_cv.notify_one();
 
         lock.unlock();
-        m_solver.solve();
+        solver->solve();
         lock.lock();
 
         printf("Some work solving!\n");
