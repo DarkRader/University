@@ -100,7 +100,7 @@ private:
 
 class CFirm {
 public:
-    CFirm(size_t id, bool instalFinish, ACompany & company, mutex & mtx, condition_variable & cv) : m_id(id), m_instalFinish(instalFinish), m_company(company), m_mtxOpt(mtx), m_cvOpt(cv) {}
+    CFirm(size_t id, bool &workingFinish, ACompany & company, mutex & mtx, condition_variable & cv) : m_id(id), m_workingFinish(workingFinish), m_company(company), m_mtxOpt(mtx), m_cvOpt(cv) {}
 
     void createCommunicateTread(queue<shared_ptr<CFirmProblemPack>> &queueProblemPack) {
         m_instThread = thread(&CFirm::createInstalerThread, this, ref(queueProblemPack));
@@ -126,7 +126,7 @@ public:
 
 private:
     size_t m_id;
-    bool &m_instalFinish;
+    bool &m_workingFinish;
 
     mutex & m_mtxOpt;
     mutex m_mtx;
@@ -162,11 +162,11 @@ private:
     void createDeliveredThread(void) {
         while(true) {
             unique_lock<mutex> lock(m_mtx);
-            m_cv.wait(lock, [this] {return !m_queueSolvedPack.empty() && m_queueSolvedPack.front()->getSolved(); });
+            m_cv.wait(lock, [this] {return (!m_queueSolvedPack.empty() && m_queueSolvedPack.front()->getSolved()) || m_workingFinish; });
 
-//            if(m_queueSolvedPack.empty() && m_instalFinish) {
-//                break;
-//            }
+            if(m_queueSolvedPack.empty() && m_workingFinish) {
+                break;
+            }
 
             shared_ptr<CFirmProblemPack> solved = m_queueSolvedPack.front();
 
@@ -294,7 +294,7 @@ public:
         printf("Start or continue to solving %zu: pack problem\n", m_queueProblemPack.front()->getPackProblemId());
         fillingPogtestSolver();
 
-        if(m_solver.getCapacity()) {
+        if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
             return ;
         }
 
@@ -316,12 +316,12 @@ public:
         printf("Thread %d: Start\n", threadNum);
         while(true) {
             unique_lock<mutex> lock(m_mtxInstaler);
-            m_cv.wait(lock, [this] {return !m_queueProblemPack.empty(); });
+            m_cv.wait(lock, [this] {return !m_queueProblemPack.empty() || m_instalFinish; });
 
-            if(m_queueProblemPack.empty() && m_instalFinish) {
+            if (m_queueProblemPack.empty() && m_instalFinish) {
+                printf("Thread %d: Finish work\n", threadNum);
                 break;
             }
-
             printf("Worker %d: Take this work\n", threadNum);
             printf("Current queue size is %zu\n", m_queueProblemPack.size());
             solvingSpecificProblem(lock);
@@ -354,19 +354,29 @@ public:
             m_threads[i].join();
         }
 
+        printf("\n");
+        printf("ALL WORKERS FINISHED!\n\n");
+        m_workingFinish = true;
+
+
         for(size_t i = 0; i < m_companies.size(); ++i) {
+            m_companies[i]->notifyDeliver();
             m_companies[i]->getDelivered().join();
         }
+
+        printf("\n");
+        printf("ALL JOB IS FINISHING!\n\n");
     }
 
     void addCompany(ACompany company) {
-        m_companies.emplace_back(shared_ptr<CFirm>(new CFirm(m_numOfFirm, m_instalFinish, company, m_mtxInstaler, m_cv)));
+        m_companies.emplace_back(shared_ptr<CFirm>(new CFirm(m_numOfFirm, m_workingFinish, company, m_mtxInstaler, m_cv)));
         m_numOfFirm++;
     }
 
 private:
     size_t m_numOfFirm;
     bool m_instalFinish;
+    bool m_workingFinish;
 
     mutex m_mtxInstaler;
     condition_variable m_cv;
