@@ -100,7 +100,7 @@ private:
 
 class CFirm {
 public:
-    CFirm(size_t id, bool &workingFinish, ACompany & company, mutex & mtx, condition_variable & cv) : m_id(id), m_workingFinish(workingFinish), m_company(company), m_mtxOpt(mtx), m_cvOpt(cv) {}
+    CFirm(size_t id, atomic<bool> &workingFinish, ACompany & company, mutex & mtx, condition_variable & cv) : m_id(id), m_workingFinish(workingFinish), m_company(company), m_mtxOpt(mtx), m_cvOpt(cv) {}
 
     void createCommunicateTread(queue<shared_ptr<CFirmProblemPack>> &queueProblemPack) {
         m_instThread = thread(&CFirm::instalerThread, this, ref(queueProblemPack));
@@ -108,6 +108,7 @@ public:
     }
 
     void push(shared_ptr<CFirmProblemPack> problemPack) {
+        std :: lock_guard<std :: mutex> lock(m_mtx);
         m_queueSolvedPack.push(problemPack);
     }
 
@@ -126,7 +127,7 @@ public:
 
 private:
     size_t m_id;
-    bool &m_workingFinish;
+    atomic<bool> &m_workingFinish;
 
     mutex & m_mtxOpt;
     mutex m_mtx;
@@ -166,6 +167,7 @@ private:
 
 
             if(m_queueSolvedPack.empty() && m_workingFinish) {
+//                lock.unlock();
                 break;
             }
 
@@ -176,6 +178,7 @@ private:
                 m_queueSolvedPack.pop();
 //                printf("Queue size is %zu", m_queueSolvedPack.size());
                 if(m_queueSolvedPack.empty() || !(m_queueSolvedPack.front()->getSolved())) {
+//                    lock.unlock();
                     break;
                 }
             }
@@ -299,6 +302,7 @@ public:
         fillingPogtestSolver();
 
         if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
+           lock.unlock();
             return ;
         }
 
@@ -328,6 +332,7 @@ public:
 //                    printf("Current queue size is %zu\n", m_queueProblemPack.size());
                     solvingSpecificProblem(lock);
                 }
+
             }
             if (m_queueProblemPack.empty() && m_instalFinish) {
 //                printf("Thread %d: Finish work\n", threadNum);
@@ -358,9 +363,11 @@ public:
 
 //        printf("\n");
 //        printf("ALL PROBLEMS ARE INSTALLING!\n\n");
-        m_instalFinish = true;
-        m_cv.notify_all();
-
+        {
+            std :: lock_guard<std :: mutex> lock(m_mtxInstaler);
+            m_instalFinish = true;
+            m_cv.notify_all();
+        }
         for(size_t i = 0; i < m_threads.size(); ++i) {
             m_threads[i].join();
         }
@@ -368,7 +375,6 @@ public:
 //        printf("\n");
 //        printf("ALL WORKERS FINISHED!\n\n");
         m_workingFinish = true;
-
 
         for(size_t i = 0; i < m_companies.size(); ++i) {
             m_companies[i]->notifyDeliver();
@@ -387,7 +393,7 @@ public:
 private:
     size_t m_numOfFirm;
     bool m_instalFinish;
-    bool m_workingFinish;
+    atomic<bool> m_workingFinish;
 
     mutex m_mtxInstaler;
     condition_variable m_cv;
