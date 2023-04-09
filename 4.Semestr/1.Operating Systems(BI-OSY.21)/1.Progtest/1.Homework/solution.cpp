@@ -50,6 +50,7 @@ public:
     }
 
     AProblem addProblem() {
+        unique_lock<mutex> lock(m);
         m_curPos++;
         if(m_curPos == m_size) {
 //            printf("All problem of pack %zu: added!\n", m_id);
@@ -60,14 +61,17 @@ public:
     }
 
     bool getLoaded() {
+        unique_lock<mutex> lock(m);
         return m_loaded;
     }
 
     bool getSolved(void) {
+        unique_lock<mutex> lock(m);
         return m_solved;
     }
 
     void deliveredSolvingProblem(size_t numSolProblem) {
+        unique_lock<mutex> loop(m);
         m_solvingProblem += numSolProblem;
         if(m_solvingProblem == m_size) {
 //            printf("All problem of pack %zu: solved!\n", m_id);
@@ -84,6 +88,7 @@ public:
     }
 
     size_t getFirmId() {
+        unique_lock<mutex> lock(m);
         return m_firmId;
     }
 
@@ -96,6 +101,7 @@ private:
     bool m_solved;
     bool m_loaded;
     AProblemPack m_problemPack;
+    mutex m;
 };
 
 class CFirm {
@@ -108,7 +114,7 @@ public:
     }
 
     void push(shared_ptr<CFirmProblemPack> problemPack) {
-        std :: lock_guard<std :: mutex> lock(m_mtx);
+        lock_guard<mutex> lock(m_mtx);
         m_queueSolvedPack.push(problemPack);
     }
 
@@ -131,6 +137,7 @@ private:
 
     mutex & m_mtxOpt;
     mutex m_mtx;
+    mutex mutex_loop;
     condition_variable & m_cvOpt;
     condition_variable m_cv;
     ACompany &m_company;
@@ -177,10 +184,13 @@ private:
                 m_company->solvedPack(m_queueSolvedPack.front()->getSolvedPack());
                 m_queueSolvedPack.pop();
 //                printf("Queue size is %zu", m_queueSolvedPack.size());
+                unique_lock<mutex> loop(mutex_loop);
                 if(m_queueSolvedPack.empty() || !(m_queueSolvedPack.front()->getSolved())) {
 //                    lock.unlock();
+                    loop.unlock();
                     break;
                 }
+                loop.unlock();
             }
 
             if(m_queueSolvedPack.empty() && m_workingFinish) {
@@ -210,10 +220,14 @@ public:
     }
 
     bool getCapacity() {
+        mutex mtx;
+        unique_lock<mutex> lock(mtx);
         return m_solver->hasFreeCapacity();
     }
 
     void newSolver() {
+        mutex mtx;
+        unique_lock<mutex> lock(mtx);
         m_solver = createProgtestSolver();
         m_containSolver.clear();
     }
@@ -223,20 +237,27 @@ public:
     }
 
     void addProblemPack(shared_ptr<CFirmProblemPack> problemPack) {
+        mutex mtx;
+        unique_lock<mutex> lock(mtx);
         m_containSolver.push_back({problemPack, 0});
     }
 
     vector<pair<shared_ptr<CFirmProblemPack>, size_t>> getContainSolver() {
+        mutex mtx;
+        unique_lock<mutex> loop(mtx);
         return m_containSolver;
     }
 
     void deliverSolvingProblem(vector<shared_ptr<CFirm>> &companies,
                                vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver) {
         for(size_t i = 0; i < containSolver.size(); ++i) {
+            mutex mtx;
+            unique_lock<mutex> loop(mtx);
             containSolver[i].first->deliveredSolvingProblem(containSolver[i].second);
             if(containSolver[i].first->getSolved()) {
                 companies[containSolver[i].first->getFirmId()]->notifyDeliver();
             }
+            loop.unlock();
         }
     }
 
@@ -250,13 +271,14 @@ public:
     }
 
     AProgtestSolver getSolver() {
+        mutex mtx;
+        unique_lock<mutex> lock(mtx);
         return m_solver;
     }
 
 private:
     AProgtestSolver m_solver;
     vector<pair<shared_ptr<CFirmProblemPack>, size_t>> m_containSolver;
-
 };
 
 class COptimizer
@@ -302,7 +324,7 @@ public:
         fillingPogtestSolver();
 
         if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
-           lock.unlock();
+            lock.unlock();
             return ;
         }
 
