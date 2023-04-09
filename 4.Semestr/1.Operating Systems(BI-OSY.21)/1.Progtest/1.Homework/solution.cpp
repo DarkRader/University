@@ -50,10 +50,9 @@ public:
     }
 
     AProblem addProblem() {
-        unique_lock<mutex> lock(m);
         m_curPos++;
         if(m_curPos == m_size) {
-//            printf("All problem of pack %zu: added!\n", m_id);
+//            printf("All problem of pack %zu: added!\n", m_id.load());
             m_loaded = true;
         }
 
@@ -61,20 +60,17 @@ public:
     }
 
     bool getLoaded() {
-        unique_lock<mutex> lock(m);
         return m_loaded;
     }
 
     bool getSolved(void) {
-        unique_lock<mutex> lock(m);
         return m_solved;
     }
 
     void deliveredSolvingProblem(size_t numSolProblem) {
-        unique_lock<mutex> loop(m);
         m_solvingProblem += numSolProblem;
         if(m_solvingProblem == m_size) {
-//            printf("All problem of pack %zu: solved!\n", m_id);
+//            printf("All problem of pack %zu: solved!\n", m_id.load());
             m_solved = true;
         }
     }
@@ -88,25 +84,25 @@ public:
     }
 
     size_t getFirmId() {
-        unique_lock<mutex> lock(m);
         return m_firmId;
     }
 
 private:
-    size_t m_id;
-    size_t m_firmId;
-    size_t m_size;
-    size_t m_curPos;
-    size_t m_solvingProblem;
-    bool m_solved;
-    bool m_loaded;
+    atomic<size_t> m_id;
+    atomic<size_t> m_firmId;
+    atomic<size_t> m_size;
+    atomic<size_t> m_curPos;
+    atomic<size_t> m_solvingProblem;
+    atomic<bool> m_solved;
+    atomic<bool> m_loaded;
     AProblemPack m_problemPack;
-    mutex m;
 };
 
 class CFirm {
 public:
-    CFirm(size_t id, atomic<bool> &workingFinish, ACompany & company, mutex & mtx, condition_variable & cv) : m_id(id), m_workingFinish(workingFinish), m_company(company), m_mtxOpt(mtx), m_cvOpt(cv) {}
+    CFirm(size_t id, atomic<bool> &workingFinish, ACompany & company, mutex & mtx, condition_variable & cv) : m_id(id), m_workingFinish(workingFinish), m_mtxOpt(mtx), m_cvOpt(cv) {
+        m_company = move(company);
+    }
 
     void createCommunicateTread(queue<shared_ptr<CFirmProblemPack>> &queueProblemPack) {
         m_instThread = thread(&CFirm::instalerThread, this, ref(queueProblemPack));
@@ -137,10 +133,9 @@ private:
 
     mutex & m_mtxOpt;
     mutex m_mtx;
-    mutex mutex_loop;
     condition_variable & m_cvOpt;
     condition_variable m_cv;
-    ACompany &m_company;
+    ACompany m_company;
 
     queue<shared_ptr<CFirmProblemPack>> m_queueSolvedPack;
 
@@ -174,23 +169,20 @@ private:
 
 
             if(m_queueSolvedPack.empty() && m_workingFinish) {
-//                lock.unlock();
+                lock.unlock();
                 break;
             }
 
             while(true) {
 //                printf("\n");
-//                printf("Pack %zu: Delivered!\n\n", m_queueSolvedPack.front()->getPackProblemId());
+//                printf("Pack %zu: of company %zu: Delivered!\n\n", m_queueSolvedPack.front()->getPackProblemId(), m_id);
                 m_company->solvedPack(m_queueSolvedPack.front()->getSolvedPack());
                 m_queueSolvedPack.pop();
 //                printf("Queue size is %zu", m_queueSolvedPack.size());
-                unique_lock<mutex> loop(mutex_loop);
                 if(m_queueSolvedPack.empty() || !(m_queueSolvedPack.front()->getSolved())) {
-//                    lock.unlock();
-                    loop.unlock();
+                    lock.unlock();
                     break;
                 }
-                loop.unlock();
             }
 
             if(m_queueSolvedPack.empty() && m_workingFinish) {
@@ -208,6 +200,7 @@ public:
     }
 
     void addProblem(shared_ptr<CFirmProblemPack> problemPack) {
+//        lock_guard<mutex> lock(m_mtx);
         if(m_containSolver.size() == 0) {
             m_containSolver.push_back({problemPack, 0});
         }
@@ -220,65 +213,75 @@ public:
     }
 
     bool getCapacity() {
-        mutex mtx;
-        unique_lock<mutex> lock(mtx);
+//        lock_guard<mutex> lock(m_mtx);
         return m_solver->hasFreeCapacity();
     }
 
-    void newSolver() {
-        mutex mtx;
-        unique_lock<mutex> lock(mtx);
+//    bool getCapacity(vector<pair<shared_ptr<CFirmProblemPack>, size_t>> &containSolver, AProgtestSolver &solver) {
+//        lock_guard<mutex> lock(m_mtx);
+//        if(!m_solver->hasFreeCapacity()) {
+//            containSolver = m_containSolver;
+//            solver = m_solver;
+//            newSolver();
+//        }
+//        return m_solver->hasFreeCapacity();
+//    }
+
+//    void initContainSolver(vector<pair<shared_ptr<CFirmProblemPack>, size_t>> &containSolver, AProgtestSolver &solver) {
+//        lock_guard<mutex> lock(m_mtx);
+//        if(!m_solver->hasFreeCapacity()) {
+//            containSolver = m_containSolver;
+//            solver = m_solver;
+//            newSolver();
+//        }
+//    }
+
+    AProgtestSolver newSolver(vector<pair<shared_ptr<CFirmProblemPack>, size_t>> &containSolver) {
+//        lock_guard<mutex> lock(m_mtx);
+        AProgtestSolver solver = m_solver;
         m_solver = createProgtestSolver();
+//        if(!m_solver->hasFreeCapacity()) {
+//            printf("\n");
+//            printf("NO CAPACITY IN PROGTEST SOLVER!\n\n");
+//        }
+        containSolver = m_containSolver;
         m_containSolver.clear();
+
+        return solver;
     }
 
-    void clear() {
-        m_containSolver.clear();
-    }
 
     void addProblemPack(shared_ptr<CFirmProblemPack> problemPack) {
-        mutex mtx;
-        unique_lock<mutex> lock(mtx);
+//        lock_guard<mutex> lock(m_mtx);
         m_containSolver.push_back({problemPack, 0});
     }
 
-    vector<pair<shared_ptr<CFirmProblemPack>, size_t>> getContainSolver() {
-        mutex mtx;
-        unique_lock<mutex> loop(mtx);
-        return m_containSolver;
-    }
+//    vector<pair<shared_ptr<CFirmProblemPack>, size_t>> getContainSolver() {
+//        lock_guard<mutex> look(m_mtx);
+//        return m_containSolver;
+//    }
 
-    void deliverSolvingProblem(vector<shared_ptr<CFirm>> &companies,
-                               vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver) {
-        for(size_t i = 0; i < containSolver.size(); ++i) {
-            mutex mtx;
-            unique_lock<mutex> loop(mtx);
-            containSolver[i].first->deliveredSolvingProblem(containSolver[i].second);
-            if(containSolver[i].first->getSolved()) {
-                companies[containSolver[i].first->getFirmId()]->notifyDeliver();
-            }
-            loop.unlock();
-        }
-    }
+//    void deliverSolvingProblem(vector<shared_ptr<CFirm>> &companies,
+//                               vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver) {
+//        for(size_t i = 0; i < containSolver.size(); ++i) {
+//            unique_lock<mutex> loop(m_mtx);
+//            containSolver[i].first->deliveredSolvingProblem(containSolver[i].second);
+//            if(containSolver[i].first->getSolved()) {
+//                companies[containSolver[i].first->getFirmId()]->notifyDeliver();
+//            }
+//            loop.unlock();
+//        }
+//    }
 
-    vector<pair<shared_ptr<CFirmProblemPack>, size_t>> copyContainSolver() {
-        vector<pair<shared_ptr<CFirmProblemPack>, size_t>> newContainSolver;
-        for(size_t i = 0; i < m_containSolver.size(); ++i) {
-            newContainSolver.push_back({m_containSolver[i].first, m_containSolver[i].second});
-        }
-
-        return newContainSolver;
-    }
-
-    AProgtestSolver getSolver() {
-        mutex mtx;
-        unique_lock<mutex> lock(mtx);
-        return m_solver;
-    }
+//    AProgtestSolver getSolver() {
+//        lock_guard<mutex> lock(m_mtx);
+//        return m_solver;
+//    }
 
 private:
     AProgtestSolver m_solver;
     vector<pair<shared_ptr<CFirmProblemPack>, size_t>> m_containSolver;
+//    mutex m_mtx;
 };
 
 class COptimizer
@@ -288,7 +291,7 @@ public:
         m_numOfFirm = 0;
         m_instalFinish = false;
         m_workingFinish = false;
-        m_solver = CSolver();
+        m_solver = shared_ptr<CSolver> (new CSolver());
     }
 
     COptimizer(size_t numOfFirm) {
@@ -304,13 +307,14 @@ public:
     }
 
     void fillingPogtestSolver() {
-        while(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
-            m_solver.addProblem(m_queueProblemPack.front());
+        while(m_solver->getCapacity() && !(m_queueProblemPack.empty())) {
+            m_solver->addProblem(m_queueProblemPack.front());
             if(m_queueProblemPack.front()->getLoaded()) {
                 m_companies[m_queueProblemPack.front()->getFirmId()]->push(m_queueProblemPack.front());
                 m_queueProblemPack.pop();
-                if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
-                    m_solver.addProblemPack(m_queueProblemPack.front());
+//                if(m_solver->getCapacity(containSolver, solver)->hasFreeCapacity() && !(m_queueProblemPack.empty())) {
+                if(m_solver->getCapacity() && !(m_queueProblemPack.empty())) {
+                    m_solver->addProblemPack(m_queueProblemPack.front());
 //                    printf("Start or continue to solving %zu: pack problem\n", m_queueProblemPack.front()->getPackProblemId());
                 }
             }
@@ -321,25 +325,37 @@ public:
     void solvingSpecificProblem(unique_lock<mutex> &lock) {
 
 //        printf("Start or continue to solving %zu: pack problem\n", m_queueProblemPack.front()->getPackProblemId());
+//        vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver;
+//        AProgtestSolver solver;
+        unique_lock<mutex> lk(m_mtx);
         fillingPogtestSolver();
 
-        if(m_solver.getCapacity() && !(m_queueProblemPack.empty())) {
+        if(m_solver->getCapacity() && !(m_queueProblemPack.empty())) {
             lock.unlock();
+            lk.unlock();
             return ;
         }
 
-        vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver = m_solver.getContainSolver();
-//        vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver = m_solver.copyContainSolver();
-        AProgtestSolver solver = m_solver.getSolver();
-        m_solver.newSolver();
+//        m_solver->initContainSolver(containSolver, solver);
+        vector<pair<shared_ptr<CFirmProblemPack>, size_t>> containSolver; //= m_solver->getContainSolver();
+//        AProgtestSolver solver = m_solver->getSolver();
+        AProgtestSolver solver = m_solver->newSolver(containSolver);
         m_cv.notify_one();
 
         lock.unlock();
+        lk.unlock();
         solver->solve();
         lock.lock();
+        lk.lock();
 
 //        printf("Some work solving!\n");
-        m_solver.deliverSolvingProblem(m_companies, containSolver);
+//        m_solver->deliverSolvingProblem(m_companies, containSolver);
+        for(size_t i = 0; i < containSolver.size(); ++i) {
+            containSolver[i].first->deliveredSolvingProblem(containSolver[i].second);
+            if(containSolver[i].first->getSolved()) {
+                m_companies[containSolver[i].first->getFirmId()]->notifyDeliver();
+            }
+        }
     }
 
     void working(int threadNum) {
@@ -354,7 +370,6 @@ public:
 //                    printf("Current queue size is %zu\n", m_queueProblemPack.size());
                     solvingSpecificProblem(lock);
                 }
-
             }
             if (m_queueProblemPack.empty() && m_instalFinish) {
 //                printf("Thread %d: Finish work\n", threadNum);
@@ -378,11 +393,10 @@ public:
         }
     }
 
-    void stop(void) {
+    void stopInstallers(void) {
         for(size_t i = 0; i < m_companies.size(); ++i) {
             m_companies[i]->getInstaler().join();
         }
-
 //        printf("\n");
 //        printf("ALL PROBLEMS ARE INSTALLING!\n\n");
         {
@@ -390,21 +404,32 @@ public:
             m_instalFinish = true;
             m_cv.notify_all();
         }
+    }
+
+    void stopWorkers(void) {
         for(size_t i = 0; i < m_threads.size(); ++i) {
             m_threads[i].join();
         }
-
 //        printf("\n");
 //        printf("ALL WORKERS FINISHED!\n\n");
         m_workingFinish = true;
+    }
 
+    void stopDelivers(void) {
         for(size_t i = 0; i < m_companies.size(); ++i) {
             m_companies[i]->notifyDeliver();
             m_companies[i]->getDelivered().join();
         }
-
 //        printf("\n");
 //        printf("ALL JOB IS FINISHING!\n\n");
+    }
+
+    void stop(void) {
+        stopInstallers();
+
+        stopWorkers();
+
+        stopDelivers();
     }
 
     void addCompany(ACompany company) {
@@ -418,22 +443,24 @@ private:
     atomic<bool> m_workingFinish;
 
     mutex m_mtxInstaler;
+    mutex m_mtx;
     condition_variable m_cv;
-    CSolver m_solver;
+    shared_ptr<CSolver> m_solver;
 
     queue<shared_ptr<CFirmProblemPack>> m_queueProblemPack;
 
     vector<thread> m_threads;
     vector<shared_ptr<CFirm>> m_companies;
 };
-// TODO: COptimizer implementation goes here
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 #ifndef __PROGTEST__
 int main(void) {
     COptimizer optimizer;
     ACompanyTest company = std::make_shared<CCompanyTest> ();
+//    ACompanyTest company2 = std::make_shared<CCompanyTest> ();
     optimizer.addCompany(company);
-    optimizer.start(4);
+//    optimizer.addCompany(company2);
+    optimizer.start(1);
     optimizer.stop();
     if (!company->allProcessed())
         throw std::logic_error("(some) problems were not correctly processsed");
