@@ -20,8 +20,6 @@
 
 using namespace std;
 
-#define K_BUFFER_SIZE 4096
-
 struct crypto_config
 {
 	const char * m_crypto_function;
@@ -33,6 +31,8 @@ struct crypto_config
 
 #endif /* _PROGTEST_ */
 
+#define K_BUFFER_SIZE 4096
+
 bool controlTgaFile(const std::string & filename) {
 
     ifstream inFile(filename, ios::binary);
@@ -40,6 +40,16 @@ bool controlTgaFile(const std::string & filename) {
         cout << "Can't open file " << filename << endl;
         return false;
     }
+
+    // Check file size
+    inFile.seekg(0, ios::end);
+    int fileSize = inFile.tellg();
+    if(fileSize < 18) {
+        cout << "File " << filename << " is too small to be a TGA file" << endl;
+        inFile.close();
+        return false;
+    }
+    inFile.seekg(0, ios::beg);
 
     //Check TGA header
     char headerFile[18];
@@ -50,25 +60,16 @@ bool controlTgaFile(const std::string & filename) {
         return false;
     }
 
-    // Verify the TGA format and header size
-//    if(headerFile[0] != 0 || headerFile[1] != 0 || headerFile[2] != 2) {
-//        cout << "File " << filename << " is not in TGA format" << endl;
-//        inFile.close();
-//        return false;
-//    }
-
-    //Verify pixel depth
-//    if(headerFile[16] != 24 && headerFile[16] != 32) {
-//        cout << "File " << filename << " has unsupported pixel depth " << (int)headerFile[16] << endl;
-//        inFile.close();
-//        return false;
-//    }
-
     inFile.close();
     return true;
 }
 
 bool controlIvCipher(crypto_config & config) {
+    if(config.m_crypto_function == nullptr) {
+        cout << "Invalid crypto_config parameter" << endl;
+        return false;
+    }
+
     const EVP_CIPHER *cipher = EVP_get_cipherbyname(config.m_crypto_function);
     if(cipher == nullptr) {
         cout << "Unknown cipher name" << endl;
@@ -86,7 +87,7 @@ bool controlIvCipher(crypto_config & config) {
             }
         } else {
             //Verify provided IV is correct length
-            if(config.m_IV_len != (size_t)EVP_CIPHER_iv_length(cipher)) {
+            if(config.m_IV_len != static_cast<size_t>(EVP_CIPHER_iv_length(cipher))) {
                 cout << "Invalid IV lenght" << endl;
                 return false;
             }
