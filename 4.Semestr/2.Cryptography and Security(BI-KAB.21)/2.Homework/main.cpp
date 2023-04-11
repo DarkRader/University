@@ -64,7 +64,7 @@ bool controlTgaFile(const std::string & filename) {
     return true;
 }
 
-bool controlIvCipher(crypto_config & config) {
+bool controlIvCipher(crypto_config & config, const char & type) {
     if(config.m_crypto_function == nullptr) {
         cout << "Invalid crypto_config parameter" << endl;
         return false;
@@ -76,27 +76,41 @@ bool controlIvCipher(crypto_config & config) {
         return false;
     }
 
-    if(EVP_CIPHER_iv_length(cipher) > 0) {
-        //Check if IV is provided
-        if(config.m_IV == nullptr) {
-            //Generate a new IV and store it in config
-            config.m_IV.reset(new uint8_t[EVP_CIPHER_iv_length(cipher)]);
-            if(!RAND_bytes(config.m_IV.get(), EVP_CIPHER_iv_length(cipher))) {
+    size_t key_len = EVP_CIPHER_key_length(cipher);
+    size_t IV_len = EVP_CIPHER_iv_length(cipher);
+
+    //Check if key is provided
+    if(config.m_key == nullptr || config.m_key_len < key_len) {
+        if(type == 'e') {
+            //Generate a new key and store it in config
+            config.m_key = make_unique<uint8_t[]>(key_len);
+            if (!RAND_bytes(config.m_key.get(), key_len)) {
+                cout << "Failed to generate random key" << endl;
+                return false;
+            }
+        } else {
+            return false;
+        }
+        config.m_key_len = key_len;
+    }
+
+    //Check if IV is provided
+    if(IV_len > 0 && (config.m_IV == nullptr || config.m_IV_len < IV_len)) {
+        if(type == 'e') {
+            config.m_IV = make_unique<uint8_t[]>(IV_len);
+            if(!RAND_bytes(config.m_IV.get(), IV_len)) {
                 cout << "Failed to generate random IV" << endl;
                 return false;
             }
         } else {
-            //Verify provided IV is correct length
-            if(config.m_IV_len != static_cast<size_t>(EVP_CIPHER_iv_length(cipher))) {
-                cout << "Invalid IV lenght" << endl;
-                return false;
-            }
+            return false;
         }
+        config.m_IV_len = IV_len;
     }
     return true;
 }
 
-bool dataInitialization(const string & in_filename, const string & out_filename, crypto_config & config, ifstream & inFile, ofstream & outFile) {
+bool dataInitialization(const string & in_filename, const string & out_filename, crypto_config & config, ifstream & inFile, ofstream & outFile, const char & type) {
     //Control TGA header and format of file
     if(!controlTgaFile(in_filename)) {
         cout << "Bad TGA file" << endl;
@@ -117,15 +131,20 @@ bool dataInitialization(const string & in_filename, const string & out_filename,
     char header[18];
     inFile.read(header, 18);
     outFile.write(header, 18);
+    if(!outFile.good()) {
+        cout << "Can't writting TGA header to file " << out_filename << endl;
+        outFile.close();
+        return false;
+    }
 
     //If block cipher requires an IV
-    if(!controlIvCipher(config)) {
+    if(!controlIvCipher(config, type)) {
         return false;
     }
     return true;
 }
 
-bool dataEncryptOrDecrypt(const string & in_filename, const string & out_filename, crypto_config & config, ifstream & inFile, ofstream & outFile, const char type) {
+bool dataEncryptOrDecrypt(const string & in_filename, const string & out_filename, crypto_config & config, ifstream & inFile, ofstream & outFile, const char & type) {
     //Prepare the context
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     if(!ctx) {
@@ -170,6 +189,12 @@ bool dataEncryptOrDecrypt(const string & in_filename, const string & out_filenam
         }
 
         outFile.write(reinterpret_cast<char*>(out_buffer), out_length);
+        if(!outFile.good()) {
+            cout << "Can't writting TGA header to file " << out_filename << endl;
+            outFile.close();
+            EVP_CIPHER_CTX_free(ctx);
+            return false;
+        }
     }
 
     //Finalize the decryption context using the EVP_DecryptFinal_ex function
@@ -189,18 +214,24 @@ bool dataEncryptOrDecrypt(const string & in_filename, const string & out_filenam
 
     //Write the final block of decrypted data to the output file
     outFile.write(reinterpret_cast<char*>(out_buffer), out_length);
+    if(!outFile.good()) {
+        cout << "Can't writting TGA header to file " << out_filename << endl;
+        outFile.close();
+        EVP_CIPHER_CTX_free(ctx);
+        return false;
+    }
 
     EVP_CIPHER_CTX_free(ctx);
     return true;
 }
 
-bool encrypt_data ( const std::string & in_filename, const std::string & out_filename, crypto_config & config ) {
+bool encrypt_data (const string & in_filename, const string & out_filename, crypto_config & config) {
 
     ifstream inFile(in_filename, ios::binary);
     ofstream outFile(out_filename, ios::binary | ios::trunc);
 
     //Prepairing data for working and passage through the first checks
-    if(!dataInitialization(in_filename, out_filename, config, inFile, outFile)) {
+    if(!dataInitialization(in_filename, out_filename, config, inFile, outFile, 'e')) {
         return false;
     }
 
@@ -212,13 +243,13 @@ bool encrypt_data ( const std::string & in_filename, const std::string & out_fil
     return true;
 }
 
-bool decrypt_data ( const std::string & in_filename, const std::string & out_filename, crypto_config & config ) {
+bool decrypt_data  const string & in_filename, const string & out_filename, crypto_config & config) {
 
     ifstream inFile(in_filename, ios::binary);
     ofstream outFile(out_filename, ios::binary | ios::trunc);
 
     //Prepairing data for working and passage through the first checks
-    if(!dataInitialization(in_filename, out_filename, config, inFile, outFile)) {
+    if(!dataInitialization(in_filename, out_filename, config, inFile, outFile, 'd')) {
         return false;
     }
 
