@@ -243,7 +243,7 @@ bool encrypt_data (const string & in_filename, const string & out_filename, cryp
     return true;
 }
 
-bool decrypt_data  const string & in_filename, const string & out_filename, crypto_config & config) {
+bool decrypt_data  (const string & in_filename, const string & out_filename, crypto_config & config) {
 
     ifstream inFile(in_filename, ios::binary);
     ofstream outFile(out_filename, ios::binary | ios::trunc);
