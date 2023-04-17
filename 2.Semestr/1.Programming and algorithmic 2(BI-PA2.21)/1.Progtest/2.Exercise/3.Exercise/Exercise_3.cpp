@@ -129,8 +129,7 @@ int main ()
 {
   ostringstream oss;
   oss . str ( "" );
-                    // need to write absolute path to test file
-  assert ( report( "/Users/Artyom_1/University-/2. Semestr/1. Programming and algorithmic 1 (BI-PA2.21)/1. Progtest/2. Exercise/3. Exercise/tests/test0_in.txt", oss ) == true );
+  assert ( report( "tests/test0_in.txt", oss ) == true );
   assert ( oss . str () ==
     "John Christescu 258452362\n"
     "John Harmson 861647702\n"
@@ -142,9 +141,9 @@ int main ()
     "John Harmson 861647702\n"
     "-> 1\n" );
   oss . str ( "" );
-  assert ( report( "/Users/Artyom_1/University-/2. Semestr/1. Programming and algorithmic 1 (BI-PA2.21)/1. Progtest/2. Exercise/3. Exercise/tests/test1_in.txt", oss ) == false );
+  assert ( report( "tests/test1_in.txt", oss ) == false );
   oss . str ( "" );
-  assert ( report( "/Users/Artyom_1/University-/2. Semestr/1. Programming and algorithmic 1 (BI-PA2.21)/1. Progtest/2. Exercise/3. Exercise/tests/test2_in.txt", oss ) == true );
+  assert ( report( "tests/test2_in.txt", oss ) == true );
   assert ( oss . str () ==
     "Carly Johnson 355562144\n"
     "-> 1\n"
