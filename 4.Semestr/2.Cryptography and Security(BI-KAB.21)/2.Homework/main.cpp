@@ -302,29 +302,29 @@ int main ( void )
  	memset(config.m_key.get(), 0, 16);
 	config.m_key_len = 16;
 
-	assert( encrypt_data  ("homer-simpson.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "homer-simpson_enc_ecb.TGA") );
+	assert( encrypt_data  ("tests/homer-simpson.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/homer-simpson_enc_ecb.TGA") );
 
-	assert( decrypt_data  ("homer-simpson_enc_ecb.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "homer-simpson.TGA") );
+	assert( decrypt_data  ("tests/homer-simpson_enc_ecb.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/homer-simpson.TGA") );
 
-	assert( encrypt_data  ("UCM8.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "UCM8_enc_ecb.TGA") );
+	assert( encrypt_data  ("tests/UCM8.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/UCM8_enc_ecb.TGA") );
 
-	assert( decrypt_data  ("UCM8_enc_ecb.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "UCM8.TGA") );
+	assert( decrypt_data  ("tests/UCM8_enc_ecb.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/UCM8.TGA") );
 
-	assert( encrypt_data  ("image_1.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "ref_1_enc_ecb.TGA") );
+	assert( encrypt_data  ("tests/image_1.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/ref_1_enc_ecb.TGA") );
 
-	assert( encrypt_data  ("image_2.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "ref_2_enc_ecb.TGA") );
+	assert( encrypt_data  ("tests/image_2.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/ref_2_enc_ecb.TGA") );
 
-	assert( decrypt_data ("image_3_enc_ecb.TGA", "out_file.TGA", config)  &&
-		    compare_files("out_file.TGA", "ref_3_dec_ecb.TGA") );
+	assert( decrypt_data ("tests/image_3_enc_ecb.TGA", "tests/out_file.TGA", config)  &&
+		    compare_files("tests/out_file.TGA", "tests/ref_3_dec_ecb.TGA") );
 
-	assert( decrypt_data ("image_4_enc_ecb.TGA", "out_file.TGA", config)  &&
-		    compare_files("out_file.TGA", "ref_4_dec_ecb.TGA") );
+	assert( decrypt_data ("tests/image_4_enc_ecb.TGA", "tests/out_file.TGA", config)  &&
+		    compare_files("tests/out_file.TGA", "tests/ref_4_dec_ecb.TGA") );
 
 	// CBC mode
 	config.m_crypto_function = "AES-128-CBC";
@@ -332,29 +332,29 @@ int main ( void )
 	config.m_IV_len = 16;
 	memset(config.m_IV.get(), 0, 16);
 
-	assert( encrypt_data  ("UCM8.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "UCM8_enc_cbc.TGA") );
+	assert( encrypt_data  ("tests/UCM8.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/UCM8_enc_cbc.TGA") );
 
-	assert( decrypt_data  ("UCM8_enc_cbc.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "UCM8.TGA") );
+	assert( decrypt_data  ("tests/UCM8_enc_cbc.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/UCM8.TGA") );
 
-	assert( encrypt_data  ("homer-simpson.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "homer-simpson_enc_cbc.TGA") );
+	assert( encrypt_data  ("tests/homer-simpson.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/homer-simpson_enc_cbc.TGA") );
 
-	assert( decrypt_data  ("homer-simpson_enc_cbc.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "homer-simpson.TGA") );
+	assert( decrypt_data  ("tests/homer-simpson_enc_cbc.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/homer-simpson.TGA") );
 
-	assert( encrypt_data  ("image_1.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "ref_5_enc_cbc.TGA") );
+	assert( encrypt_data  ("tests/image_1.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/ref_5_enc_cbc.TGA") );
 
-	assert( encrypt_data  ("image_2.TGA", "out_file.TGA", config) &&
-			compare_files ("out_file.TGA", "ref_6_enc_cbc.TGA") );
+	assert( encrypt_data  ("tests/image_2.TGA", "tests/out_file.TGA", config) &&
+			compare_files ("tests/out_file.TGA", "tests/ref_6_enc_cbc.TGA") );
 
-	assert( decrypt_data ("image_7_enc_cbc.TGA", "out_file.TGA", config)  &&
-		    compare_files("out_file.TGA", "ref_7_dec_cbc.TGA") );
+	assert( decrypt_data ("tests/image_7_enc_cbc.TGA", "tests/out_file.TGA", config)  &&
+		    compare_files("tests/out_file.TGA", "tests/ref_7_dec_cbc.TGA") );
 
-	assert( decrypt_data ("image_8_enc_cbc.TGA", "out_file.TGA", config)  &&
-		    compare_files("out_file.TGA", "ref_8_dec_cbc.TGA") );
+	assert( decrypt_data ("tests/image_8_enc_cbc.TGA", "tests/out_file.TGA", config)  &&
+		    compare_files("tests/out_file.TGA", "tests/ref_8_dec_cbc.TGA") );
 	return 0;
 }
 
