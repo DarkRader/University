@@ -30,6 +30,10 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+### CLion ###
+cmake-build-debug
+CMakeLists.txt
+
 ### IntelliJ IDEA ###
 .idea
 .idea/workspace.xml
