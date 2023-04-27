@@ -8,26 +8,110 @@
 using namespace std;
 #endif /* __PROGTEST__ */
 
-void   HeapInit    ( void * memPool, int memSize )
-{
-    /* todo */
+struct BlockHeader {
+    uint32_t size;
+    bool free;
+};
+
+void * heapStart = nullptr;
+void * heapEnd = nullptr;
+
+void HeapInit(void * memPool, int memSize) {
+    auto * header = static_cast<BlockHeader*>(memPool);
+    header->size = memSize - sizeof(BlockHeader);
+    header->free = true;
+
+    heapStart = memPool;
+    heapEnd = static_cast<uint8_t*>(memPool) + memSize;
 }
-void * HeapAlloc   ( int    size )
-{
-    /* todo */
+
+void * HeapAlloc(int size) {
+    const int kBlockSize = sizeof(BlockHeader);
+    const uint32_t kTotalSize = kBlockSize + size;
+    auto * currentBlock = reinterpret_cast<BlockHeader*>(heapStart);
+
+    if(size <= 0 || kTotalSize <= 0) {
+        return nullptr;
+    }
+
+    if(heapStart == nullptr || heapEnd == nullptr || heapEnd <= heapStart) {
+        return nullptr;
+    }
+
+    while (currentBlock != nullptr) {
+        if (reinterpret_cast<uint8_t*>(currentBlock) + kTotalSize >= heapEnd) {
+            return nullptr;
+        }
+
+        if (currentBlock->free && currentBlock->size >= kTotalSize + kBlockSize) {
+            if (currentBlock->size > kTotalSize + kBlockSize) {
+                auto * nextBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + kTotalSize);
+                nextBlock->size = currentBlock->size - kTotalSize;
+                nextBlock->free = true;
+                currentBlock->size = size;
+                currentBlock->free = false;
+                return reinterpret_cast<uint8_t*>(currentBlock) + kBlockSize;
+            } else {
+                currentBlock->free = false;
+                return reinterpret_cast<uint8_t*>(currentBlock) + kBlockSize;
+            }
+        }
+
+        currentBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + currentBlock->size + kBlockSize);
+    }
+
+    return nullptr;
 }
-bool   HeapFree    ( void * blk )
-{
-    /* todo */
+
+bool HeapFree(void * blk) {
+    if (blk < heapStart || blk >= heapEnd || heapStart == nullptr) {
+        return false;
+    }
+
+    auto * currentBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(blk) - sizeof(BlockHeader));
+
+    if(currentBlock == nullptr || currentBlock->size == 0 || currentBlock->free) {
+        return false;
+    }
+
+    currentBlock->free = true;
+
+    auto * nextBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + currentBlock->size + sizeof(BlockHeader));
+
+    if (nextBlock < heapEnd && nextBlock->free) {
+        currentBlock->size += nextBlock->size + sizeof(BlockHeader);
+    }
+
+    auto * prevBlock = reinterpret_cast<BlockHeader*>(heapStart);
+
+    while (prevBlock < currentBlock && prevBlock->free &&
+           reinterpret_cast<uint8_t*>(prevBlock) + prevBlock->size + sizeof(BlockHeader) < reinterpret_cast<uint8_t*>(currentBlock)) {
+        prevBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(prevBlock) + prevBlock->size + sizeof(BlockHeader));
+    }
+
+    if (prevBlock != currentBlock && prevBlock->free) {
+        prevBlock->size += currentBlock->size + sizeof(BlockHeader);
+        currentBlock = prevBlock;
+    }
+
+    return true;
 }
-void   HeapDone    ( int  * pendingBlk )
-{
-    /* todo */
+
+void HeapDone(int * pendingBlk) {
+    int numPendingBlk = 0;
+    auto * p = reinterpret_cast<uint8_t*>(heapStart);
+    while (p < reinterpret_cast<uint8_t*>(heapEnd)) {
+        auto * header = reinterpret_cast<BlockHeader*>(p);
+        if (!header->free) {
+            numPendingBlk++;
+        }
+        p += header->size + sizeof(BlockHeader);
+    }
+    *pendingBlk = numPendingBlk;
 }
 
 #ifndef __PROGTEST__
-int main ( void )
-{
+int main(void) {
     uint8_t       * p0, *p1, *p2, *p3, *p4;
     int             pendingBlk;
     static uint8_t  memPool[3 * 1048576];
