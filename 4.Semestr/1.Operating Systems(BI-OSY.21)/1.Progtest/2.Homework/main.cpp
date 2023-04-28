@@ -13,12 +13,14 @@ struct BlockHeader {
     bool free;
 };
 
+static const size_t kMinBlockSize = sizeof(BlockHeader);
+
 void * heapStart = nullptr;
 void * heapEnd = nullptr;
 
 void HeapInit(void * memPool, int memSize) {
     auto * header = static_cast<BlockHeader*>(memPool);
-    header->size = memSize - sizeof(BlockHeader);
+    header->size = memSize - kMinBlockSize;
     header->free = true;
 
     heapStart = memPool;
@@ -26,9 +28,9 @@ void HeapInit(void * memPool, int memSize) {
 }
 
 void * HeapAlloc(int size) {
-    const int kBlockSize = sizeof(BlockHeader);
-    const uint32_t kTotalSize = kBlockSize + size;
+    const uint32_t kTotalSize = kMinBlockSize + size;
     auto * currentBlock = reinterpret_cast<BlockHeader*>(heapStart);
+    BlockHeader * bestBlock = nullptr;
 
     if(size <= 0 || kTotalSize <= 0) {
         return nullptr;
@@ -43,21 +45,25 @@ void * HeapAlloc(int size) {
             return nullptr;
         }
 
-        if (currentBlock->free && currentBlock->size >= kTotalSize + kBlockSize) {
-            if (currentBlock->size > kTotalSize + kBlockSize) {
+        if (reinterpret_cast<uint8_t*>(currentBlock) >= heapEnd) {
+            return nullptr;
+        }
+
+        if (currentBlock->free && currentBlock->size >= kTotalSize) {
+            if (currentBlock->size > kTotalSize) {
                 auto * nextBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + kTotalSize);
                 nextBlock->size = currentBlock->size - kTotalSize;
                 nextBlock->free = true;
                 currentBlock->size = size;
                 currentBlock->free = false;
-                return reinterpret_cast<uint8_t*>(currentBlock) + kBlockSize;
+                return reinterpret_cast<uint8_t*>(currentBlock) + kMinBlockSize;
             } else {
                 currentBlock->free = false;
-                return reinterpret_cast<uint8_t*>(currentBlock) + kBlockSize;
+                return reinterpret_cast<uint8_t*>(currentBlock) + kMinBlockSize;
             }
         }
 
-        currentBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + currentBlock->size + kBlockSize);
+        currentBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + currentBlock->size + kMinBlockSize);
     }
 
     return nullptr;
@@ -68,7 +74,7 @@ bool HeapFree(void * blk) {
         return false;
     }
 
-    auto * currentBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(blk) - sizeof(BlockHeader));
+    auto * currentBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(blk) - kMinBlockSize);
 
     if(currentBlock == nullptr || currentBlock->size == 0 || currentBlock->free) {
         return false;
@@ -86,12 +92,17 @@ bool HeapFree(void * blk) {
 
     while (prevBlock < currentBlock && prevBlock->free &&
            reinterpret_cast<uint8_t*>(prevBlock) + prevBlock->size + sizeof(BlockHeader) < reinterpret_cast<uint8_t*>(currentBlock)) {
-        prevBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(prevBlock) + prevBlock->size + sizeof(BlockHeader));
+        prevBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(prevBlock) + prevBlock->size + kMinBlockSize);
     }
 
     if (prevBlock != currentBlock && prevBlock->free) {
-        prevBlock->size += currentBlock->size + sizeof(BlockHeader);
+        prevBlock->size += currentBlock->size + kMinBlockSize;
         currentBlock = prevBlock;
+    }
+
+    auto * nextNextBlock = reinterpret_cast<BlockHeader*>(reinterpret_cast<uint8_t*>(currentBlock) + currentBlock->size + sizeof(BlockHeader));
+    if (nextNextBlock < heapEnd && nextNextBlock->free) {
+        currentBlock->size += nextNextBlock->size + sizeof(BlockHeader);
     }
 
     return true;
