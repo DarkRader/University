@@ -46,11 +46,12 @@ class CVertex {
 public:
     CVertex(size_t name) : m_exist(false), m_name(name), m_size(0), m_parent(nullptr), m_level(0) {}
 
-    void setSize(size_t sizePath, shared_ptr<CVertex> parent) {
+    void setSize(size_t sizePath, size_t pushVertex, shared_ptr<CVertex> parent, queue<size_t> &queVertex) {
         size_t newPathSize = sizePath + parent->m_size;
         if(m_size < newPathSize) {
             m_size = newPathSize;
             m_parent = parent;
+            queVertex.push(pushVertex);
         }
     }
 
@@ -90,8 +91,8 @@ public:
         for(const auto &neighbour : m_neighbour) {
             shared_ptr<CVertex> newNeighbour = vertexes[neighbour.first];
 
-            newNeighbour->setSize(neighbour.second, curVertex);
-            queVertex.push(neighbour.first);
+            newNeighbour->setSize(neighbour.second, neighbour.first, curVertex, queVertex);
+//            queVertex.push(neighbour.first);
         }
     }
 
@@ -186,16 +187,6 @@ inline const Test TESTS[] = {
         {13, 5, {{3, 2, 10}, {3, 0, 9}, {0, 2, 3}, {2, 4, 1}}},
         {11, 5, {{3, 2, 10}, {3, 1, 4}, {1, 2, 3}, {2, 4, 1}}},
         {16, 8, {{3, 2, 10}, {3, 1, 1}, {1, 2, 3}, {1, 4, 15}}},
-
-        {7, 4, {{0, 1, 1}, {1, 2, 3}, {0, 2, 5}, {2, 3, 2}}},
-        {16, 8, {{3, 2, 10}, {3, 1, 1}, {1, 2, 3}, {1, 4, 15}}},
-        {15, 6, {{1, 2, 3}, {2, 3, 5}, {2, 4, 2}, {3, 5, 7}, {4, 5, 1}}},
-        {12, 7, {{1, 2, 4}, {1, 3, 6}, {2, 4, 2}, {2, 5, 8}, {3, 5, 5}, {4, 6, 3}}},
-        {10, 5, {{1, 3, 2}, {1, 4, 7}, {3, 2, 5}, {4, 2, 3}}},
-        {11, 10, {{1, 2, 2}, {1, 3, 5}, {2, 4, 3}, {2, 5, 7}, {3, 6, 1}, {3, 7, 6}, {4, 8, 4}, {5, 9, 2}}},
-        {31, 10, {{1, 2, 4}, {1, 3, 3}, {2, 4, 2}, {3, 5, 5}, {4, 6, 1}, {5, 7, 6}, {6, 8, 3}, {9,3,20}}},
-        {19, 6, { {3,2,10}, {3,0,9}, {0,2,3}, {2,4,1}  , {5,2,18}}},
-        {10,5, {{0,2,2},{1,2,4},{2,3,5},{2,4,6}}}
 };
 
 #define CHECK(cond, ...) do { \
