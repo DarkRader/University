@@ -1,25 +1,12 @@
 #ifndef __PROGTEST__
 
 #include <algorithm>
-#include <array>
 #include <bitset>
-#include <cassert>
-#include <cstdint>
-#include <deque>
 #include <iomanip>
-#include <iostream>
-#include <limits>
 #include <list>
 #include <map>
 #include <memory>
-#include <optional>
 #include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <type_traits>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 enum Point : size_t {
@@ -42,135 +29,96 @@ struct Path {
 
 using namespace std;
 
-class CVertex {
-public:
-    CVertex(size_t name) : m_exist(false), m_name(name), m_size(0), m_parent(nullptr), m_level(0) {}
-
-    void setSize(size_t sizePath, size_t pushVertex, shared_ptr<CVertex> parent, queue<size_t> &queVertex) {
-        size_t newPathSize = sizePath + parent->m_size;
-        if(m_size < newPathSize) {
-            m_size = newPathSize;
-            m_parent = parent;
-            queVertex.push(pushVertex);
-        }
-    }
-
-    void setExist(bool exist) {
-        m_exist = exist;
-    }
-
-    void incLevel() {
-        m_level++;
-    }
-
-    bool getExist() const {
-        return m_exist;
-    }
-
-    size_t getLevel() const {
-        return m_level;
-    }
-
-    shared_ptr<CVertex> getParent() {
-        return m_parent;
-    }
-
-    size_t getName() const {
-        return m_name;
-    }
-
-    unsigned getSize() const {
-        return m_size;
-    }
-
-    void addNeighbour(size_t neighbour, size_t sizePath) {
-        m_neighbour.push_back(make_pair(neighbour, sizePath));
-    }
-
-    void addNeighboursInQue(queue<size_t> &queVertex, vector<shared_ptr<CVertex>> &vertexes, const shared_ptr<CVertex> &curVertex) {
-        for(const auto &neighbour : m_neighbour) {
-            shared_ptr<CVertex> newNeighbour = vertexes[neighbour.first];
-
-            newNeighbour->setSize(neighbour.second, neighbour.first, curVertex, queVertex);
-//            queVertex.push(neighbour.first);
-        }
-    }
-
-
-private:
-    bool m_exist;
-    size_t m_name;
+struct CVertex {
+    int m_name;
     vector<pair<size_t, size_t>> m_neighbour;
-    size_t m_size;
-    shared_ptr<CVertex> m_parent;
+    unsigned m_size;
+    int m_parent = -1;
     size_t m_level;
+    bool m_exist;
 };
 
-queue<size_t> findSource(const vector<Path> &all_paths, vector<shared_ptr<CVertex>> &vertexInfo) {
-    queue<size_t> queSource;
+void compareParentNeighbours(vector<CVertex> &vertexes, CVertex &curVertex) {
+    for(const auto &neighbour : curVertex.m_neighbour) {
+        CVertex newNeighbour = vertexes[neighbour.first];
 
-    for(const auto &path : all_paths) {
-        shared_ptr<CVertex> curVertex = vertexInfo[path.from];
-        curVertex->setExist(true);
-
-        curVertex->addNeighbour(path.to, path.length);
-
-        shared_ptr<CVertex> toVertex = vertexInfo[path.to];
-        toVertex->setExist(true);
-
-        toVertex->incLevel();
-    }
-
-    for(auto &element : vertexInfo) {
-        if (element->getLevel() == 0 && element->getExist()) {
-            queSource.push(element->getName());
+        size_t newPathSize = neighbour.second + curVertex.m_size;
+        if(newNeighbour.m_size < newPathSize) {
+            vertexes[newNeighbour.m_name].m_size = newPathSize;
+            vertexes[newNeighbour.m_name].m_parent = curVertex.m_name;
         }
     }
-
-    return queSource;
 }
 
-std::vector<Path> trackRecovery(shared_ptr<CVertex> vertex) {
-    vector<Path> path;
-    shared_ptr<CVertex> curVertex = std::move(vertex);
-    while(curVertex->getParent() != nullptr) {
-        Path tmpPath = {curVertex->getParent()->getName(), curVertex->getName(),
-                        curVertex->getSize() - curVertex->getParent()->getSize()};
-        path.push_back(tmpPath);
-        curVertex = curVertex->getParent();
-    }
-    reverse(path.begin(), path.end());
+void findSource(const vector<Path> &all_paths, vector<CVertex> &vertexInfo, queue<size_t> &que) {
+    for(const auto &path : all_paths) {
+        if(!vertexInfo[path.from].m_exist) {
+            vertexInfo[path.from].m_name = path.from;
+            vertexInfo[path.from].m_exist = true;
+        }
+        vertexInfo[path.from].m_neighbour.emplace_back(path.to, path.length);
 
+        if(!vertexInfo[path.to].m_exist) {
+            vertexInfo[path.to].m_name = path.to;
+            vertexInfo[path.to].m_exist = true;
+        }
+        vertexInfo[path.to].m_level++;
+    }
+
+    for(size_t i = 0; i < vertexInfo.size(); i++) {
+        if (vertexInfo[i].m_exist && vertexInfo[i].m_level == 0) {
+            que.push(i);
+        }
+    }
+}
+
+void topSort(const vector<Path> &all_paths, vector<CVertex> &vertexInfo, vector<size_t> &result) {
+
+    queue<size_t> que;
+    findSource(all_paths, vertexInfo, que);
+
+    while (!que.empty()) {
+        size_t curVertex = que.front();
+        que.pop();
+        result.push_back(curVertex);
+
+        for (const auto& edge : vertexInfo[curVertex].m_neighbour) {
+            vertexInfo[edge.first].m_level--;
+            if(vertexInfo[edge.first].m_level == 0) {
+                que.push(edge.first);
+            }
+        }
+    }
+}
+
+vector<Path> trackRecovery(CVertex &vertex, vector<CVertex> &vertexInfo) {
+    vector<Path> path;
+    CVertex curVertex = std::move(vertex);
+    while(curVertex.m_parent != -1) {
+        Path tmpPath = {static_cast<size_t>(curVertex.m_parent), static_cast<size_t>(curVertex.m_name),
+                        curVertex.m_size - vertexInfo[curVertex.m_parent].m_size};
+        path.insert(path.begin(), tmpPath);
+        curVertex = vertexInfo[curVertex.m_parent];
+    }
     return path;
 }
 
 std::vector<Path> longest_track(size_t points, const std::vector<Path> &all_paths) {
     // vector for path
     vector<Path> path;
-    vector<shared_ptr<CVertex>> vertexes;
-    for(size_t i = 0; i < points; i++) {
-        vertexes.push_back(make_shared<CVertex>(i));
-    }
-    queue<size_t> que = findSource(all_paths, vertexes);
-    shared_ptr<CVertex> maxVertex = vertexes[que.front()];
+    vector<CVertex> vertexes(points);
 
-    while(!que.empty()) {
-        shared_ptr<CVertex> curVertex = vertexes[que.front()];
-        que.pop();
+    vector<size_t> result;
+    topSort(all_paths, vertexes, result);
+    CVertex maxVertex = vertexes[result[0]];
 
-        curVertex->addNeighboursInQue(que, vertexes, curVertex);
-
-        if(maxVertex->getSize() < curVertex->getSize()) {
-            maxVertex = curVertex;
+    for(const auto &vertex : result) {
+        compareParentNeighbours(vertexes, vertexes[vertex]);
+        if(maxVertex.m_size < vertexes[vertex].m_size) {
+            maxVertex = vertexes[vertex];
         }
-
-        if(que.empty()) {
-            path = trackRecovery(maxVertex);
-        }
-
     }
-
-    return path;
+    return trackRecovery(maxVertex, vertexes);
 }
 
 
