@@ -21,20 +21,303 @@
 
 #endif
 
+using namespace std;
+
+class CTree {
+protected:
+    class CNode;
+public:
+    CTree(void) = default;
+    ~CTree(void) {
+        delete m_root;
+//        for (CNode* node : m_lines) {
+//            delete node;
+//        }
+    }
+
+    CNode * getRoot(void) const {
+        return m_root;
+    }
+
+//    vector<CNode*> getLines(void) const {
+//        return m_lines;
+//    }
+
+    size_t getSizeSubTree(CNode * node) const {
+        if(node != nullptr) {
+            return node->m_subTreeSize;
+        }
+        return 0;
+    }
+
+    int getDepthSize(CNode * node) const {
+        if(node != nullptr) {
+            return node->m_depth;
+        }
+        return 0;
+    }
+
+    int maxDepth(CNode * leftNode, CNode * rightNode) {
+        if(getDepthSize(leftNode) < getDepthSize(rightNode)) {
+            return getDepthSize(rightNode);
+        } else {
+            return getDepthSize(leftNode);
+        }
+    }
+
+    char findSymbol(CNode * node, size_t ind) const {
+        char symbol;
+        if((node->m_L == nullptr && ind == 0) || (node->m_L && ind == node->m_L->m_subTreeSize)) {
+            return node->m_key;
+        } else if(node->m_L && ind < node->m_L->m_subTreeSize) {
+            symbol = findSymbol(node->m_L, ind);
+        } else if(node->m_R) {
+            if(node->m_L) {
+                symbol = findSymbol(node->m_R, ind - node->m_L->m_subTreeSize - 1);
+            } else {
+                symbol = findSymbol(node->m_R, ind - 1);
+            }
+        }
+        return symbol;
+    }
+
+    char edit(CNode * node, size_t ind, char toChange) {
+        char symbol;
+        if((node->m_L == nullptr && ind == 0) || (node->m_L && ind == node->m_L->m_subTreeSize)) {
+            symbol = node->m_key;
+            node->m_key = toChange;
+            return symbol;
+        } else if(node->m_L && ind < node->m_L->m_subTreeSize) {
+            symbol = edit(node->m_L, ind, toChange);
+        } else if(node->m_R) {
+            if(node->m_L) {
+                symbol = edit(node->m_R, ind - node->m_L->m_subTreeSize - 1, toChange);
+            } else {
+                symbol = edit(node->m_R, ind - 1, toChange);
+            }
+        }
+        return symbol;
+    }
+
+    CNode * prepInsert(char key, size_t ind, bool isInsert) {
+        if(isInsert == true) {
+            m_root = insert(m_root, key, ind);
+        } else {
+            m_root = del(m_root, key, ind);
+        }
+    }
+
+    CNode * del(CNode * node, char key, size_t ind) {
+        if(node == nullptr) {
+            return nullptr;
+        }
+    }
+
+    CNode * insert(CNode * node, char key, size_t ind) {
+        if(node == nullptr) {
+            node = new CNode(key);
+            node->m_depth = 1;
+            node->m_subTreeSize++;
+            return node;
+        }
+
+        if(ind == 0) {
+            node->m_subTreeSize++;
+            node->m_L = insert(node->m_L, key, ind);
+            node->m_depth = maxDepth(node->m_L, node->m_R) + 1;
+            node = rotationTree(node);
+        } else if (node->m_L && ind == node->m_L->m_subTreeSize) {
+            node->m_subTreeSize++;
+            CNode* newNode = new CNode(key);
+            newNode->m_L = node->m_L;
+            node->m_L = newNode;
+            newNode->m_subTreeSize = newNode->m_L->m_subTreeSize + 1;
+            newNode->m_depth = maxDepth(newNode->m_L, newNode->m_R) + 1;
+//            newNode = rotationTree(newNode);
+        } else if((node->m_L == nullptr && ind < node->m_subTreeSize) || (node->m_L && ind < node->m_L->m_subTreeSize)) {
+            node->m_subTreeSize++;
+            node->m_L = insert(node->m_L, key, ind);
+            node->m_depth = maxDepth(node->m_L, node->m_R) + 1;
+            node = rotationTree(node);
+        } else if ((node->m_R == nullptr && ind > node->m_subTreeSize - 1) || (node->m_R && ind > node->m_R->m_subTreeSize - 1)) {
+            node->m_subTreeSize++;
+            if(node->m_L) {
+                node->m_R = insert(node->m_R, key, ind - node->m_L->m_subTreeSize - 1);
+            } else {
+                node->m_R = insert(node->m_R, key, ind - 1);
+            }
+            node->m_depth = maxDepth(node->m_L, node->m_R) + 1;
+            node = rotationTree(node);
+        }
+        
+        return node;
+    }
+
+    CNode * rotationTree(CNode * node) {
+        if(2 <= getDepthSize(node->m_R) - getDepthSize(node->m_L)) {
+            if(0 > getDepthSize(node->m_R->m_R) - getDepthSize(node->m_R->m_L)) {
+                node->m_R = rotateRight(node->m_R);
+            }
+            node = rotateLeft(node);
+        } else if(-2 >= getDepthSize(node->m_R) - getDepthSize(node->m_L)) {
+            if(0 < getDepthSize(node->m_L->m_R) - getDepthSize(node->m_L->m_L)) {
+                node->m_L = rotateLeft(node->m_L);
+            }
+            node = rotateRight(node);
+        }
+        return node;
+    }
+
+    CNode * rotateLeft(CNode * node) {
+        CNode * rotateNode = node->m_R;
+        node->m_R = rotateNode->m_L;
+        rotateNode->m_L = node;
+        node->m_depth = maxDepth(node->m_L, node->m_R) + 1;
+        node->m_subTreeSize = getSizeSubTree(node->m_L) + getSizeSubTree(node->m_R) + 1;
+        rotateNode->m_depth = maxDepth(rotateNode->m_R, node) + 1;
+        rotateNode->m_subTreeSize = getSizeSubTree(rotateNode->m_L) + getSizeSubTree(rotateNode->m_R) + 1;
+        return rotateNode;
+    }
+
+    CNode * rotateRight(CNode * node) {
+        CNode * rotateNode = node->m_L;
+        node->m_L = rotateNode->m_R;
+        rotateNode->m_R = node;
+        node->m_depth = maxDepth(node->m_L, node->m_R) + 1;
+        node->m_subTreeSize = getSizeSubTree(node->m_L) + getSizeSubTree(node->m_R) + 1;
+        rotateNode->m_depth = maxDepth(rotateNode->m_L, node) + 1;
+        rotateNode->m_subTreeSize = getSizeSubTree(rotateNode->m_L) + getSizeSubTree(rotateNode->m_R) + 1;
+        return rotateNode;
+    }
+
+protected:
+
+    class CNode {
+    public:
+        CNode(void) {}
+        ~CNode(void) {
+            delete m_L;
+            delete m_R;
+        }
+
+        CNode(char key) {
+            m_key = key;
+        }
+
+        int m_depth = 0;
+        size_t m_subTreeSize = 0;
+        char m_key;
+        CNode * m_L = nullptr;
+        CNode * m_R = nullptr;
+    };
+//    vector<CNode*> m_lines;
+    CNode * m_root = nullptr;
+};
+
 struct TextEditorBackend {
-    TextEditorBackend(const std::string& text);
+    CTree tree;
+    int m_lines = 0;
+    vector<size_t> vecLines;
 
-    size_t size() const;
-    size_t lines() const;
+    TextEditorBackend(const std::string& text) {
+        for(size_t i = 0; i < text.size(); i++) {
+            insert(i, text[i]);
+        }
+    }
 
-    char at(size_t i) const;
-    void edit(size_t i, char c);
-    void insert(size_t i, char c);
-    void erase(size_t i);
+    size_t size() const {
+        return tree.getSizeSubTree(tree.getRoot());
+    }
 
-    size_t line_start(size_t r) const;
-    size_t line_length(size_t r) const;
-    size_t char_to_line(size_t i) const;
+    size_t lines() const {
+        return vecLines.size() + 1;
+    }
+
+    char at(size_t i) const {
+        if(i < 0 || i > size()) {
+            throw std:: out_of_range("out of range in at");
+        }
+        return tree.findSymbol(tree.getRoot(), i);
+    }
+
+    void edit(size_t i, char c) {
+        if(i < 0 || i > size()) {
+            throw std:: out_of_range("out of range in edit");
+        }
+        if(tree.edit(tree.getRoot(), i, c) == '\n') {
+            for(size_t t = 0; t < vecLines.size(); t++) {
+                if(vecLines[t] == i) {
+                    vecLines.erase(vecLines.begin() + t);
+                }
+            }
+        }
+    }
+    void insert(size_t i, char c) {
+        tree.prepInsert(c, i, true);
+        if(c == '\n') {
+            m_lines++;
+            vecLines.push_back(i);
+        }
+    }
+
+    void erase(size_t i) {
+    }
+
+    size_t line_start(size_t r) const {
+        if(r < 0 || r > vecLines.size()) {
+            throw std:: out_of_range("out of range in line start");
+        }
+
+        if(r == 0) {
+            return 0;
+        } else if(vecLines.size() == r) {
+            return vecLines[r - 1] + 1;
+        } else {
+            return vecLines[r - 1] + 1;
+        }
+
+        return 0;
+    }
+
+    size_t line_length(size_t r) const {
+        if(r < 0 || r > vecLines.size()) {
+            throw std:: out_of_range("out of range in line length");
+        }
+
+        if(r == 0) {
+            if(vecLines.size() == 0) {
+                return size();
+            } else {
+                return vecLines[r] + 1;
+            }
+        } else if(vecLines.size() == r) {
+            return size() - vecLines[r - 1] - 1;
+        } else {
+            return vecLines[r] - vecLines[r - 1];
+        }
+
+        return 0;
+    }
+
+    size_t char_to_line(size_t i) const {
+        if(i < 0 || i > size()) {
+            throw std:: out_of_range("out of range in char to line");
+        }
+
+        for(size_t t = 0; t < vecLines.size(); t++) {
+            if(vecLines[t] == i) {
+                return t;
+            }
+            if(i < vecLines[t]) {
+                return t;
+            }
+            if(vecLines.size() == t + 1 && i > vecLines[t]) {
+                return t + 1;
+            }
+        }
+
+        return 0;
+    }
 };
 
 #ifndef __PROGTEST__
