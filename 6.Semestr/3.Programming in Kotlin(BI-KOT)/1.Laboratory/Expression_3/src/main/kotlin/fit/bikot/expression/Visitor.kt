@@ -13,7 +13,7 @@ class PostFix : Visitor {
     }
 
     override fun visit(il: UnOp) {
-        il.e.accept(this)
+        il.oprnd.accept(this)
         buffer.append(" ${il.op.symbol}")
     }
 
@@ -24,3 +24,4 @@ class PostFix : Visitor {
     }
 
 }
+
