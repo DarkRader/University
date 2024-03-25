@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tweenapp</string>
+    <string name="my_wall">My wall</string>
+    <string name="loading">loading</string>
+</resources>
