@@ -16,22 +16,35 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cz.cvut.fit.kuznear1.rickmortyapp.BottomBar
+import cz.cvut.fit.kuznear1.rickmortyapp.ui.BottomBar
 import cz.cvut.fit.kuznear1.rickmortyapp.R
 import cz.cvut.fit.kuznear1.rickmortyapp.model.characters
 import cz.cvut.fit.kuznear1.rickmortyapp.model.Character
@@ -42,12 +55,31 @@ import cz.cvut.fit.kuznear1.rickmortyapp.Screens
 fun CharactersScreen(navController: NavController) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Characters") })
+            Surface(color = Color.White) {
+                TopAppBar(
+                    title = {
+                        Title("Characters")
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screens.SearchScreen.route)
+                            },
+                            modifier = Modifier.padding(end = 16.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Search",
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+                    },
+                )
+            }
         },
         bottomBar = { BottomBar() }
-    ) {
-        LazyColumn(modifier = Modifier.padding(it)) {
+    ) { innerPadding ->
+        LazyColumn(modifier = Modifier.padding(innerPadding).background(Color.LightGray)) {
             items(characters) { character ->
                 CharacterCard(character, navController)
             }
@@ -61,36 +93,33 @@ fun CharacterCard(
     character: Character,
     navController: NavController,
 ) {
-    Card(modifier = Modifier.padding(4.dp)) {
-        CharacterItem(character) {
-            navController.navigate(Screens.DetailScreen.route + "/${character.id}")
+        Card(modifier = Modifier.padding(4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFFFFFFF)
+            )) {
+            CharacterItem(character) {
+                navController.navigate(Screens.DetailScreen.route + "/${character.id}")
+            }
         }
-    }
 }
 
 
 @Composable
 fun CharacterItem(character: Character, onCharacterClick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(8.dp).clickable { onCharacterClick() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onCharacterClick() },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .width(44.dp)
-                .height(44.dp)
-                .padding(0.dp) // Padding or gap
-                .background(Color.Transparent) // Opacity
-        ) {
-            Image(
-                painter = painterResource (id = character.icon),
-                contentDescription = "ProfileIcon",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-        }
+        Image(
+            painter = painterResource (id = character.icon),
+            contentDescription = "ProfileIcon",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(44.dp).clip(RoundedCornerShape(8.dp))
+        )
         Spacer(modifier = Modifier.size(8.dp))
 
         Column() {
@@ -102,6 +131,8 @@ fun CharacterItem(character: Character, onCharacterClick: () -> Unit) {
             Text(
                 text = character.status,
                 fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
             )
         }
     }
@@ -111,6 +142,15 @@ fun CharacterItem(character: Character, onCharacterClick: () -> Unit) {
 fun Title(text: String) {
     Text(
         text = text,
-        fontSize = 30.sp
+        textAlign = TextAlign.Start,
+        fontSize = 25.sp,
+        fontWeight = FontWeight.Bold
     )
+}
+
+@Preview
+@Composable
+fun CharactersScreenPreview() {
+    val navController = rememberNavController()
+    CharactersScreen(navController)
 }
