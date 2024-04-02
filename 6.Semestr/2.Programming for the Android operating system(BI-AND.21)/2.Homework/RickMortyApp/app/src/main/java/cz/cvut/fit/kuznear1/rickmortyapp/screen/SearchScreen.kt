@@ -54,7 +54,7 @@ fun SearchScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            SearchableTopAppBar(
+            SearchTopAppBar(
                 onSearch = { searchText ->
                     filteredCharacters.value = if (searchText.isEmpty()) {
                         emptyList()
@@ -67,13 +67,13 @@ fun SearchScreen(navController: NavController) {
                 viewModel = viewModel
             )
         },
-        bottomBar = { BottomBar() }
+        bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
         when (screenState) {
             ScreenState.Loading -> LoadingScreen(modifier = Modifier.padding(innerPadding))
             ScreenState.Default -> {
                 LazyColumn(
-                    modifier = Modifier.padding(innerPadding).background(Color.LightGray)
+                    modifier = Modifier.padding(innerPadding).background(Color.White)
                 ) {
                     items(filteredCharacters.value) { character ->
                         CharacterCard(character, navController)
@@ -86,7 +86,7 @@ fun SearchScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchableTopAppBar(onSearch: (String) -> Unit,
+fun SearchTopAppBar(onSearch: (String) -> Unit,
                         navController: NavController,
                         viewModel: LoadingViewModel,
 ) {
