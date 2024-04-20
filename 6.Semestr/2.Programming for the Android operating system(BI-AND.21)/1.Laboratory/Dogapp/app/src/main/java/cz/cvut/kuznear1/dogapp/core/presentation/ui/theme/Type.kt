@@ -1,4 +1,4 @@
-package cz.cvut.kuznear1.dogapp.ui.theme
+package cz.cvut.kuznear1.dogapp.core.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

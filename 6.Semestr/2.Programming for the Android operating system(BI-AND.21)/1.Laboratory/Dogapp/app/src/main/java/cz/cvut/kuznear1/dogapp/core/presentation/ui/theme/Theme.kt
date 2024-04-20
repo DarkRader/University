@@ -1,4 +1,4 @@
-package cz.cvut.kuznear1.dogapp.ui.theme
+package cz.cvut.kuznear1.dogapp.core.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
