@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Camera app</string>
+    <string name="go_to_settings">Go to settings</string>
+    <string name="no_camera">Oh no! No Camera!</string>
+    <string name="rationale">Camera app doesn\'t work without camera permission</string>
+    <string name="upload_image">Upload image</string>
+    <string name="ok">OK</string>
+    <string name="upload_channel_title">Upload</string>
+    <string name="permission_request">Camera and notification permission request</string>
+    <string name="upload_channel_description">Used for notifications about uploads</string>
+    <string name="content">First notification</string>
+</resources>
