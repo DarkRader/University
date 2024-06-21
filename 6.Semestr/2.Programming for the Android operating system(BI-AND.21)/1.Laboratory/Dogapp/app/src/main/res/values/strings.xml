@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Dog app</string>
+    <string name="bottom_nav_title_breeds">Breeds</string>
+    <string name="bottom_nav_title_facts">Facts</string>
+
+    <string name="outdated_data_message">Data fetch failed. Outdated data.</string>
+
+    <string name="breed_detail_life_title">Life</string>
+    <string name="breed_detail_female_weight_title">Female weight</string>
+    <string name="breed_detail_male_weight_title">Male weight</string>
+    <string name="breed_detail_min_title">Min:</string>
+    <string name="breed_detail_max_title">Max:</string>
+
+    <string name="facts_get_fact_button">Get fact</string>
+    <string name="facts_fetch_failed_message">Dog fact fetch failed</string>
+</resources>

@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">BukReservationApp</string>
+    <string name="reservation">Reservation</string>
+    <string name="profile">Profile</string>
+    <string name="create_reservation">Create %1$s</string>
+    <string name="reservation_calendar">%1$s calendar</string>
+    <string name="reservation_form">Reservation Form</string>
+    <string name="my_reservation">My Reservation</string>
+    <string name="select_date">Select date</string>
+    <string name="reservation_date">Reservation Date</string>
+    <string name="start_time">Start Reservation Time</string>
+    <string name="end_time">End Reservation Time</string>
+    <string name="purpose">Purpose</string>
+    <string name="write_purpose">Write the purpose of the reservation</string>
+    <string name="buk_res">BUK Reservation System</string>
+    <string name="log_in">Log in</string>
+    <string name="loggined">Welcome, %1$s</string>
+    <string name="calendars">Calendars</string>
+    <string name="mini_services">Mini Services</string>
+    <string name="service_alias">Service alias: %1$s</string>
+    <string name="max_people">Max people: %1$s</string>
+    <string name="back_button">Back button</string>
+    <string name="edit_button">Edit button</string>
+    <string name="edit">Edit</string>
+    <string name="delete_button">Delete button</string>
+    <string name="add_button">Add button</string>
+    <string name="reservation_from">From: %1$s</string>
+    <string name="reservation_to">To: %1$s</string>
+    <string name="submit">Submit</string>
+    <string name="successful">Successful</string>
+    <string name="select_start_date">Select start date</string>
+    <string name="you_need_log_in">You need log in</string>
+</resources>

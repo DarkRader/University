@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Football app</string>
+    <string name="score">Score</string>
+    <string name="_1">+ 1</string>
+    <string name="reset_score">Reset score</string>
+    <string name="teams">Teams</string>
+    <string name="go_to_teams">Go to teams</string>
+    <string name="points">Points: %1$s</string>
+
+</resources>
