@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12371691519",
+    "project_id": "fir-164e5",
+    "storage_bucket": "fir-164e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12371691519:android:84328f0a1e5045579289ca",
+        "android_client_info": {
+          "package_name": "cz.cvut.fit.kuznear1.firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1Ai1qwDJqYWfdT9NtzZIocYF8bUg5ibo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

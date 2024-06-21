@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Firebase</string>
+
+    <string name="general_channel_id">general</string>
+    <string name="general_channel_name">General</string>
+
+    <string name="welcome">Welcome!</string>
+
+    <string name="notes">Notes</string>
+    <string name="profile">Profile</string>
+
+    <string name="id">ID</string>
+    <string name="name">Name</string>
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
+</resources>
