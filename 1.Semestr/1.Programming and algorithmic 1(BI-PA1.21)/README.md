@@ -1,0 +1,4 @@
+<h1>Course Annotation</h1>
+<p>The goal of this module is to teach students how to develop algorithms to solve basic problems and how to convert these algorithms into programs in the C programming language. Next goal is to teach students practical skills in program testing and debugging. Course graduates understand data types (primitive, pointers, structures), statements, expressions, and functions in the C language. They understand the principles of recursion and algorithm complexity. Finally, students learn the basic algorithms for searching, sorting and linked lists processing.
+
+The BI-PA1 module is delivered through lectures, proseminars, and tutorials, there is a lecture, a proseminar, and a tutorial each week.</p>
