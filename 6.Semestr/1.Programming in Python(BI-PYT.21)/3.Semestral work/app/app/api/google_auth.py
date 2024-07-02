@@ -7,11 +7,6 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-SCOPES = ["https://www.googleapis.com/auth/calendar"]
-
-CLIENT_ID = "196194888209-f6evp5digasntvf926j4qjh9ep7qd4g7.apps.googleusercontent.com"
-CLIENT_SECRET = "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"
-
 
 def auth_google(creds):
     """
