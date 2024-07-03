@@ -1,0 +1,39 @@
+<h1>Control Report</h1>
+<td class="lrtbCell" colspan="3" align="left">
+  <p>The task is to implement a class <tt>CVATRegister</tt> which will implement a database of VAT control reports.</p>
+
+  <p>To better combat tax evasion, a system of control reports has been introduced. The database contains individual companies, and the individual invoices issued by each company are recorded in the database. Companies can be added to and removed from the database. A company is identified by its name, address, and tax identifier (id). The tax identifier is unique across the entire database. Names and addresses can be repeated, but the pair (name, address) must be unique in the database. Thus, the database may contain many companies named <tt>ACME</tt>, many companies with the address <tt>Prague</tt>, but only one company named <tt>ACME</tt> located in <tt>Prague</tt>. When comparing tax identifiers, case sensitivity is important, but case sensitivity is not important for names and addresses.</p>
+
+  <p>The public interface is provided below. It includes the following:</p>
+  <ul>
+    <li>A parameterless constructor. This constructor initializes an instance of the class such that the resulting instance is initially empty (contains no records).</li>
+    <li>A destructor. Releases resources allocated by the instance.</li>
+    <li>The method <tt>newCompany(name, addr, id)</tt> adds another record to the existing database. The parameters <tt>name</tt> and <tt>addr</tt> represent the name and address, the parameter <tt>id</tt> specifies the tax identifier. The method returns <tt>true</tt> if the record was added, or <tt>false</tt> if it was not (because a record with the same name and address or the same id already existed in the database).</li>
+    <li>The methods <tt>cancelCompany (name, addr) / cancelCompany (id)</tt> remove a record from the database. The parameter is either an unambiguous identification by name and address (the first variant) or by tax identifier (the second variant). If the record was successfully removed, the method returns <tt>true</tt>. If the record is not removed (because a company with this identification does not exist), the method returns <tt>false</tt>.</li>
+
+<li>The methods <tt>invoice (name, addr, amount) / invoice (id, amount)</tt> record a receipt of <tt>amount</tt>. There are two variants - the company is identified either by its name and address, or by its tax identifier. If the method succeeds, it returns <tt>true</tt>; for failure, it returns <tt>false</tt> (non-existent company).</li>
+
+<li>The methods <tt>audit ( name, addr, sum ) / audit ( id, sum )</tt> search for the sum of receipts for a company with the given name and address or the company with the given tax identifier. The found sum is stored in the output parameter <tt>sum</tt>. The method returns <tt>true</tt> for success, <tt>false</tt> for failure (non-existent company).</li>
+
+<li>The method <tt>medianInvoice ()</tt> finds the median value of the invoice. The calculated median includes all successfully processed invoices submitted via <tt>invoice</tt>. Thus, invoices that could not be assigned (the <tt>invoice</tt> call failed) are not included, but all registered invoices so far are included, meaning that the invoices of a deleted company are <b>not removed</b> from the median calculation. If the system has not yet processed any invoice, a value of 0 will be returned. If the number of invoices in the system is even, the higher of the two middle values is taken.</li>
+
+<li>The methods <tt>firstCompany ( name, addr ) / nextCompany ( name, addr )</tt> are used to traverse the existing list of companies in the database. Companies are traversed in alphabetical order by their names. If two companies have the same name, their addresses determine the order. The <tt>firstCompany</tt> method finds the first company. If the list of companies is empty, the method returns <tt>false</tt>. Otherwise, the method returns <tt>true</tt> and fills the output parameters <tt>name</tt> and <tt>addr</tt>. The <tt>nextCompany</tt> method works similarly, finding the next company that follows the company specified by the parameters. If there is no company after <tt>name</tt> and <tt>addr</tt> in the list, the method returns <tt>false</tt>. Otherwise, the method returns <tt>true</tt> and overwrites the parameters <tt>name</tt> and <tt>addr</tt> with the name and address of the next company.</li>
+  </ul>
+
+  <p>Submit a file that contains the implemented class <tt>CVATRegister</tt>. The class must meet the public interface as shown - if the submitted solution does not contain the described interface, a compilation error will occur. However, you can add additional methods (public or private) and member variables to the class. The submitted file must contain both the class declaration (interface description) and the method definitions, constructor, and destructor. It does not matter whether the methods are implemented inline or separately. The submitted file must not contain anything other than the implementation of the class <tt>CVATRegister</tt>, particularly no header file inclusions and the <tt>main</tt> function (the <tt>main</tt> function and header file inclusions may remain, but only enclosed with conditional compilation directives). Use the provided source file as the basis for your implementation.</p>
+
+  <p>The class is tested in a limited environment where available memory is limited (sufficient to store the list) and the runtime is limited. The implemented class does not need to handle copy constructors or assignment operators. In this task, ProgTest does not test this functionality.</p>
+
+  <p>The implementation of the class must be efficient in terms of both time and memory requirements. A simple linear solution is not sufficient (for the test data, it requires more than 5 minutes). Assume that the creation and deletion of a company are much less frequent than other operations, so linear complexity is acceptable here. Frequent calls are made to <tt>invoice</tt> and <tt>audit</tt>, whose time complexity must be better than linear (e.g., logarithmic or amortized constant). Also, in mandatory tests, the method <tt>medianInvoice</tt> is called infrequently, so it does not need to be highly efficient (for success in mandatory tests, linear or <tt>n log n</tt> complexity is sufficient, for the bonus test, complexity better than linear is needed).</p>
+
+  <p>To store values, allocate arrays dynamically or use the STL. Note that if you allocate arrays yourself, choose a small initial size (e.g., a thousand elements) and resize the array as needed. When the array is full, it is not advisable to allocate a new array larger by only one value, as this approach has a huge overhead for copying content. It is reasonable to expand the array with a step of thousands of elements, or geometrically with a quotient of about 1.5 to 2.</p>
+
+  <p>If you use the STL, you do not need to worry about allocation problems. Note - you only have access to part of the STL (see header files in the attached example). Thus, containers like <tt>map</tt> / <tt>unordered_map</tt> / <tt>set</tt> / <tt>unordered_set</tt> / ... are not available.</p>
+
+  <p>The attached source code contains basic tests. These tests do not cover all situations, so you will need to extend them to debug the class. Note that the tests included in the submitted source codes are considered an integral part of your solution. If you leave someone else's tests in the submitted solution, the work may be considered copied.</p>
+
+<b>Notes:</b>
+  <ul>
+    <li>If your solution passes all mandatory and optional tests at 100%, it can be used for code review (i.e., passing the last bonus test is not necessary for code review). However, since it is an easier and shorter task, expect stricter evaluation in a potential code review.</li>
+  </ul>
+</td>
