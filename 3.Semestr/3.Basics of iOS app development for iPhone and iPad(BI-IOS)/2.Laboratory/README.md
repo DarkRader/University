@@ -1,87 +1,87 @@
 # BI-IOS 2022
 
-| Přednáška | Přednášející | Stanford |
+| Lecture | Lecturer | Stanford |
 | --------- | -------- | -------- |
 | 01 Xcode, Swift Basics | LH | [Swift](https://cs193p.sites.stanford.edu/sites/g/files/sbiybj16636/files/media/file/reading_1.pdf) |
 | 02 SwiftUI Basics | LH | [Getting Started with SwiftUI](https://www.youtube.com/watch?v=bqu6BquVi2M) |
 | 03 More SwiftUI | IR | [Getting Started with SwiftUI](https://www.youtube.com/watch?v=bqu6BquVi2M) |
 | 04 Navigace | IR | [Learning More about SwiftUI](https://youtu.be/3lahkdHEhW8) |
-| 05 Networking, multithreading | LH | Není |
-| 06 Async/await | LH | Není |
+| 05 Networking, multithreading | LH | Not Available |
+| 06 Async/await | LH | Not Available |
 | 07 MVVM | IR | [MVVM](https://youtu.be/--qKOhdgJAs)<br>[More MVVM enum Optionals](https://youtu.be/oWZOFSYS5GE) |
 | 08 MVVM + UIImagePicker | LH | [MVVM](https://youtu.be/--qKOhdgJAs)<br>[More MVVM enum Optionals](https://youtu.be/oWZOFSYS5GE) |
-| 09 Environment | LH | Není |
+| 09 Environment | LH | Not Available |
 | 10 Persistence | IR  | [Persistence](https://youtu.be/pT5yiBu2xbU)<br>[More Persistence (Core Data, CloudKit)](https://youtu.be/wX3ruVLlWPg) |
-| 11 Push notifications | IR  | Není |
+| 11 Push notifications | IR  | Not Available |
 
-V průběhu kurzu doporučujeme shlédnout online přednášky ze Stanfordu, které slouží jako hlavní zdroj informací pro tento kurz [https://cs193p.sites.stanford.edu](https://cs193p.sites.stanford.edu).
+Throughout the course, we recommend watching the online lectures from Stanford, which serve as the main source of information for this course [https://cs193p.sites.stanford.edu](https://cs193p.sites.stanford.edu).
 
-## 1. domácí úkol
+## 1. Assignment
 
 > :exclamation: Deadline: **15. 11. 2022 23:59:59**
 
-> Dokumentace ke kompletnímu API je [zde](https://fitstagram.ackee.cz/docs/)
+> The complete API documentation is [here](https://fitstagram.ackee.cz/docs/)
 
-Vaším úkolem je vytvořit detailu příspěvku.
+Your task is to create a post detail view..
 
-Detail bude obsahovat všechny fotografie, které jsou u příspěvku nahrány = může jich být více než jenom jedna. Zobrazení je na vás, ale může se hodit pogooglit, jak se dělá `pageView` ve SwiftUI. :bulb: :smirk:
+The detail view will contain all the photos that are uploaded with the post – there can be more than one photo. How you display them is up to you, but it might be helpful to google how to create a `pageView` in SwiftUI. :bulb: :smirk:
 
-Na detailu budé také vidět autorovo uživatelské jméno a nějak hezky do toho zakomponujte komentáře u daného příspěvku – všechno bude zobrazeno na jedné obrazovce.
+The detail view should also display the author’s username and include the comments on the post in an appealing way – everything will be displayed on one screen.
 
-Pro načtení komentářů použijte následující url:
+To load comments, use the following URL:
 ```
 https://fitstagram.ackee.cz/api/feed/{postID}/comments
 ```
-kde místo `{postID}` dáte ID postu, které přijde z Feedu. Na cviku jsme si říkali něco o tom, jak neblokovat hlavní vlákno, zkuste to dodržet. :pray:
+where `{postID}` is the ID of the post from the Feed. We talked in the lecture about how not to block the main thread, try to follow that. :pray:
 
-Všechny tyto věci zkuste hezky spojit na jedné obrazovce.
+Try to combine all these elements on one screen nicely.
 
-Odevzdávání můžete udělat přes mail `lukas.hromadnik@ackee.cz` nebo mě pozvěte do svého repa, kde budete mít řešení, a na mail mi pošlete větev / commit, kde řešení najdu.
+You can submit your work via email to `lukas.hromadnik@ackee.cz` or invite me to your repo where you have the solution, and email me the branch/commit where I can find the solution.
 
-**Bonus** (max 2 body): Přijde na obrazovku tlačítko nebo nějakou jinou akci, pomocí které se skryjí / zobrazí ostatní informace až na fotky. Tedy provedu akci, všechno až na fotky zmizí, udělám znova akci a informace se zobrazí zpět. Nechceme zobrazit novou obrazovku, kde budou pouze fotky, ale upravit tu stávající.
+**Bonus** (max 2 body): Add a button or some other action on the screen that hides/displays all other information except the photos. That means performing an action to hide everything except the photos and another action to display the information back. We do not want to display a new screen with only photos but modify the existing screen.
 
-## 2. domácí úkol
+## 2. Assignment
 
 > :exclamation: Deadline: **13. 12. 2022 23:59:59**
 
-Vaším druhým úkolem bude vytvořit obrazovku a kompletní logiku pro přidání nového příspěvku.
+Your second task is to create a screen and complete logic for adding a new post.
 
-Každý nový příspěvek bude obsahovat vybranou fotografii a popisek. Oba parametry jsou povinné.
+Each new post will contain a selected photo and a caption. Both parameters are required.
 
-UI pro vytvoření příspěvku je ve vašich rukou. Napojte novou obrazovku na "+" tlačítko, které je na hlavní stránce.
+The UI for creating a post is in your hands. Connect the new screen to the “+” button on the main page.
 
-Základní flow pro přídání příspěvku by mělo být následující:
+The basic flow for adding a post should be as follows:
 
-1. Tapnu na "+" a zobrazí se mi obrazovka pro přidání nového příspěvku.
-2. Na této obrazovce vyberu obrázek z galerie (nebo třeba i foťáku, nepovinné), který se potom zobrazí.
-3. Pomocí textového pole přidám k obrázku popisek.
-4. Tapnutím na nějaké další tlačítko se sestaví request na API a data se odešlou.
-6. Vrátí-li se ze serveru chyba, zobrazte ji.
-7. Po úspěšném vytvoření a odeslání příspěvku jsem přesměrován zpět na seznam.
-8. Na seznamu mám možnost na nový příspěvek nascrollovat.
+1.	Tap the “+” button and display the screen for adding a new post.
+2.	On this screen, select an image from the gallery (or maybe even from the camera, optional), which will then be displayed.
+3.	Add a caption to the image using a text field.
+4.	By tapping another button, a request to the API is constructed and the data is sent.
+5.	If an error is returned from the server, display it.
+6.	After successfully creating and sending the post, redirect back to the list.
+7.	In the list, have the ability to scroll to the new post.
 
-Pro vytvoření příspěvku použijte tento [endpoint](https://fitstagram.ackee.cz/docs/#/Feed/post_feed).
+To create a post, use this [endpoint](https://fitstagram.ackee.cz/docs/#/Feed/post_feed).
 
-Fotografie je potřeba před odesláním na server upravit.
+Photos need to be modified before sending to the server.
 
-1. Šířka ani výška fotografie nesmí přesáhnout 2048 pixelů. Může tedy vzniknout potřeba obrázek zmenšit.
-2. Fotky posílejte na server jako JPEG zakódovaný do řetězce pomocí base64.
+1.	Neither the width nor the height of the photo can exceed 2048 pixels. So you may need to resize the image.
+2.	Send photos to the server as JPEG encoded in a base64 string.
 
-Obě výše zmíněné operace jsme na cvikách neukazovali, ale jednoduchým Googlením se dostanete k odpovědím. Pokud by se nedařilo, dáme vám k dispozici kód, pomocí kterého to uděláte. Záměrně vám to nechceme dávat hned na začátek, ať si to můžete zkusit. Opravdu to není nic složitého.
+We didn’t show both of these operations in the lectures, but a simple Google search will get you the answers. If you can’t manage, we will provide you with the code to do it. We intentionally don’t want to give it to you at the beginning so you can try it yourself. It really isn’t that hard.
 
-## Semestrální práce
+## Semester Work
 
-V rámci semestrální práce je vaším úkolem ukázat, co jste se naučili. Téma je na vás, ale je potřeba si ho nechat mnou schválit. Schválení musí proběhnout do konce výuky, tedy do posledního cvika.
+For the semester project, your task is to demonstrate what you have learned. The topic is up to you, but it needs my approval. Approval must be obtained by the end of the lecture period, i.e., by the last lecture.
 
-Na vypracování pak máte celý semestr – až do konce zkouškového.
+You then have the entire semester to work on it – until the end of the exam period.
 
-Odevzdávání, pokud nám to situace dovolí, bude probíhat osobně [u nás v kancelářích](https://mapy.cz/zakladni?source=firm&id=12749992&ds=1&x=14.3907423&y=50.0997880&z=17). Nenechávejte odevzdání na poslední chvíli, aby na vás vystačil nějaký termín. Může se stát, že pokud necháte odevzdání do posledního dne, nebude možné pro vás najít termín na odevzdání a tedy i dokončit předmět.
+If the situation allows, the submission will take place in person [at our offices](https://mapy.cz/zakladni?source=firm&id=12749992&ds=1&x=14.3907423&y=50.0997880&z=17). Do not leave the submission to the last minute to ensure you have a time slot. If you leave the submission to the last day, it may be impossible to find a submission time, and therefore complete the course.
 
-Pokud to situace nedovolí, bude odevzdávání online.
+If the situation does not allow, the submission will be online.
 
-Rozsah práce by mělo být 3 - 5 obrazovek (může být míň, pokud to dává smysl v rámci zadání) s použitím architektury MVVM. Ideálně ukázat nějaké zajímavější věci než jenom statické obrazovky – networking, multithreading, gesta, mapa, výběr obrázků, malování, atd.
+The scope of the project should be 3-5 screens (can be fewer if it makes sense within the assignment) using the MVVM architecture. Ideally, show more interesting things than just static screens – networking, multithreading, gestures, map, image selection, drawing, etc.
 
-## Přednášky
+## Lectures
 
 ### 01 Xcode, Swift Basics
 * Xcode
