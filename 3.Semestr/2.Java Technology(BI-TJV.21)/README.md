@@ -1,4 +1,17 @@
-#### Business operation that will be implemented in the client:
+# Course annotation
+
+The aim of the course is to provide knowledge and skills needed for the development of smaller and larger information systems. Students will get acquainted with general theoretical concepts and will be able to apply these concepts using libraries and tools from the ecosystem of the Java programming language. After completing the course students will be able to participate in the development of software systems on the Java platform.
+
+## Semestral Work
+
+Semestral project is a client–server application working with at least 3 domain types that implements full CRUD (operations create, read, update, delete) over all of them.
+
+<section class="doc-section level-2"><h3 id="_server-part"><a class="anchor" href="#_server-part" aria-hidden="true"></a>Server part</h3><p>It is a three-layer application (persistence layer, business/application layer, and presentation layer (REST API): <strong>hard requirement</strong>):</p>
+<div class="ulist"><ul><li>uses Spring Framework and written in Java programming language (<strong>hard requirement</strong>; another JVM language may be approved: ask the tutor)</li><li>uses object-relational mapping (ORM) in persistence layer<ul><li>the data tier must use a relational database system that uses a persistent data storage and is capable of serving concurrent requests (a DB server): otherwise loss of 2 pts<ul><li>neither in-memory DB nor an embedded DB (e.g., SQLite) is not an option</li><li>while meeting these criteria, the RDBMS is the student&#8217;s choice</li></ul></li><li>at least three entities with at least one many-to-many association (implies at least four tables in the database)<ul><li>loss of 4 pts without a working many-to-many association</li></ul></li><li>implements complete CRUD over all entities and also over the M:N association</li><li>at least one complex query (besides CRUD or working with M:N association; thus multiple tables should be involved) in ORM (using JPQL); otherwise loss of 4 pts</li></ul></li><li>contains clearly separated business layer<ul><li>implements all data operations enabled by persistence layer (using delegation)</li><li>uses transactions in a reasonable way</li><li>loss of 0.5 pt for any non-working operation</li><li>loss of 5 pts for each case of improper layering</li></ul></li><li>contains clearly separated layer of RESTful web service (REST API)<ul><li>exposes all business operations and supports all entities; loss of 2 pts for each non-working operation</li><li>follows web standards (designing and implementing standardized REST API is important here); loss of 1 pt for each working and not RESTful operation<ul><li>does not return HTTP status 500 for invalid requests (i.e., the service is bug-free, status 500 is used only for server problems, e.g., DB connection); loss of 1 pt for each case of HTTP status breaking standards</li></ul></li><li>complete and machine-readable API documentation (e.g., OpenAPI): all endpoints, operations, and data formats; loss of up to 2 pts for missing or poor quality API documentation</li></ul></li><li>contains automated tests<ul><li>three different types of tests taught in this course; loss of up to 4 pts for missing type of test or for test of poor quality</li></ul></li><li>uses smart build (Gradle); automated tests should be run and evaluated within the build system</li><li>is developed using the git versioning system<ul><li>Gitlab FIT repository (gitlab.fit.cvut.cz/&lt;username&gt;/&lt;server_repo&gt;) should be used for both development and submitting</li></ul></li></ul></div></section>
+<section class="doc-section level-2"><h3 id="_client-part"><a class="anchor" href="#_client-part" aria-hidden="true"></a>Client part</h3><p>It is an application written in any programming/scripting language with the following features:</p>
+<div class="ulist"><ul><li>any user interface (web, GUI, interactive console application)</li><li>uses the REST API of the server part as the backend</li><li>implements a complex business logic operation over the server part (this business operation needs to be approved by the tutor until checkpoint 1, see below)<ul><li>the business operation is a single action that is composed of multiple data operations (CRUD); the client issues these data operations by multiple calls on the server part</li></ul></li><li>is versioned<ul><li>loss of 15 pts for non-working complex operation</li><li>Gitlab FIT repository (gitlab.fit.cvut.cz/&lt;username&gt;/&lt;client_repo&gt;) should be used for both development and submitting</li></ul></li><li>loss of 20 pts for missing or very poor client application</li></ul></div></section></section>
+
+### Business operation that will be implemented in the client:
 
 - The application provides the possibility of renting swords from website.
 - Renters can rent swords that are available.
@@ -6,6 +19,6 @@
 - When the contract is deleted, it ceases to be valid. At this point, the swords become free and the people who have these swords in the wishlist will receive notifications
 
 
-#### Relational data model:
+### Relational data model:
 
 ![diagram](https://user-images.githubusercontent.com/73800331/213690353-44f62b7a-2c86-422e-a919-8bc5569498b2.png)
