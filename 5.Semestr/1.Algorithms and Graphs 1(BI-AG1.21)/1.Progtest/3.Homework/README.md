@@ -1,0 +1,34 @@
+<h1>Christmas Gifts</h1>
+
+<td class="lrtbCell" colspan="3" align="left"><p>Mr. Ebenezer Scrooge is a hard soul! How he knows how to toil, hoard, and amass wealth! He is sharp as flint, but never a spark of generous fire kindles from him. He is also closed off and content with himself. And as solitary as an oyster. The cold that resides in him has frozen his old face, shriveled it, and wrinkled it, and his sharp nose becomes ever more pointed. When he walks down the street, he resembles an icy icicle. His eyes are reddened, his lips thin and blue, and his cunning voice sounds like an ungreased wheel creaking.</p>
+<p>Mr. Ebenezer Scrooge was, now the sole, partner in the firm Scrooge &amp; Marley. Mr. Jacob Marley died seven years ago. Scrooge, and now the deceased Marley, had been business partners for many years. Scrooge was also the sole executor of his will, his only administrator, sole heir, only friend, and perhaps the only mourner. But even Scrooge was not too distressed by this sad event, as people expected. Even on the day of the funeral, he kept his cool business mind and celebrated it with a well-closed deal.</p>
+<p>Last night, Mr. Scrooge had very restless sleep. And there was no visible reason for it: despite the approaching Christmas Eve, when most freeloaders refuse to work, he managed to negotiate several excellent deals. Could it have been caused by those two layabouts who dared to disturb him today?</p>
+<blockquote>
+<p><em>Around noon, two men of pleasant appearance entered the office, with hats and documents in hand, and looked modest and polite. “Scrooge and Marley, right?” said one of the gentlemen with a bow and looked into the document. “Do I have the pleasure of speaking with Mr. Scrooge or Mr. Marley?”</em></p>
+<p><em>“Mr. Marley died seven years ago,” Scrooge replied.</em></p>
+<p><em>“I hope his generosity has passed to the surviving partner,” said one of the gentlemen, handing Scrooge his business card.</em></p>
+<p><em>Scrooge frowned and shook his head unkindly.</em></p>
+<p><em>“In this festive season, Mr. Scrooge,” said the gentleman, picking up a pen, “it is more than ever desirable that we take care of the poor and destitute as much as possible. They especially suffer the most now. Thousands of people lack the most basic needs and have no warmth, sir.”</em></p>
+</blockquote>
+<p>Enough of this, giving his hard-earned money to some tramps who cannot take care of themselves. They just wait with their hands outstretched, waiting for someone to give them something. As Mr. Scrooge recalled this, he was completely woken up by the excitement. He lit the oil lamp standing on the floor next to the bed and headed to the kitchen for a glass of water.</p>
+<p>“Am I dreaming or awake?” Mr. Scrooge asked himself as he entered the kitchen. He slightly increased the lamp's flame to make sure his eyes were not deceiving him. Indeed, someone was sitting at the table. What an unbelievable audacity! But wait, wait. That's not just anyone. Why, that figure looks exactly like Mr. Jacob Marley. “Is that you, Jacob?” Mr. Scrooge asked timidly.</p>
+<p>“Of course, it is me, old friend,” the figure said, beginning to rise from its seat at the table. “I had to come back because you violated my last will! It clearly stated that every Christmas you would give each of our store employees a gift just as I did. I know you never agreed with it, but it was my last wish. Do you call yourself a friend?” With the last words, Mr. Marley was already gripping Mr. Scrooge's shoulder, who stood as if nailed to the spot and listened in disbelief. “Tonight, three more spirits will visit you to show you what awaits you if you continue to be stingy and do not amend the promise you made by taking over my inheritance,” added Mr. Marley and suddenly disappeared.</p>
+<p>What happened to Mr. Scrooge that night is not important now. The important thing is that the next day he came to the store, and he was like a changed man. Imagine, he called his assistant Bob into his office and ordered him to get Christmas gifts for the employees.</p>
+<p>It is clear that Mr. Scrooge did not give Bob complete freedom. He prepared a list of approved gifts along with their prices. And he added that Bob must buy the gifts as cheaply as possible while adhering to the following rule: no employee should receive the same gift as their superior. And so Bob now sits despondently in his office, trying to figure out which gift to buy for each employee. Can you help him with the selection?</p>
+<h2 id="program-interface">Program Interface</h2>
+<p>Your task is to implement the function <code>optimize_gifts</code>, which assigns a Christmas gift to each employee. No employee can receive the same gift as their direct superior or any of their direct subordinates. At the same time, you want to minimize the total cost of the gifts. The function arguments are:</p>
+<ul>
+<li><p><code>std::vector&lt;Employee&gt; boss</code>: Employees are identified by numbers from 0 to their total number minus one for data protection purposes. This array thus indicates the number of employees by its size, and at the <code>i</code>-th position is the number of the direct superior of employee <code>i</code>. If an employee has no superior, the constant <code>NO_EMPLOYEE</code> is indicated. No employee is even indirectly their own superior.</p></li>
+<li><p><code>std::vector&lt;Price&gt; gift_price</code>: List of prices of gifts approved by Mr. Scrooge.</p></li>
+</ul>
+<p>The return value is a pair <code>std::pair&lt;Price, std::vector&lt;Gift&gt;&gt;</code>, where the second item is a list that at position <code>i</code> contains the number of the gift (according to the <code>gift_price</code> array) assigned to employee <code>i</code>, and the first item is the sum of the prices of all assigned gifts. You can assume the input is correct.</p>
+<h2 id="scoring-conditions">Scoring Conditions</h2>
+<ul>
+<li>For 3 points, you need to correctly solve small instances with tens of employees and units of gifts. (The time limit is 15 seconds.)</li>
+<li>For 6 to 10 points, a naive implementation is not sufficient. (Time limits are 1, 1, and 6 seconds.)</li>
+<li><strong>Bonus:</strong> To earn up to 11.5 points, the solution needs to be not only asymptotically fast but also efficiently programmed. For the bonus, the time limit is 4.5 seconds, and for the full score, the limit is 2.5 seconds.</li>
+</ul>
+<p>The total time limit for all tests except the first one is 10 seconds.</p>
+<p><strong>Note:</strong> When using constants whose incorrect values could affect the correctness of the calculation, it is necessary to justify why the used value is correct. Otherwise, points cannot be awarded for the solution.</p>
+<p>Results achieved by modifying compiler settings will not be recognized.</p>
+</td>
