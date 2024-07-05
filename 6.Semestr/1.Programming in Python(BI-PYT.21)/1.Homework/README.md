@@ -1,16 +1,16 @@
-= BI-PYT
+# BI-PYT
 
-== How to start
-. Create and add SSH keys to your gitlab profile ( link:https://colab.research.google.com/drive/1VdQusn_rgabFx4uy1jsqzRexaVl5nZiO#scrollTo=S5gLPsNGrUNI[See tutorial #1]).
-. Prepare a directory for BI-PYT, eg. `mkdir bi-pyt` and jump in `cd bi-pyt`.
-. Clone this repository: `git clone git@gitlab.fit.cvut.cz:BI-PYT/B232/{your-login}.git`
-. Create a virtual environment: `python3.11 -m venv venv-bipyt`
-. Activate the venv: `source venv-bi-pyt/bin/activate`
-. Jump in your materials: `cd {your-login}`
-. Install all required python packages `pip install -r requirements.txt`
-. Run jupyter notebook `jupyter notebook`
+## How to start
+-  Create and add SSH keys to your gitlab profile ( link:https://colab.research.google.com/drive/1VdQusn_rgabFx4uy1jsqzRexaVl5nZiO#scrollTo=S5gLPsNGrUNI[See tutorial #1]).
+-  Prepare a directory for BI-PYT, eg. `mkdir bi-pyt` and jump in `cd bi-pyt`.
+-  Clone this repository: `git clone git@gitlab.fit.cvut.cz:BI-PYT/B232/{your-login}.git`
+-  Create a virtual environment: `python3.11 -m venv venv-bipyt`
+-  Activate the venv: `source venv-bi-pyt/bin/activate`
+-  Jump in your materials: `cd {your-login}`
+-  Install all required python packages `pip install -r requirements.txt`
+-  Run jupyter notebook `jupyter notebook`
 
-== Each laboratory
+## Each laboratory
 
 At the beginning of the laboratory, pull assignments and create a new branch in which you will work.
 
@@ -29,7 +29,7 @@ git commit -m 'Message' # commit the changes to the local repositort
 git push origin branch_name # push changes to remote repository
 ```
 
-== Homeworks
+## Homeworks
 
 There is a separate folder for each homework. Each homework has a set of attached unit tests. You can run these tests locally by executing command `pytest` inside of the homework folder. The pytest package has been also added to the virtual environment.
 

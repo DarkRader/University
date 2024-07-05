@@ -1,0 +1,5 @@
+### SYNOPSIS
+Kotlin is a modern, statically-styled object-functional language that exploits the extensive Java language ecosystem while delivering a number of advanced language constructions. The language is fully Java compliant and allows for mixed projects that preserve existing parts written in Java, and continue with the development of a modern, object-functional way with minimum of boiler-plate code. Last but not least, Kotlin is suitable for designing of DSLs (Domain-Specific Languages).
+
+### COURSE CONTENTS
+This course covers all language constructs, basic libraries and the way how to use Kotlin for developing desktop and server applications. How to design DSLs in Kotlin is explained as well. The course is suitable for students who have already become familiar with basics of Java and who are interested in a more modern programming language that is with Java fully compatible.
