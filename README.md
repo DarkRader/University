@@ -24,4 +24,4 @@ Hello, I'm Artem and this is my learning repository with all project, homework, 
 - [KOT - Programming in Kotlin](https://github.com/DarkRader/University/tree/main/6.Semestr/3.Programming%20in%20Kotlin(BI-KOT))
 - [KOM - Conceptual Modelling](https://github.com/DarkRader/University/tree/main/7.Semestr/1.Conceptual%20Modelling(BI-KOM.21))
 - [OOP - Object-Oriented Programming](https://github.com/DarkRader/University/tree/main/7.Semestr/2.Object-Oriented%20Programming(BI-OOP.21)%20)
-
+- [BAP - Bachelor Thesis](https://github.com/DarkRader/University/tree/main/8.Semestr/1.Bachelor%20Thesis(BI-BAP.21))
