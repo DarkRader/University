@@ -1,0 +1,14 @@
+.hidden {
+    display: none;
+}
+
+#focus-circle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 999; /* Use a high z-index value to ensure it overlaps other elements */
+    pointer-events: none; /* Allows click events to pass through the circle to elements underneath */
+    opacity: 0.7;
+}

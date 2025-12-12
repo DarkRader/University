@@ -1,0 +1,62 @@
+{
+    "dmp": {
+        "contact": {
+            "contact_id": {
+                "identifier": "imagine here some orcid identifier",
+                "type": "orcid"
+            },
+            "mbox": "me@email.com",
+            "name": "Me"
+        },
+        "contributor": [
+            {
+                "contributor_id": {
+                    "identifier": "imagine here some orcid identifier",
+                    "type": "orcid"
+                },
+                "mbox": "me@email.com",
+                "name": "Me",
+                "role": [
+                    "contact person",
+                    "data collector",
+                    "data manager",
+                    "data steward",
+                    "project manager",
+                    "rights holder"
+                ]
+            }
+        ],
+        "created": "2023-05-10T16:00:56Z",
+        "dataset": [],
+        "description": "This maDMP has been created using Data Stewardship Wizard (DSW, ds-wizard.org) and is based on knowledge model Common DSW Knowledge Model (dsw:root:2.4.4). The questionnaire used for this DMP is identified by UUID \"03b20cef-8573-4459-8f3c-435e51a61eaa\" within https://ds-review.ds-wizard.org DSW instance.",
+        "dmp_id": {
+            "identifier": "https://ds-review.ds-wizard.org/questionnaires/03b20cef-8573-4459-8f3c-435e51a61eaa",
+            "type": "url"
+        },
+        "ethical_issues_exist": "",
+        "language": "eng",
+        "modified": "2023-05-10T16:00:56Z",
+        "project": [
+            {
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.",
+                "end": "2023-09-08",
+                "funding": [
+                    {
+                        "funder_id": {
+                            "identifier": "http://dx.doi.org/10.13039/100000001",
+                            "type": "url"
+                        },
+                        "funding_status": "granted",
+                        "grant_id": {
+                            "identifier": "42",
+                            "type": "other"
+                        }
+                    }
+                ],
+                "start": "2023-03-15",
+                "title": "Project name"
+            }
+        ],
+        "title": "DSW_project_name"
+    }
+}

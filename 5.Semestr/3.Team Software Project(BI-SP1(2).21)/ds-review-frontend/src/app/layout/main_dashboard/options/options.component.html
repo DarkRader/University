@@ -1,0 +1,5 @@
+<mat-icon id="btn_switch" (click)="changeDocView()" *ngIf="(docViewService.view$ | async) === contentDisplayStateEnum.GRID">grid_on</mat-icon>
+<mat-icon id="btn_switch" (click)="changeDocView()" *ngIf="(docViewService.view$ | async) === contentDisplayStateEnum.TABLE">table_chart</mat-icon>
+
+
+

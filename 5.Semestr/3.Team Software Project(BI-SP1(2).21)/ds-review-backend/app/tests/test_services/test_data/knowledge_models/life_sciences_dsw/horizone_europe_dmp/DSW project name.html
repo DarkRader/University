@@ -1,0 +1,556 @@
+<!DOCTYPE HTML>
+
+
+<html lang="en">
+  <head>
+    <title>Data Management Plan</title>
+    <meta charset="utf-8">
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Noto+Serif:400,400i,700,700i&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese');
+
+/* Layout and global styles */
+
+@page {
+  margin: 2.5cm;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  page-break-inside: avoid !important;
+  page-break-after: avoid !important;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Noto Serif', serif;
+  font-size: 11pt;
+  counter-reset: section;
+  counter-reset: question;
+}
+
+/* Sections */
+
+section {
+  margin-bottom: 4rem;
+}
+
+.dmp-section .question + .question {
+  margin-top: 1cm;
+}
+
+/* First page */
+
+header {
+  width: 100vw;
+  height: 24cm;
+  box-sizing: border-box;
+  page-break-after: always;
+  position: relative;
+}
+
+header h1 {
+  margin: 2em;
+  font-size: 24pt;
+  text-align: center;
+}
+
+header h3 {
+  margin-top: 2em;
+  font-size: 18pt;
+  color: #333;
+  text-align: center;
+}
+
+header > div.info {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+}
+
+header .dsw {
+  margin-top: 2cm;
+  font-size: 10pt;
+  font-style: italic;
+}
+
+
+/* Versions */
+
+div#dmp-versions table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+div#dmp-versions table,
+div#dmp-versions td,
+div#dmp-versions th {
+  border: 1px solid black;
+}
+
+div#dmp-versions td,
+div#dmp-versions th {
+  padding: 0.2em;
+}
+
+div#dmp-versions th.title {
+  text-transform: uppercase;
+}
+
+div#dmp-versions td.version-name {
+  text-align: center;
+  word-wrap: break-word;
+}
+
+div#dmp-versions td.version-date {
+  text-align: center;
+  width: 18ex;
+}
+
+div#dmp-versions td.version-changes {
+  word-wrap: break-word;
+}
+
+div#dmp-versions td.no-versions {
+  font-style: italic;
+  padding: 1em;
+  text-align: center;
+}
+
+/* Contributors */
+
+.contributor .name {
+  font-weight: bold;
+}
+
+.contributor .role,
+.contributor .affiliation {
+  font-style: italic;
+}
+
+/* Projects */
+
+.abstract {
+  page-break-after: always;
+}
+
+.abstract p {
+  text-align: justify;
+}
+
+/* custom */
+
+.mini-orcid-icon-16 {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsSAAALEgHS3X78AAABnElEQVQ4y52UvUtCURjGf968lmQhFGXYEH3QUg0JhkPR4l5T0IUosMGxv6C1KdpahCZbGxscGiXBloIKo0ESEYpEM71+3NvgvXW0j3vp2c57zvPjPQ/nPWCheDrkiKdDDqtzjl/MQSAChAG/Uc4BCSCmBJKpP0HxdGgQOAY2LRo4BaJKIFn6BjIgCSDolPrQ9Caa3vwLlgLCJkwSNo6BIEBoYp8537ZVLEHD89WRkcmlWex3+WhqNeqtMrLk/nTWWxVA7wYuKYFkymksIuLO/FiEYjXDazXD6tQhJTWLLLmRezxkns+4zsfQdQ3B+wkK/9Z/Sc1yfrsFgFseYnnyAE1vcJM/QfSaGfmxoWrjhaunI2aG18WyvztsW6rUC/Q6vd/qJihnFzTuXeG5ciOWcgBmRglg9yejLLkZHVhEcrgY8SwwPbzGxcOeeCQhgmIi6LV6z5uaR20WKdYemR3ZQNMalNUs53c7vNcLIigGnS87jvVodOtUCSSV7rCjtJ+9XaUMT0fYGDMTpj2Qlp0gzFnH1UT95xuxlN2P7QOpwZChGlWkWQAAAABJRU5ErkJggg==) no-repeat;
+  background-size: 0.4cm 0.4cm;
+  width: 0.4cm;
+  height: 0.4cm;
+  display: inline-block;
+  margin: -2px 0 -2px 2px;
+}
+
+div#dmp-projects,
+div#dmp-contributors,
+div#dmp-content {
+  page-break-before: always;
+}
+
+/* definition lists */
+
+dl::after {
+  content: ' ';
+  display: table;
+  clear: both;
+}
+
+dl dt {
+  display: inline-block;
+  width: 20%;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  float: left;
+  white-space: nowrap;
+}
+
+dl dt::after {
+  content: ":";
+}
+
+dl dd {
+  display: inline-block;
+  width: 80%;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  float: left;
+  font-style: italic;
+}
+
+dl dd ul {
+  padding: 0;
+  margin: 0;
+}
+
+dl dd ul li {
+  list-style: none;
+}
+
+dl dd ul li:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+dl .contact-name {
+  font-weight: bold;
+}
+    </style>
+  </head>
+  <body>
+    <article class="dmp">
+      <header>
+  <center>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/European_Commission_Document_SVG.svg/320px-European_Commission_Document_SVG.svg.png" height="78" width="160" />
+  </center>
+  <h1>DSW project name</h1>
+  <center>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Flag_of_Europe.svg/320px-Flag_of_Europe.svg.png" height="213" width="320" />
+  </center>
+  <h3>
+    Horizon Europe<br/>
+    Data Management Plan
+  </h3>
+
+  <div class="info">
+    <div class="version-info">
+      
+      <div class="date">10 May 2023</div>
+    </div>
+
+    <p class="dsw">
+      Data Management Plan created in Data Stewardship Wizard &laquo;<a href="https://ds-wizard.org" target="_blank">ds-wizard.org</a>&raquo;<br/>
+      using Life Sciences DSW Knowledge Model v2.4.4 (<span class="package-id"><span class="organization-id">dsw</span>:<span class="km-id">lifesciences</span>:<span class="version">2.4.4</span></span>).
+    </p>
+  </div>
+</header>
+      <div id="dmp-versions">
+  <table>
+    <thead>
+      <tr>
+        <th colspan="3" class="title">History of changes</th>
+      </tr>
+      <tr>
+        <th>Version</th>
+        <th>Publication date</th>
+        <th>Changes</th>
+      </tr>
+    <thead>
+    <tbody>
+      
+        <tr>
+          <td colspan="3" class="no-versions">There are no named versions</tr>
+        </tr>
+      
+    </tbody>
+  </table>
+</div>
+      <div id="dmp-contributors">
+  <h2>Contributors</h2>
+
+  <p>The following contributors are related to the projects of this DMP:</p>
+
+  <ul>
+  
+    <li class="contributor">
+      <span class="name">Dunno</span>
+        <br><span class="contact-email"><a href="mailto:Dunno@dunno.dunno">Dunno@dunno.dunno</a></span>, <span class="contact-orcid"><span class="mini-orcid-icon-16"></span> <a href="https://orcid.org/orcid identifier">orcid identifier</a></span>
+        <br>Roles: <span class="role">Contact Person</span>, <span class="role">Data Collector</span>, <span class="role">Data Curator</span>, <span class="role">Data Steward</span>, <span class="role">Distributor</span>, <span class="role">Other</span>, <span class="role">Producer</span>, <span class="role">Rights Holder</span>
+        <br>Affiliation: <span class="affiliation">
+    affiliation</span>
+    </li>
+  
+  </ul></div>
+      <div id="dmp-projects">
+  <h2>Projects</h2>
+
+  <p>We will be working on the following projects and for those are the data and work described in this DMP.</p>
+
+  
+    <div class="project"><h3>Project name 1</h3><dl>
+        <dt>Acronym</dt>
+        <dd>project acronym</dd>
+        <dt>Start date</dt>
+        <dd>2023-05-10</dd>
+        <dt>End date</dt>
+        <dd>2023-05-31</dd>
+        <dt>Funding</dt>
+        <dd>
+            <ul>
+              <li><a href="http://dx.doi.org/10.13039/100000001" target="_blank">National Science Foundation</a>: grant number (planned)</li>
+            </ul></dd>
+      </dl>
+      <section class="abstract">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.</p>
+        
+        <p></p>
+        
+        <p>Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.</p>
+        
+      </section></div>
+  
+    <div class="project"><h3>project name 2</h3><dl>
+        <dt>Acronym</dt>
+        <dd>acronym</dd>
+        <dt>Start date</dt>
+        <dd>2023-05-11</dd>
+        <dt>End date</dt>
+        <dd>2023-06-08</dd>
+        <dt>Funding</dt>
+        <dd>
+            <ul>
+              <li><a href="http://dx.doi.org/10.13039/100000001" target="_blank">National Science Foundation</a>: grant number (granted)</li>
+            </ul></dd>
+      </dl>
+      <section class="abstract">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.</p>
+        
+        <p></p>
+        
+        <p>Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.</p>
+        
+      </section></div>
+  
+</div>
+      <div id="dmp-content">
+  <section id="sec-data-summary" class="dmp-section">
+    <h2>1. Data Summary</h2>
+
+    <div id="q-data-summary" class="question">
+  <div class="answer">
+
+  <div>
+      <h4>Instrument datasets</h4>
+      The following instrument datasets will be acquired in the projects:
+      <ul><li><strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus</strong>
+            <p>
+                This dataset will be collected by an external party.
+                For the ownership of the data we have made the following arrangements: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.
+
+Ut eu ex et neque laoreet scelerisque sed quis dolor. Morbi finibus velit vel rhoncus posuere. Etiam id laoreet turpis. Suspendisse potenti. Suspendisse nec dui vitae magna pulvinar luctus in eget diam. Nulla id mollis nulla, nec pulvinar diam. Nam dignissim finibus lorem, feugiat posuere nunc. Donec hendrerit odio nunc, non mollis tortor euismod sit amet. Donec finibus risus viverra imperdiet ultrices. Donec vehicula ligula sit amet nibh mollis maximus. Phasellus sit amet mauris at turpis vulputate ultrices. Aliquam pharetra, purus ac eleifend consectetur, felis ex aliquam mauris, quis pulvinar libero ex laoreet nisl. Curabitur in gravida velit. Fusce non lorem non justo laoreet commodo. Proin faucibus felis vitae sagittis commodo. Duis tempus arcu sit amet nisi feugiat blandit.</p>
+            <p>The equipment is less well described or not completely standard, so we will need to take extra care documenting the process.</p>
+            <p>Researchers working in other fields of research could be interested in using this data. We think that other researchers can use this data as follows: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.
+
+Ut eu ex et neque laoreet scelerisque sed quis dolor. Morbi finibus velit vel rhoncus posuere. Etiam id laoreet turpis. Suspendisse potenti. Suspendisse nec dui vitae magna pulvinar luctus in eget diam. Nulla id mollis nulla, nec pulvinar diam. Nam dignissim finibus lorem, feugiat posuere nunc. Donec hendrerit odio nunc, non mollis tortor euismod sit amet. Donec finibus risus viverra imperdiet ultrices. Donec vehicula ligula sit amet nibh mollis maximus. Phasellus sit amet mauris at turpis vulputate ultrices. Aliquam pharetra, purus ac eleifend consectetur, felis ex aliquam mauris, quis pulvinar libero ex laoreet nisl. Curabitur in gravida velit. Fusce non lorem non justo laoreet commodo. Proin faucibus felis vitae sagittis commodo. Duis tempus arcu sit amet nisi feugiat blandit.</p></li></ul>
+      </div><div>
+      <h4>Non-equipment datasets</h4>
+      <p>We also collect data from
+          questionnaires, case report forms, and electronic patient records.
+        The non-equipment datasets are:
+          <ul><li>
+              <strong>Lorem ipsum dolor sit amet, consectetur adipiscin</strong>
+              <span class="separator">&ndash;</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.
+
+Ut eu ex et neque laoreet scelerisque sed quis dolor. Morbi finibus velit vel rhoncus posuere. Etiam id laoreet turpis. Suspendisse potenti. Suspendisse nec dui vitae magna pulvinar luctus in eget diam. Nulla id mollis nulla, nec pulvinar diam. Nam dignissim finibus lorem, feugiat posuere nunc. Donec hendrerit odio nunc, non mollis tortor euismod sit amet. Donec finibus risus viverra imperdiet ultrices. Donec vehicula ligula sit amet nibh mollis maximus. Phasellus sit amet mauris at turpis vulputate ultrices. Aliquam pharetra, purus ac eleifend consectetur, felis ex aliquam mauris, quis pulvinar libero ex laoreet nisl. Curabitur in gravida velit. Fusce non lorem non justo laoreet commodo. Proin faucibus felis vitae sagittis commodo. Duis tempus arcu sit amet nisi feugiat blandit.
+
+Curabitur sapien elit, mattis eget tristique at, porttitor iaculis lectus. Pellentesque habitant morbi tristique senectus
+              </li></ul></p>
+      </div><div>
+        <h4>Re-used datasets</h4><div>We have found the following reference datasets that we have considered for re-use:
+          <ul><li>
+                
+                <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.mjq9vj" target="_blank">Kaggle Datasets</a></strong>
+                    (<a href="https://url.com" target="_blank">https://url.com</a>)
+                    ✔️
+                      <p>
+                      We will use version "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante." of this dataset.
+                        If a new version becomes available during the projects, we will stay with the old version.</p></li></ul>
+          </div><div>We have found the following non-reference datasets that we have considered for re-use:
+          <ul><li>
+                
+                <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.y00hz4" target="_blank">ConoServer</a></strong>
+                    (<a href="https://url.com" target="_blank">https://url.com</a>)
+                    ✔️
+                    <p>
+                    We already have a copy of this dataset.</p></li></ul>
+          </div></div><h4>Data formats and types</h4>
+    <div>We will be using the following data formats and types:
+    <ul><li>
+          
+          <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.dqnfkg" target="_blank">Mosquito gross anatomy</a></strong><p>
+            It is not a standardized format.
+                  Reason.
+                This is not a suitable format for long-term archiving; however, we plan to convert it to a suitable format before the end of the project.
+                We expect to have 42 files of average size 42 GB (i.e. approximately 1764.0 GB in total).</p></li></ul>
+    </div></div>
+</div>
+  </section>
+
+  <section id="sec-fair-data" class="dmp-section">
+    <h2>2. FAIR Data</h2>
+
+    <h3>2.1. Making data findable, including provisions for metadata</h3>
+
+    <div id="q-findable" class="question">
+  <div class="answer">
+    <p>There are 'Minimal Metadata About ...' (MIA...) standards for our experiments.</p>
+      <p>We will use an electronic lab notebook to make sure that there is good provenance of the data analysis.</p><p>The provenance will be captured using W3C PROV.</p><p>We made a SOP (Standard Operating Procedure) for file naming. Lorem ipsum dolor sit amet, consectetur adipiscing elit. phasellus aliquam enim a posuere rhoncus. pellentesque quis hendrerit lacus. integer lectus diam, efficitur et ipsum et, congue aliquet felis. integer eget elit sit amet dui varius porttitor ut sit amet enim. aliquam erat volutpat. nulla in velit viverra, aliquam tellus non, imperdiet orci. duis ut maximus enim. pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+aenean vel purus enim. proin tellus velit, rutrum eu neque nec, sodales sodales nulla. aenean rutrum eros bibendum dapibus finibus. lorem ipsum dolor sit amet, consectetur adipiscing elit. nunc ut lobortis urna, ac mollis enim. vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. quisque sed tempor eros. nam lacinia ante sed eleifend condimentum. pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante. We will be keeping the relationships between data clear in the file names. All the metadata in the file names also will be available in the proper metadata.</p></div>
+</div>
+
+    <h3>2.2. Making data accessible</h3>
+
+    <div id="q-accessible" class="question">
+  <div class="answer">
+    <p>We will be working with the philosophy <em>as open as possible</em> for our data.</p><p>
+        The data cannot become completely open immediately because
+          of:
+          <ul>
+              <li>legal reasons</li><li>we have other than paper-publishing reasons: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.
+
+Ut eu ex et neque laoreet scelerisque sed quis dolor. Morbi finibus velit vel rhoncus posuere. Etiam id laoreet turpis. Suspendisse potenti. Suspendisse nec dui vitae magna pulvinar luctus in eget diam. Nulla id mollis nulla, nec pulvinar diam. Nam dignissim finibus lorem, feugiat posuere nunc. Donec hendrerit odio nunc, non mollis tortor euismod sit amet. Donec finibus risus viverra imperdiet ultrices. Donec vehicula ligula sit amet nibh mollis maximus. Phasellus sit amet mauris at turpis vulputate ultrices. Aliquam pharetra, purus ac eleifend consectetur, felis ex aliquam mauris, quis pulvinar libero ex laoreet nisl. Curabitur in gravida velit. Fusce non lorem non justo laoreet commodo. Proin faucibus felis vitae sagittis commodo. Duis tempus arcu sit amet nisi feugiat blandit.
+
+Curabitur sapien elit, mattis eget tristique at, porttitor iaculis lectus. Pellentesque habitant morbi tristique senectus</li></ul></p><p>Limited embargo will not be used as all data will be opened immediately.</p><p>Our data is legally not copyrightable, there is no legal owner.</p><p>For the reference and non-reference data sets that we reuse, conditions are as follows:
+        <ul><li>
+                <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.mjq9vj" target="_blank">Kaggle Datasets</a></strong>
+                <span class="separator">&ndash;</span>
+                available under specific restrictions, which we will follow in our projects: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.</li><li>
+                <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.y00hz4" target="_blank">ConoServer</a></strong>
+                <span class="separator">&ndash;</span>
+                available under specific restrictions, which we will follow in our projects: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.</li></ul></div>
+</div>
+
+    <h3>2.3. Making data interoperable</h3>
+
+    <div id="q-interoperable" class="question">
+  <div>We will be using the following data formats and types:
+    <ul><li>
+          
+          <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.dqnfkg" target="_blank">Mosquito gross anatomy</a></strong><p>
+            It is not a standardized format.
+                  Reason.</p></li></ul>
+    </div><div>We will be using the following standards (encodings, terminologies, vocabularies, ontologies):
+    <ul><li>
+          <strong><a href="https://fairsharing.org/10.25504/FAIRsharing.efv7gw" target="_blank">HOMology</a></strong>
+          (https://url.com)
+        </li></ul>
+    </div></div>
+
+    <h3>2.4. Increase data re-use</h3>
+
+    <div id="q-reusable" class="question">
+  <div class="answer">
+    <p>As explained in Section 2.2, our data cannot become completely open immediately.</p><p></p>
+      <p>There are IP reasons why our data can not be open.</p>
+      <p>Someone will be given the decision power to move documents or data to a new place after the projects has finished.</p><p>We will be archiving data (using so-called <em>cold storage</em>) for long term preservation already during the projects. The data are expected to be still understandable and reusable after a long time.</p><p>To validate the integrity of the results, the following will be done:
+
+      <ul>
+        <li>We will run a subset of our jobs several times across the different compute infrastructures.</li><li>We will run part of the data set repeatedly to catch unexpected changes in results.</li></ul>
+
+      </p></div>
+</div>
+  </section>
+
+  <section id="sec-resource-allocation" class="dmp-section">
+    <h2>3. Other research outputs</h2>
+
+    <div id="q-other-outputs" class="question">
+  <div class="answer">
+    <p>We use Data Stewardship Wizard for planning our data management and creating this DMP. The management and planning of other research outputs is done separately and is included as appendix to this DMP. Still, we benefit from data stewardship guidance (e.g. FAIR principles, openness, or security) and it is reflected in our plans with respect to other research outputs.</p>
+  </div>
+</div>
+  </section>
+
+  <section id="sec-resource-allocation" class="dmp-section">
+    <h2>4. Allocation of resources</h2>
+
+    <div id="q-resource-allocation" class="question">
+  <div class="answer">
+
+  <p>FAIR is a central part of our data management; it is considered at every decision in our data management plan. We use the FAIR data process ourselves to make our use of the data as efficient as possible. Making our data FAIR is therefore not a cost that can be separated from the rest of the project.</p>
+
+  <p>We will be archiving data (using so-called 'cold storage') for long term preservation already during the projects.</p><p>We will be paying for costs related to the used repositories. Further notes: <span class="user-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.
+
+Ut eu ex et neque laoreet scelerisque sed quis dolor. Morbi finibus velit vel rhoncus posuere. Etiam id laoreet turpis. Suspendisse potenti. Suspendisse nec dui vitae magna pulvinar luctus in eget diam. Nulla id mollis nulla, nec pulvinar diam. Nam dignissim finibus lorem, feugiat posuere nunc. Donec hendrerit odio nunc, non mollis tortor euismod sit amet. Donec finibus risus viverra imperdiet ultrices. Donec vehicula ligula sit amet nibh mollis maximus. Phasellus sit amet mauris at turpis vulputate ultrices. Aliquam pharetra, purus ac eleifend consectetur, felis ex aliquam mauris, quis pulvinar libero ex laoreet nisl. Curabitur in gravida velit. Fusce non lorem non justo laoreet commodo. Proin faucibus felis vitae sagittis commodo. Duis tempus arcu sit amet nisi feugiat blandit.
+
+Curabitur sapien elit, mattis eget tristique at, porttitor iaculis lectus. Pellentesque habitant morbi tristique senectus.</span></p>
+    
+    
+    <p>Dunno is responsible for reviewing, enhancing, cleaning, or standardizing metadata and the associated data submitted for storage, use and maintenance within a data centre or repository.
+        </p>
+    
+    <p>Dunno is responsible for finding, gathering, and collecting data.
+        </p>
+    
+    
+    
+    <p>Dunno is responsible for the management and proficiency of data including data processing, data policies, data guidelines, and data availability.
+        </p>
+    
+    <p>Dunno is responsible for generating and disseminating copies of the resouce in either electronic or print form.
+        </p>
+    
+    <p>
+      To execute the DMP, additional specialist expertise is required. We will be training existing staff.
+        The training will be: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.</p><p>We require the following hardware or software in addition to what is usually available in the institute: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.
+
+Aenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.</p></div>
+</div>
+  </section>
+
+  <section id="sec-data-security" class="dmp-section">
+    <h2>5. Data security</h2>
+
+    <div id="q-data-security" class="question">
+  <div class="answer">
+        <p>
+            Project members will not store data or software on computers in the lab or external hard drives connected to those computers.
+          They can carry data with them on encrypted data carriers.
+          
+            Project members have been instructed about both generic and specific risks to the projects.
+          </p><p>The possible impact to the project or organization if information is lost is small. The possible impact to the project or organization if information is leaked is small. We will mitigate information vandalism risk for the project or organization.</p><p>We are not using any personal information.</p><p>The archive need to be protected against loss or theft. It is clear who has physical access to the archives.</p></div>
+</div>
+  </section>
+
+  <section id="sec-ethical-aspects" class="dmp-section">
+    <h2>6. Ethics</h2>
+
+    <div id="q-ethical-aspects" class="question">
+  <div class="answer">
+
+    </div>
+</div>
+  </section>
+
+  <section id="sec-other-issues" class="dmp-section">
+    <h2>7. Other issues</h2>
+
+    <div id="q-other-issues" class="question">
+  <div class="answer"><p>We use the <a href="https://ds-wizard.org">Data Stewardship Wizard</a> with its <em>Life Sciences DSW Knowledge Model</em> (ID: <span class="package-id"><span class="organization-id">dsw</span>:<span class="km-id">lifesciences</span>:<span class="version">2.4.4</span></span>) knowledge model to make our DMP. More specifically, we use the <a href="https://ds-review.ds-wizard.org">https://ds-review.ds-wizard.org</a> DSW instance where the project has direct URL: <a href="https://ds-review.ds-wizard.org/projects/712ad22b-a711-4b23-a2ad-d3509d3b67c4">https://ds-review.ds-wizard.org/projects/712ad22b-a711-4b23-a2ad-d3509d3b67c4</a>.</p>
+
+    <p>We will not be using any extra national, funder, sectorial, nor departmental policies or procedures for data management.</p></div>
+</div>
+  </section>
+
+</div>
+    </article>
+  </body>
+
+</html>

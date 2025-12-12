@@ -1,0 +1,11 @@
+<mat-card style="display: flex; align-items: center; margin-bottom: 15px; min-width: 600px">
+    <mat-card-header>
+      <mat-card-title>Post discussion</mat-card-title>
+    </mat-card-header>
+      <mat-form-field style="width: 80%;">
+        <textarea matInput [(ngModel)]="textInput"></textarea>
+      </mat-form-field>
+    <mat-card-actions>
+      <button mat-button (click)="postDiscussion()" >Post Discussion</button>
+    </mat-card-actions>
+  </mat-card>

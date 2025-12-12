@@ -1,0 +1,38 @@
+.userdata-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container {
+  display: flex;
+  gap: 8px;
+}
+
+.mat-list{
+  width: 40%;
+} 
+
+.data-label {
+  margin-right: 20px; /* Adjust the margin as needed for spacing between label and value */
+}
+
+.data-value {
+  font-weight: bold; /* Make variable values bold */
+}
+
+.dsr-token-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dsr-token-container {
+  display: flex;
+  align-items: center;
+}
+
+.copy-button-container {
+  margin-left: auto;
+}

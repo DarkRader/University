@@ -1,0 +1,49 @@
+<div class="userdata-container">
+  <mat-list class="mat-list">
+    <!-- Other user data items -->
+  
+    <mat-list-item>
+      <span class="data-label">Username:</span> <span id="username" class="data-value">{{ userData?.username }}</span>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  
+    <mat-list-item>
+      <span class="data-label">First Name:</span> <span id="first_name" class="data-value">{{ userData?.firstName }}</span>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  
+    <mat-list-item>
+      <span class="data-label">Last Name:</span> <span id="last_name" class="data-value">{{ userData?.lastName }}</span>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  
+    <mat-list-item>
+      <span class="data-label">Email:</span> <span id="email" class="data-value">{{ userData?.email }}</span>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  
+    <mat-list-item class="dsr-token-item">
+      <div class="dsr-token-container">
+        <span class="data-label">dsr-token:</span>
+        <span id="dsr_token" class="data-value">{{ userData?.dsrToken }}</span>
+        <button mat-icon-button (click)="copyToClipboard(userData?.dsrToken)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+    </mat-list-item>
+  
+    <mat-divider></mat-divider>
+  </mat-list>
+  
+  
+  
+    <div class="button-container">
+      <button mat-button color="warn" id="btn_logout" (click)="logout()">Logout</button>
+      <div style="margin-bottom: 8px;"></div> <!-- Adjust margin-bottom based on your preference for spacing -->
+      <button mat-button id="btn_go_to_docs" color="primary" (click)="goToDocuments()">See Documents</button>
+      <div style="margin-bottom: 8px;"></div>
+      <button mat-button id="btn_submit_doc" color="primary" (click)="goToDocSubmission()">Submit New Document</button>
+    </div>
+  </div>
+  
+  

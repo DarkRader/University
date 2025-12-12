@@ -1,0 +1,10 @@
+<app-navbar (darkModeSwitched)="switchMode($event)"></app-navbar>
+<mat-divider style="background-color: #4b45ee;"></mat-divider>
+<div style="min-height: 100vh" [ngClass]="{ 'theme-dark': isDark, 'theme-light': !isDark }" >
+  <router-outlet></router-outlet>
+</div>
+
+
+  
+
+

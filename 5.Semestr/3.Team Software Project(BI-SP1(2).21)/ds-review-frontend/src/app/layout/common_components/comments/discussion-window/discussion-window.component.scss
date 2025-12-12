@@ -1,0 +1,10 @@
+.fixed-scrollable-container {
+    width: 100%;
+    height: 100vh; /* Set your desired height */
+    overflow: auto;
+}
+
+.discussion-comments {
+    /* Optionally, you can add some padding or margin to the comments container */
+    padding: 10px;
+}

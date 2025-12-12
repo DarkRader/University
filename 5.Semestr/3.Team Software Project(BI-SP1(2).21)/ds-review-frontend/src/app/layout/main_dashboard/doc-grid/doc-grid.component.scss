@@ -1,0 +1,10 @@
+
+.app-doc-grid {
+  border-radius: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 3fr));
+  grid-gap: 20px;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}

@@ -1,0 +1,19 @@
+ <mat-card style="display: flex; align-items: center; margin-bottom: 15px; min-width: 600px">
+    <mat-card-header>
+        <mat-card-title>Rating</mat-card-title>
+      </mat-card-header>
+
+    <mat-slider  min="0" max="10" step="1" showTickMarks discrete  [displayWith]="ratingLabel" >
+        <input matSliderThumb [(ngModel)]="evaluation.rating">
+      </mat-slider>
+      
+      <mat-form-field>
+        <mat-select [(ngModel)]="evaluation.state">
+          <mat-option *ngFor="let state of approvalStates" [value]="state.value">{{state.viewValue}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-card-actions>
+        <button mat-button id="btn_post_eval" color="primary" (click)="postEvaluation()">Post Evaluation</button>
+        <button mat-button id="btn_see_eval" color="primary" (click)="goToEvaluations()">See Evaluations</button>
+      </mat-card-actions>
+  </mat-card>

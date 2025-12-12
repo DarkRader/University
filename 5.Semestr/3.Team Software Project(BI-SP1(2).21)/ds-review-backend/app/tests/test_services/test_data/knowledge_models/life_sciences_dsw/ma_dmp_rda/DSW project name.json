@@ -1,0 +1,84 @@
+{
+    "dmp": {
+        "contact": {
+            "contact_id": {
+                "identifier": "orcid identifier",
+                "type": "orcid"
+            },
+            "mbox": "Dunno@dunno.dunno",
+            "name": "Dunno"
+        },
+        "contributor": [
+            {
+                "contributor_id": {
+                    "identifier": "orcid identifier",
+                    "type": "orcid"
+                },
+                "mbox": "Dunno@dunno.dunno",
+                "name": "Dunno",
+                "role": [
+                    "contact person",
+                    "data collector",
+                    "data curator",
+                    "data steward",
+                    "distributor",
+                    "other",
+                    "producer",
+                    "rights holder"
+                ]
+            }
+        ],
+        "created": "2023-05-10T15:56:07Z",
+        "dataset": [],
+        "description": "This maDMP has been created using Data Stewardship Wizard (DSW, ds-wizard.org) and is based on knowledge model Life Sciences DSW Knowledge Model (dsw:lifesciences:2.4.4). The questionnaire used for this DMP is identified by UUID \"712ad22b-a711-4b23-a2ad-d3509d3b67c4\" within https://ds-review.ds-wizard.org DSW instance.",
+        "dmp_id": {
+            "identifier": "https://ds-review.ds-wizard.org/questionnaires/712ad22b-a711-4b23-a2ad-d3509d3b67c4",
+            "type": "url"
+        },
+        "ethical_issues_description": "There are privacy reasons so our data can not be open.",
+        "ethical_issues_exist": "yes",
+        "language": "eng",
+        "modified": "2023-05-10T15:56:07Z",
+        "project": [
+            {
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.\n\nAenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.",
+                "end": "2023-05-31",
+                "funding": [
+                    {
+                        "funder_id": {
+                            "identifier": "http://dx.doi.org/10.13039/100000001",
+                            "type": "url"
+                        },
+                        "funding_status": "planned",
+                        "grant_id": {
+                            "identifier": "grant number",
+                            "type": "other"
+                        }
+                    }
+                ],
+                "start": "2023-05-10",
+                "title": "Project name 1"
+            },
+            {
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam enim a posuere rhoncus. Pellentesque quis hendrerit lacus. Integer lectus diam, efficitur et ipsum et, congue aliquet felis. Integer eget elit sit amet dui varius porttitor ut sit amet enim. Aliquam erat volutpat. Nulla in velit viverra, aliquam tellus non, imperdiet orci. Duis ut maximus enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean congue pretium nisl, sed faucibus lorem egestas in.\n\nAenean vel purus enim. Proin tellus velit, rutrum eu neque nec, sodales sodales nulla. Aenean rutrum eros bibendum dapibus finibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ut lobortis urna, ac mollis enim. Vivamus maximus efficitur turpis, sit amet venenatis dui malesuada et. Quisque sed tempor eros. Nam lacinia ante sed eleifend condimentum. Pellentesque pharetra hendrerit massa, eu suscipit ante gravida nec. Praesent hendrerit elit vitae justo placerat, sed auctor nisi maximus. Nulla dictum, elit ut pellentesque rhoncus, arcu tortor pretium justo, sed blandit quam massa eget erat. Vestibulum ipsum augue, sollicitudin in molestie quis, fermentum non ante.",
+                "end": "2023-06-08",
+                "funding": [
+                    {
+                        "funder_id": {
+                            "identifier": "http://dx.doi.org/10.13039/100000001",
+                            "type": "url"
+                        },
+                        "funding_status": "granted",
+                        "grant_id": {
+                            "identifier": "grant number",
+                            "type": "other"
+                        }
+                    }
+                ],
+                "start": "2023-05-11",
+                "title": "project name 2"
+            }
+        ],
+        "title": "DSW project name"
+    }
+}

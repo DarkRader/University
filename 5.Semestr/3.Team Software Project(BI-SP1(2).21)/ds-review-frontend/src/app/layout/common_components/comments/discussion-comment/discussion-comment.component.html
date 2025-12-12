@@ -1,0 +1,37 @@
+<mat-card class="comment">
+    <mat-card-content>
+
+      <p>{{discussionData?.content}}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="showAnswerInput()" *ngIf="!showResolved">Answer</button>
+      <button mat-button *ngIf="numOfComments > 0" (click)="showAnswers()">{{btnSeeCommentsText}}</button>
+      <button mat-button (click)="changeDiscussionState()">{{btnChangeDiscussionState}}</button>
+      <button mat-button *ngIf="focusCircleSelected" (click)="scrollToPoint()">ScrollToText</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <br>
+  
+  <mat-card *ngIf="answerInputShown" style="display: flex; align-items: center; margin-bottom: 15px; ">
+    <mat-form-field  style="width: 80%;">
+      <textarea matInput [(ngModel)]="textInput" ></textarea>
+    </mat-form-field>
+    <button mat-button (click)="postCommentToDiscussion()">Post Comment</button>
+    <br>
+  </mat-card>
+
+  <div *ngIf="answersShown">
+    <app-comment-basic
+    *ngFor="let _commentData of discussionData?.comments!"
+    [commentData] = _commentData>
+    </app-comment-basic>
+    <br>
+  </div>
+  
+   
+
+  
+
+  
+  

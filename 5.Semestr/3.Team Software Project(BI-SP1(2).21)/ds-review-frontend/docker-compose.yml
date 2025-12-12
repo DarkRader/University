@@ -1,0 +1,10 @@
+version: "3"
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      # nginx port mapping to host machine port 4200
+      # 80 is the default port for nginx
+      - "4200:80"

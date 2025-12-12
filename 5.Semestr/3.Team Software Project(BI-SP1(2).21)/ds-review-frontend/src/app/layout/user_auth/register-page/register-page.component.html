@@ -1,0 +1,30 @@
+<div>
+  <form [formGroup]="registrationForm" (ngSubmit)="register()" class="register-container">
+
+    <mat-form-field class="input-width">
+      <input matInput id="input_first_name" placeholder="First Name" formControlName="first_name">
+    </mat-form-field>
+  
+    <mat-form-field class="input-width">
+      <input matInput id="input_last_name" placeholder="Last Name" formControlName="last_name">
+    </mat-form-field>
+  
+    <mat-form-field class="input-width">
+      <input matInput id="input_username" placeholder="Username" formControlName="username">
+    </mat-form-field>
+  
+    <mat-form-field class="input-width">
+      <input matInput id="input_password" type="password" placeholder="Password" formControlName="password">
+    </mat-form-field>
+  
+    <mat-form-field class="input-width">
+      <input matInput id="input_email" placeholder="Email" formControlName="email">
+    </mat-form-field>
+  
+    <div class="button-container">
+      <button mat-raised-button id="btn_register" color="primary" type="submit">Register</button>
+    </div>
+  
+  </form>
+</div>
+

@@ -1,0 +1,24 @@
+
+<mat-toolbar>
+
+  <div class="left-content">
+    <button mat-icon-button (click)="homeClicked()">
+      <mat-icon>home</mat-icon>
+    </button>
+  </div>
+
+  <div>
+    <img src="../../../../assets/img/logo.png" class="toolbar-logo">
+  </div>
+
+  <div class="right-content">
+    <mat-slide-toggle (change)="onDarkModeSwitched($event)">
+      Dark theme
+    </mat-slide-toggle>
+  </div>
+  
+</mat-toolbar>
+
+
+
+

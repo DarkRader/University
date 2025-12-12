@@ -1,0 +1,16 @@
+<div style="display: flex; justify-content: center; ">
+    
+    <mat-card class="card-doc" [ngClass]="{'full-width': !showComments}">
+      <app-document-view [isSubmitter]="false"></app-document-view>
+    </mat-card>
+    
+    <div class="spacer"></div>
+    
+    <div class="card-discussion-wrapper">
+      <app-doc-rating></app-doc-rating>
+      <app-discussion-window class="card-discussion" *ngIf="showComments"></app-discussion-window>
+    </div>
+      
+  </div>
+
+  <mat-checkbox [(ngModel)]="showComments">Show Comments</mat-checkbox>

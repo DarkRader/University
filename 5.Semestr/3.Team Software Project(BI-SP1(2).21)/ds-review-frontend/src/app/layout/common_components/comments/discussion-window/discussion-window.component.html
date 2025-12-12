@@ -1,0 +1,10 @@
+<div class="fixed-scrollable-container" id="discussion-window">
+    <app-discussion-poster></app-discussion-poster>
+    <div class="discussion-comments">
+        <app-discussion-comment
+            *ngFor="let discussion of discussionsDataArray"
+            [discussionData]="discussion"
+        ></app-discussion-comment>
+    </div>
+</div>
+

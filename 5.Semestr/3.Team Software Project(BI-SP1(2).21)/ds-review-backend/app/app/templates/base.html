@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+</head>
+<body>
+<h1>Document {{ document_id }}</h1>
+<h2>Your ID: <span id="ws-id"></span></h2>
+<form id="message_input">
+    <label for="messageText">Your message:</label>
+    <br>
+    <input type="text" id="messageText" autocomplete="off"/>
+    <button>Send</button>
+</form>
+
+
+<ul id='messages'>
+</ul>
+
+<button onclick="createThread()">Create thread</button>
+
+<br>
+
+<ul id='threads'>
+
+</ul>
+
+<button onclick="getSockets()">Update websockets</button>
+
+<ul id='sockets'>
+</ul>
+
+
+<script>
+
+
+    document.getElementById("message_input").addEventListener('submit', sendMessage)
+
+    const user_id = Number({{ user_id }})
+    document.querySelector("#ws-id").textContent = String(user_id);
+    const ws = new WebSocket(`ws://localhost:8000/ws/{{ document_id }}/${user_id}`);
+    ws.onmessage = function (event) {
+        if (event.data === "THREADS_UPDATE") {
+            getThreads()
+            return
+        }
+        let messages = document.getElementById('messages')
+        let message = document.createElement('li')
+        let content = document.createTextNode(event.data)
+        message.appendChild(content)
+        messages.appendChild(message)
+    };
+
+    ws.onopen = () => {
+        getSockets()
+        getThreads()
+    }
+
+
+    function sendMessage(e) {
+        let input = document.getElementById("messageText")
+        ws.send(input.value)
+        input.value = ''
+        e.preventDefault()
+    }
+
+    async function getSockets() {
+        const response = await fetch("/{{ document_id }}/socket")
+        const jsonData = await response.json();
+        const sockets = document.getElementById("sockets")
+
+        removeElements(sockets)
+
+        for (const el of jsonData.data) {
+            const socket = document.createElement('li')
+            socket.appendChild(document.createTextNode(`User #${el[0]} with websockets ${el[1]}`))
+            sockets.appendChild(socket)
+        }
+    }
+
+    async function createThread() {
+        const response = await fetch("/{{ user_id }}/{{ document_id }}/thread", {
+            method: "POST"
+        })
+        const jsonData = await response.json();
+        const threads = document.getElementById("threads")
+
+        removeElements(threads)
+
+        for (const el of jsonData.data) {
+            const thread = document.createElement('li')
+            thread.appendChild(document.createTextNode(el))
+            threads.appendChild(thread)
+        }
+    }
+
+    async function getThreads() {
+        const response = await fetch("/{{ user_id }}/{{ document_id }}/thread", {
+            method: "GET"
+        })
+        const jsonData = await response.json();
+        const threads = document.getElementById("threads")
+
+        removeElements(threads)
+
+        for (const el of jsonData.data) {
+            const thread = document.createElement('li')
+            thread.appendChild(document.createTextNode(el))
+            threads.appendChild(thread)
+        }
+
+    }
+
+    function removeElements(parent) {
+        const childrenNumber = parent.childNodes.length
+        for (let i = 0; i < childrenNumber; i++) {
+            parent.removeChild(parent.firstChild)
+        }
+    }
+</script>
+</body>
+</html>

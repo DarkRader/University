@@ -19,6 +19,7 @@ Hello, I'm Artem and this is my learning repository with all project, homework, 
 - [KAB - Cryptography and Security](https://github.com/DarkRader/University/tree/main/4.Semestr/2.Cryptography%20and%20Security(BI-KAB.21))
 - [AG1 - Algorithms and Graphs 1](https://github.com/DarkRader/University/tree/main/5.Semestr/1.Algorithms%20and%20Graphs%201(BI-AG1.21)) (2023/2024)
 - [PST - Probability and Statistics](https://github.com/DarkRader/University/tree/main/5.Semestr/2.Probability%20and%20Statistics(BI-PST.21))
+- [SP1/2 - Team Software Project 1/2](https://github.com/DarkRader/University/tree/main/5.Semestr/3.Team%20Software%20Project(BI-SP1(2).21))
 - [PYT - Programming in Python](https://github.com/DarkRader/University/tree/main/6.Semestr/1.Programming%20in%20Python(BI-PYT.21))
 - [AND - Programming for the Android operating system](https://github.com/DarkRader/University/tree/main/6.Semestr/2.Programming%20for%20the%20Android%20operating%20system(BI-AND.21))
 - [KOT - Programming in Kotlin](https://github.com/DarkRader/University/tree/main/6.Semestr/3.Programming%20in%20Kotlin(BI-KOT))

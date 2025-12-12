@@ -1,0 +1,17 @@
+<div class="main-dashboard-content">
+    
+    <app-options></app-options>
+
+    <ng-container *ngIf="(docViewService.view$ | async) === contentDisplayStateEnum.GRID; then gridView else tableView"></ng-container>
+
+    <ng-template #gridView>
+      <app-doc-grid></app-doc-grid>
+    </ng-template>
+    
+    <ng-template #tableView>
+      <app-doc-table></app-doc-table>
+    </ng-template>
+    
+
+</div>
+

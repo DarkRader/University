@@ -1,0 +1,23 @@
+/* login.component.css */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .input-width {
+    width: 30%;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 30%;
+  }
+  
+  /* Optionally, you can adjust the button styles further */
+  button {
+    width: 48%; /* Adjust the width of the buttons */
+  }
+  
